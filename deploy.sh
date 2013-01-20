@@ -1,6 +1,7 @@
 #! /bin/bash
 
 scripts=scripts/*
+tests=tests/*
 bundle=bundle.js
 site=site/
 
@@ -17,7 +18,7 @@ if [[ $? -ne 0 ]]; then
 else
   echo "${boldgreen}PASSED!$reset"
 fi
-./node_modules/jasmine-node/bin/jasmine-node $scripts
+./node_modules/jasmine-node/bin/jasmine-node $tests
 if [[ $? -ne 0 ]]; then
   echo "${boldred}Failed tests$reset"
 else

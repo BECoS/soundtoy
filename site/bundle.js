@@ -36268,6 +36268,7 @@ function launch() {
 }
 
 function onDocumentMouseDown(event) {
+  return;
   event.preventDefault();
   var vector = new three.THREE.Vector3(
     ( event.clientX / window.innerWidth ) * 2 - 1,
