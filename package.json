@@ -1,0 +1,24 @@
+{
+  "author": "",
+  "name": "soundtoy",
+  "description": "Clean and Pure",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "dependencies": { "three" : "*", 
+                    "jquery" : "*",
+                    "browserify" : "*",
+                    "jasmine-node" : "*",
+                    "jslint" : "*"
+                  },
+  "devDependencies": { },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}

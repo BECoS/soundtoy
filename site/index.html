@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<title>SoundToy</title>
+  <head>
+  <script type="text/javascript" src="bundle.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css"></link>
+</head>
+<body>
+  <div id="grid"></div>
+  <div id="cockpit">
+    <h5 id="pos">Mouse: ?, ?<br/>Camera: ?, ?</h5>
+    <button id="toneTrigger" onmousedown="tone()">Tone</button>
+    <input type="range" min="0" max="0.05" value="0.001" step="0.001" 
+      onchange="changeGain(this)">
+    <input type="range" min="30" max="10000" value="30" step="1" 
+      onchange="changeFreq(this)">
+    <h5>Freq: </h5><h5 id="freq"></h5>
+    <button id="noiseTrigger" onmousedown="whitenoise()">Noise</button>
+  </div>
+</body>
+</html>

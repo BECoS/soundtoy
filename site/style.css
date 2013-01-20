@@ -1,0 +1,30 @@
+body {
+  background-color: #073642;
+}
+
+#logo {
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+  width: 960px;
+}
+
+#grid {
+  position: fixed;
+  width: 800px;
+  height: 800px;
+}
+
+#cockpit {
+  position: fixed;
+  right: auto;
+  left: 800px;
+}
+
+#footer {
+  padding-top: 50px;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  z-index: 10;
+}
