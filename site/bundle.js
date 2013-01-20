@@ -36262,9 +36262,21 @@ function launch() {
       //   catchClick(e.pageX, e.pageY);   
       // });
   //    });
+  var browserString = navigator.vendor;
+  if (!browserString.match(/[gG]oogle|[aA]pple]/g)) {
+    alert("This won't work unless you use a recent version of Chrome or Safari.");
+    return;
+  } 
+  figureOutAnimationCall();
   initGraphics();
   initAudio();
   animate();
+}
+
+function figureOutAnimationCall () {
+  var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+  window.requestAnimationFrame = requestAnimationFrame;
 }
 
 function onDocumentMouseDown(event) {
