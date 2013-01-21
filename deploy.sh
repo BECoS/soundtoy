@@ -12,8 +12,8 @@ boldyellow=${bold}$(tput setaf 3)
 reset=$(tput sgr0)
 
 rm -f $site/$bundle
-./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle 
-./node_modules/jslint/bin/jslint.js $scripts
+./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle
+./node_modules/jslint/bin/jslint.js --maxlen 110 --indent 2  --plusplus --es5 --devel --continue $scripts
 if [[ $? -ne 0 ]]; then
   echo "${boldred}Failed jslint$reset"
 else

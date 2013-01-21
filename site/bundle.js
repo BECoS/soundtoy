@@ -36242,27 +36242,33 @@ if (typeof exports !== 'undefined') {
 
 });
 
-require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new webkitAudioContext();
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){/*global window*/
+"use strict";
+
+var context = new window.webkitAudioContext();
 var gainNode;
 var oscillator;
 var noise;
 var noiseToggle = false;
-var toneToggle = false;    
+var toneToggle = false;
 
-exports.audioinit = function audioinit() {
-  console.log('audio init');
-  oscillator = context.createOscillator(),
-    oscillator.type = 1;
-  gainNode = context.createGainNode(); 
-  gainNode.connect(context.destination); 
-  gainNode.gain.value = 0.001; 
-  oscillator.frequency.value = 30;
-  noise = new Whitenoise(context);
-}
-
-function tone() {
-  oscillator.connect(gainNode);
-}
+var Whitenoise = function (context) {
+  var data0, data1, i;
+  this.context = context;
+  this.node = context.createJavaScriptNode(1024, 1, 2);
+  this.node.onaudioprocess = this.process;
+  this.prototype.process = function (e) {
+    data0 = e.outputBuffer.getChannelData(0);
+    data1 = e.outputBuffer.getChannelData(1);
+    for (i = 0; i < data0.length; i += 1) {
+      data0[i] = ((Math.random() * 2) - 1);
+      data1[i] = data0[i];
+    }
+  };
+  this.prototype.connect = function (node) {
+    this.node.connect(node);
+  };
+};
 
 function changeGain(element) {
   gainNode.gain.value = element.value;
@@ -36274,45 +36280,90 @@ function changeOscType(element) {
 
 function changeFreq(element) {
   oscillator.frequency.value = element.value;
-  document.getElementById("freq").innerHTML = element.value;
+  //document.getElementById("freq").innerHTML = element.value;
 }
 
 function whitenoise() {
   noise.connect(gainNode);
 }
 
-var Whitenoise = function(context) {
-  this.context = context;
-  this.node = context.createJavaScriptNode(1024, 1, 2);
-  this.node.onaudioprocess = this.process;
-}
-
-Whitenoise.prototype.process = function(e) {
-  var data0 = e.outputBuffer.getChannelData(0);
-  var data1 = e.outputBuffer.getChannelData(1);
-  for (var i = 0; i < data0.length; i++) {
-    data0[i] = ((Math.random() * 2) - 1);
-    data1[i] = data0[i];
-  }
+exports.audioinit = function audioinit() {
+  console.log('audio init');
+  oscillator = context.createOscillator();
+  oscillator.type = 1;
+  gainNode = context.createGainNode();
+  gainNode.connect(context.destination);
+  gainNode.gain.value = 0.001;
+  oscillator.frequency.value = 30;
+  noise = new Whitenoise(context);
 };
-
-Whitenoise.prototype.connect = function(node) {
-  this.node.connect(node);
-};
-
 
 });
 
-require.define("/scripts/grid.js",function(require,module,exports,__dirname,__filename,process,global){var three = require('three');
+require.define("/scripts/grid.js",function(require,module,exports,__dirname,__filename,process,global){/*globals document, navigator, window*/
+"use strict";
+
+var three = require('three');
 var sound = require('./sound.js');
 
 var camera, scene, renderer, projector;
 var geometry, material, mesh, mesh2;
-var notes, seqs; 
+var notes, seqs;
 var audioContext;
 
-document.addEventListener("DOMContentLoaded", launch, false);
-document.addEventListener("mousedown", onDocumentMouseDown, false );
+function figureOutAnimationCall() {
+  var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+  window.requestAnimationFrame = requestAnimationFrame;
+}
+
+function initAudio() {
+  try {
+    sound.audioinit();
+  } catch (e) {
+    alert("This won't work unless you use a recent version of Chrome or Safari.");
+  }
+}
+
+function animate() {
+  var note;
+  window.requestAnimationFrame(animate);
+  for (note in notes) {
+    if (notes.hasOwnProperty('note') && note.active) {
+      note.rotation.x += 0.01;
+      note.rotation.y += 0.02;
+    }
+  }
+  renderer.render(scene, camera);
+}
+
+function initGraphics() {
+  var i, note, grid;
+  camera = new three.THREE.PerspectiveCamera(75, 1, 1, 10000);
+  camera.position.z = 100;
+  camera.position.x = 60;
+  camera.position.y = 50;
+
+  scene = new three.THREE.Scene();
+  projector = new three.THREE.Projector();
+  geometry = new three.THREE.CubeGeometry(8, 8, 8);
+  notes = new Array(64);
+  for (i = 0; i < 64; i++) {
+    note = new three.THREE.Mesh(geometry,
+        new three.THREE.MeshLambertMaterial({color: 0x0000F0}));
+    note.position.x = 16 * (i % 8);
+    note.position.y = 16 * Math.floor(i / 8);
+    notes.push(note);
+    scene.add(note);
+  }
+  renderer = new three.THREE.CanvasRenderer();
+  grid = document.getElementById('grid');
+  renderer.setSize(
+    parseInt(window.getComputedStyle(grid).getPropertyValue('height').replace(/px/g, ""), 10),
+    parseInt(window.getComputedStyle(grid).getPropertyValue('width').replace(/px/g, ""), 10)
+  );
+  document.getElementById('grid').appendChild(renderer.domElement);
+}
 
 function launch() {
   //jQuery(document).ready(function(){
@@ -36325,98 +36376,49 @@ function launch() {
       // });
   //    });
   var browserString = navigator.vendor;
-  if (!browserString.match(/[gG]oogle|[aA]pple]/g)) {
+  if (!browserString.match(/\[gG\]oogle|\[aA\]pple\]/g)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
     return;
-  } 
+  }
   figureOutAnimationCall();
   initGraphics();
   initAudio();
   animate();
 }
 
-function figureOutAnimationCall () {
-  var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-  window.requestAnimationFrame = requestAnimationFrame;
-}
 
 function onDocumentMouseDown(event) {
   return;
-  event.preventDefault();
-  var vector = new three.THREE.Vector3(
-    ( event.clientX / window.innerWidth ) * 2 - 1,
-    - ( event.clientY / window.innerHeight ) * 2 + 1,
-    0.5
-  );
-  projector.unprojectVector( vector, camera );
+  //event.preventDefault();
+  //var vector = new three.THREE.Vector3(
+  //  ( event.clientX / window.innerWidth ) * 2 - 1,
+  //  - ( event.clientY / window.innerHeight ) * 2 + 1,
+  //  0.5
+  //);
+  //projector.unprojectVector( vector, camera );
 
-  var ray = new three.THREE.Ray( camera.position, 
-      vector.subSelf( camera.position ).normalize() );
+  //var ray = new three.THREE.Ray( camera.position, 
+  //    vector.subSelf( camera.position ).normalize() );
 
-  var intersects = ray.intersectObjects( notes );
+  //var intersects = ray.intersectObjects( notes );
 
-  if ( intersects.length > 0 ) {
-    intersects[ 0 ].object.materials[ 0 ].color.setHex( Math.random() * 0xffffff );
-    var particle = new three.THREE.Particle(particleMaterial);
-    particle.position = intersects[0].point;
-    particle.scale.x = particle.scale.y = 8;
-    scene.add(particle);
-  }
+  //if ( intersects.length > 0 ) {
+  //  intersects[ 0 ].object.materials[ 0 ].color.setHex( Math.random() * 0xffffff );
+  //  var particle = new three.THREE.Particle(particleMaterial);
+  //  particle.position = intersects[0].point;
+  //  particle.scale.x = particle.scale.y = 8;
+  //  scene.add(particle);
+  //}
 
   // Parse all the faces
-  for ( var i in intersects ) {
-    intersects[ i ].face.material[ 0 ].color
-    .setHex( Math.random() * 0xffffff | 0x80000000 );
-  }
+  //for ( var i in intersects ) {
+  //  intersects[ i ].face.material[ 0 ].color
+  //  .setHex( Math.random() * 0xffffff | 0x80000000 );
+  //}
 }
 
-function initAudio() {
-  try {
-    sound.audioinit();
-  }
-  catch(e) {
-    alert("This won't work unless you use a recent version of Chrome or Safari.");
-  }
-}
-
-function initGraphics() {
-  camera = new three.THREE.PerspectiveCamera( 75, 1, 1, 10000 );
-  camera.position.z = 100;
-  camera.position.x = 60;
-  camera.position.y = 50;
-
-  scene = new three.THREE.Scene();
-  projector = new three.THREE.Projector();
-  geometry = new three.THREE.CubeGeometry( 8, 8, 8 );
-  notes = new Array(64);
-  for (var i = 0; i < 64; i++) {
-    note = new three.THREE.Mesh( geometry,
-        new three.THREE.MeshLambertMaterial({ color: 0x0000F0 }));
-    note.position.x = 16 * (i % 8);
-    note.position.y = 16 * Math.floor( i / 8 );
-    notes.push(note);
-    scene.add(note);
-  }
-  renderer = new three.THREE.CanvasRenderer();
-  var grid = document.getElementById('grid');
-  renderer.setSize(
-    parseInt(window.getComputedStyle(grid).getPropertyValue('height').replace(/px/g,"")),
-    parseInt(window.getComputedStyle(grid).getPropertyValue('width').replace(/px/g,""))
-  );
-  document.getElementById('grid').appendChild(renderer.domElement);
-}
-
-function animate() {
-  window.requestAnimationFrame( animate );
-  for (note in notes) {
-    if (note.active) {
-      note.rotation.x += 0.01;
-      note.rotation.y += 0.02;
-    }
-  }
-  renderer.render( scene, camera );
-}
+document.addEventListener("DOMContentLoaded", launch, false);
+document.addEventListener("mousedown", onDocumentMouseDown, false);
 
 });
 require("/scripts/grid.js");
@@ -36426,27 +36428,33 @@ require.define("/scripts/gridModel.js",function(require,module,exports,__dirname
 });
 require("/scripts/gridModel.js");
 
-require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new webkitAudioContext();
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){/*global window*/
+"use strict";
+
+var context = new window.webkitAudioContext();
 var gainNode;
 var oscillator;
 var noise;
 var noiseToggle = false;
-var toneToggle = false;    
+var toneToggle = false;
 
-exports.audioinit = function audioinit() {
-  console.log('audio init');
-  oscillator = context.createOscillator(),
-    oscillator.type = 1;
-  gainNode = context.createGainNode(); 
-  gainNode.connect(context.destination); 
-  gainNode.gain.value = 0.001; 
-  oscillator.frequency.value = 30;
-  noise = new Whitenoise(context);
-}
-
-function tone() {
-  oscillator.connect(gainNode);
-}
+var Whitenoise = function (context) {
+  var data0, data1, i;
+  this.context = context;
+  this.node = context.createJavaScriptNode(1024, 1, 2);
+  this.node.onaudioprocess = this.process;
+  this.prototype.process = function (e) {
+    data0 = e.outputBuffer.getChannelData(0);
+    data1 = e.outputBuffer.getChannelData(1);
+    for (i = 0; i < data0.length; i += 1) {
+      data0[i] = ((Math.random() * 2) - 1);
+      data1[i] = data0[i];
+    }
+  };
+  this.prototype.connect = function (node) {
+    this.node.connect(node);
+  };
+};
 
 function changeGain(element) {
   gainNode.gain.value = element.value;
@@ -36458,32 +36466,23 @@ function changeOscType(element) {
 
 function changeFreq(element) {
   oscillator.frequency.value = element.value;
-  document.getElementById("freq").innerHTML = element.value;
+  //document.getElementById("freq").innerHTML = element.value;
 }
 
 function whitenoise() {
   noise.connect(gainNode);
 }
 
-var Whitenoise = function(context) {
-  this.context = context;
-  this.node = context.createJavaScriptNode(1024, 1, 2);
-  this.node.onaudioprocess = this.process;
-}
-
-Whitenoise.prototype.process = function(e) {
-  var data0 = e.outputBuffer.getChannelData(0);
-  var data1 = e.outputBuffer.getChannelData(1);
-  for (var i = 0; i < data0.length; i++) {
-    data0[i] = ((Math.random() * 2) - 1);
-    data1[i] = data0[i];
-  }
+exports.audioinit = function audioinit() {
+  console.log('audio init');
+  oscillator = context.createOscillator();
+  oscillator.type = 1;
+  gainNode = context.createGainNode();
+  gainNode.connect(context.destination);
+  gainNode.gain.value = 0.001;
+  oscillator.frequency.value = 30;
+  noise = new Whitenoise(context);
 };
-
-Whitenoise.prototype.connect = function(node) {
-  this.node.connect(node);
-};
-
 
 });
 require("/scripts/sound.js");
