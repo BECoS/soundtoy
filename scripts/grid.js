@@ -17,7 +17,7 @@ function figureOutAnimationCall() {
 
 function initAudio() {
   try {
-    sound.audioinit();
+    //sound.audioinit();
   } catch (e) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
   }
@@ -74,7 +74,7 @@ function launch() {
       // });
   //    });
   var browserString = navigator.vendor;
-  if (!browserString.match(/\[gG\]oogle|\[aA\]pple\]/g)) {
+  if (!browserString.match(/[gG]oogle|[aA]pple/g)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
     return;
   }

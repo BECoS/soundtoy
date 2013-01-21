@@ -36319,7 +36319,7 @@ function figureOutAnimationCall() {
 
 function initAudio() {
   try {
-    sound.audioinit();
+    //sound.audioinit();
   } catch (e) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
   }
@@ -36376,7 +36376,7 @@ function launch() {
       // });
   //    });
   var browserString = navigator.vendor;
-  if (!browserString.match(/\[gG\]oogle|\[aA\]pple\]/g)) {
+  if (!browserString.match(/[gG]oogle|[aA]pple/g)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
     return;
   }
@@ -36427,6 +36427,17 @@ require.define("/scripts/gridModel.js",function(require,module,exports,__dirname
 
 });
 require("/scripts/gridModel.js");
+
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){"use strict";
+
+var BPM = 120;
+var getBPM = function () { return BPM; };
+var setBPM = function (newBPM) { BPM = newBPM; };
+exports.getBPM = getBPM;
+exports.setBPM = setBPM;
+
+});
+require("/scripts/metronome.js");
 
 require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){/*global window*/
 "use strict";
@@ -36486,4 +36497,11 @@ exports.audioinit = function audioinit() {
 
 });
 require("/scripts/sound.js");
+
+require.define("/scripts/soundModel.js",function(require,module,exports,__dirname,__filename,process,global){"use strict";
+
+var channels = [];
+
+});
+require("/scripts/soundModel.js");
 })();
