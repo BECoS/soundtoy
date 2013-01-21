@@ -14,7 +14,7 @@
                     "jquery" : "*",
                     "browserify" : "*",
                     "jasmine-node" : "*",
-                    "jslint" : "*"
+                    "jslint" : "*",
                     "node-static" : "*"
                   },
   "devDependencies": { },
