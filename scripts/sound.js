@@ -5,31 +5,38 @@ var noise;
 var noiseToggle = false;
 var toneToggle = false;    
 
-function audioinit() {
+exports.audioinit = function audioinit() {
+  console.log('audio init');
   oscillator = context.createOscillator(),
-             oscillator.type = 1;
+    oscillator.type = 1;
   gainNode = context.createGainNode(); 
   gainNode.connect(context.destination); 
   gainNode.gain.value = 0.001; 
   oscillator.frequency.value = 30;
   noise = new Whitenoise(context);
 }
+
 function tone() {
   oscillator.connect(gainNode);
 }
+
 function changeGain(element) {
   gainNode.gain.value = element.value;
 }
+
 function changeOscType(element) {
   oscillator.type = element.value;
 }
+
 function changeFreq(element) {
   oscillator.frequency.value = element.value;
   document.getElementById("freq").innerHTML = element.value;
 }
+
 function whitenoise() {
   noise.connect(gainNode);
 }
+
 var Whitenoise = function(context) {
   this.context = context;
   this.node = context.createJavaScriptNode(1024, 1, 2);
@@ -48,3 +55,4 @@ Whitenoise.prototype.process = function(e) {
 Whitenoise.prototype.connect = function(node) {
   this.node.connect(node);
 };
+

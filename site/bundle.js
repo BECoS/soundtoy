@@ -36242,7 +36242,69 @@ if (typeof exports !== 'undefined') {
 
 });
 
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new webkitAudioContext();
+var gainNode;
+var oscillator;
+var noise;
+var noiseToggle = false;
+var toneToggle = false;    
+
+exports.audioinit = function audioinit() {
+  console.log('audio init');
+  oscillator = context.createOscillator(),
+    oscillator.type = 1;
+  gainNode = context.createGainNode(); 
+  gainNode.connect(context.destination); 
+  gainNode.gain.value = 0.001; 
+  oscillator.frequency.value = 30;
+  noise = new Whitenoise(context);
+}
+
+function tone() {
+  oscillator.connect(gainNode);
+}
+
+function changeGain(element) {
+  gainNode.gain.value = element.value;
+}
+
+function changeOscType(element) {
+  oscillator.type = element.value;
+}
+
+function changeFreq(element) {
+  oscillator.frequency.value = element.value;
+  document.getElementById("freq").innerHTML = element.value;
+}
+
+function whitenoise() {
+  noise.connect(gainNode);
+}
+
+var Whitenoise = function(context) {
+  this.context = context;
+  this.node = context.createJavaScriptNode(1024, 1, 2);
+  this.node.onaudioprocess = this.process;
+}
+
+Whitenoise.prototype.process = function(e) {
+  var data0 = e.outputBuffer.getChannelData(0);
+  var data1 = e.outputBuffer.getChannelData(1);
+  for (var i = 0; i < data0.length; i++) {
+    data0[i] = ((Math.random() * 2) - 1);
+    data1[i] = data0[i];
+  }
+};
+
+Whitenoise.prototype.connect = function(node) {
+  this.node.connect(node);
+};
+
+
+});
+
 require.define("/scripts/grid.js",function(require,module,exports,__dirname,__filename,process,global){var three = require('three');
+var sound = require('./sound.js');
 
 var camera, scene, renderer, projector;
 var geometry, material, mesh, mesh2;
@@ -36310,14 +36372,11 @@ function onDocumentMouseDown(event) {
 }
 
 function initAudio() {
-  window.addEventListener('load', init, false);
-  function init() {
-    try {
-      //audioinit();
-    }
-    catch(e) {
-      alert('Web Audio API is not supported in this browser. Use Chrome.');
-    }
+  try {
+    sound.audioinit();
+  }
+  catch(e) {
+    alert("This won't work unless you use a recent version of Chrome or Safari.");
   }
 }
 
@@ -36349,7 +36408,7 @@ function initGraphics() {
 }
 
 function animate() {
-  requestAnimationFrame( animate );
+  window.requestAnimationFrame( animate );
   for (note in notes) {
     if (note.active) {
       note.rotation.x += 0.01;
@@ -36374,31 +36433,38 @@ var noise;
 var noiseToggle = false;
 var toneToggle = false;    
 
-function audioinit() {
+exports.audioinit = function audioinit() {
+  console.log('audio init');
   oscillator = context.createOscillator(),
-             oscillator.type = 1;
+    oscillator.type = 1;
   gainNode = context.createGainNode(); 
   gainNode.connect(context.destination); 
   gainNode.gain.value = 0.001; 
   oscillator.frequency.value = 30;
   noise = new Whitenoise(context);
 }
+
 function tone() {
   oscillator.connect(gainNode);
 }
+
 function changeGain(element) {
   gainNode.gain.value = element.value;
 }
+
 function changeOscType(element) {
   oscillator.type = element.value;
 }
+
 function changeFreq(element) {
   oscillator.frequency.value = element.value;
   document.getElementById("freq").innerHTML = element.value;
 }
+
 function whitenoise() {
   noise.connect(gainNode);
 }
+
 var Whitenoise = function(context) {
   this.context = context;
   this.node = context.createJavaScriptNode(1024, 1, 2);
@@ -36417,6 +36483,7 @@ Whitenoise.prototype.process = function(e) {
 Whitenoise.prototype.connect = function(node) {
   this.node.connect(node);
 };
+
 
 });
 require("/scripts/sound.js");

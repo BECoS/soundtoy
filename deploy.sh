@@ -1,7 +1,7 @@
 #! /bin/bash
 
-scripts=scripts/*
-tests=tests/*
+scripts=scripts/*.js
+tests=tests/*.js
 bundle=bundle.js
 site=site/
 
@@ -11,6 +11,7 @@ boldgreen=${bold}$(tput setaf 2)
 boldyellow=${bold}$(tput setaf 3)
 reset=$(tput sgr0)
 
+rm -f $site/$bundle
 ./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle 
 ./node_modules/jslint/bin/jslint.js $scripts
 if [[ $? -ne 0 ]]; then

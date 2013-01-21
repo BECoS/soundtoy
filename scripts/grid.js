@@ -1,4 +1,5 @@
 var three = require('three');
+var sound = require('./sound.js');
 
 var camera, scene, renderer, projector;
 var geometry, material, mesh, mesh2;
@@ -66,14 +67,11 @@ function onDocumentMouseDown(event) {
 }
 
 function initAudio() {
-  window.addEventListener('load', init, false);
-  function init() {
-    try {
-      //audioinit();
-    }
-    catch(e) {
-      alert('Web Audio API is not supported in this browser. Use Chrome.');
-    }
+  try {
+    sound.audioinit();
+  }
+  catch(e) {
+    alert("This won't work unless you use a recent version of Chrome or Safari.");
   }
 }
 
@@ -105,7 +103,7 @@ function initGraphics() {
 }
 
 function animate() {
-  requestAnimationFrame( animate );
+  window.requestAnimationFrame( animate );
   for (note in notes) {
     if (note.active) {
       note.rotation.x += 0.01;
