@@ -1,5 +1,4 @@
 /*globals document, navigator, window*/
-"use strict";
 
 var three = require('three');
 var sound = require('./sound.js');

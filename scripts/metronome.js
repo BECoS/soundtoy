@@ -1,5 +1,3 @@
-"use strict";
-
 var BPM = 120;
 var getBPM = function () { return BPM; };
 var setBPM = function (newBPM) { BPM = newBPM; };

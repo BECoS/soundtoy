@@ -13,8 +13,8 @@
   "dependencies": { "three" : "*", 
                     "jquery" : "*",
                     "browserify" : "*",
+                    "jshint" : "*",
                     "jasmine-node" : "*",
-                    "jslint" : "*",
                     "node-static" : "*"
                   },
   "devDependencies": { },

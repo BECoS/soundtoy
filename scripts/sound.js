@@ -1,6 +1,3 @@
-/*global window*/
-"use strict";
-
 var context = new window.webkitAudioContext();
 var gainNode;
 var oscillator;

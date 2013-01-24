@@ -36242,10 +36242,7 @@ if (typeof exports !== 'undefined') {
 
 });
 
-require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){/*global window*/
-"use strict";
-
-var context = new window.webkitAudioContext();
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new window.webkitAudioContext();
 var gainNode;
 var oscillator;
 var noise;
@@ -36301,7 +36298,6 @@ exports.audioinit = function audioinit() {
 });
 
 require.define("/scripts/grid.js",function(require,module,exports,__dirname,__filename,process,global){/*globals document, navigator, window*/
-"use strict";
 
 var three = require('three');
 var sound = require('./sound.js');
@@ -36423,14 +36419,12 @@ document.addEventListener("mousedown", onDocumentMouseDown, false);
 });
 require("/scripts/grid.js");
 
-require.define("/scripts/gridModel.js",function(require,module,exports,__dirname,__filename,process,global){
+require.define("/scripts/gridModel.js",function(require,module,exports,__dirname,__filename,process,global){/**/
 
 });
 require("/scripts/gridModel.js");
 
-require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){"use strict";
-
-var BPM = 120;
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
 var getBPM = function () { return BPM; };
 var setBPM = function (newBPM) { BPM = newBPM; };
 exports.getBPM = getBPM;
@@ -36439,10 +36433,7 @@ exports.setBPM = setBPM;
 });
 require("/scripts/metronome.js");
 
-require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){/*global window*/
-"use strict";
-
-var context = new window.webkitAudioContext();
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new window.webkitAudioContext();
 var gainNode;
 var oscillator;
 var noise;
@@ -36498,9 +36489,7 @@ exports.audioinit = function audioinit() {
 });
 require("/scripts/sound.js");
 
-require.define("/scripts/soundModel.js",function(require,module,exports,__dirname,__filename,process,global){"use strict";
-
-var channels = [];
+require.define("/scripts/soundModel.js",function(require,module,exports,__dirname,__filename,process,global){var channels = [];
 
 });
 require("/scripts/soundModel.js");
