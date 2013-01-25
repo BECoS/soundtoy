@@ -49,4 +49,5 @@ exports.audioinit = function audioinit() {
   gainNode.gain.value = 0.001;
   oscillator.frequency.value = 30;
   noise = new Whitenoise(context);
+  return 1;
 };
