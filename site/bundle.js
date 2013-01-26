@@ -36298,10 +36298,68 @@ exports.audioinit = function audioinit() {
 
 });
 
+require.define("/scripts/gridModel.js",function(require,module,exports,__dirname,__filename,process,global){/**/
+var metro = require('./metronome.js');
+var width = 8;
+var height = 8;
+var beat = 0;
+
+var getActiveColumn = function () {
+  return (metro.getBeat() % 8);  
+};
+
+exports.getActiveColumn = getActiveColumn;
+
+});
+
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
+var beat = 0;
+var beats = {};
+var getBPM = function() { return BPM; };
+var setBPM = function(newBPM) { BPM = newBPM; };
+var register = function(beatInterval, callback) {
+  beats[beatInterval] = callback; 
+};
+var isRegistered = function(callback) {
+  var keys = Object.keys(beats);
+  for (var key = 0; key < keys.length; key++) {
+    console.log(keys[key]);
+    if (beats[keys[key]] == callback) {
+      return true;
+    }
+  }
+  return false;
+};
+
+var advance = function() {
+  var keys = Object.keys(beats);
+  for (var key = 0; key < keys.length; key++) {
+    beats[keys[key]]();
+  }
+};
+var advanceBeat = function () {
+  return ++beat;
+};
+var getBeat = function () { return beat; };
+var saySomething = function() { console.log("something"); };
+
+window.setInterval(advanceBeat, 500);
+//var worker = new Worker('worker.js');
+//window.worker = worker;
+//window.worker.postMessage(saySomething);
+exports.getBeat = getBeat;
+exports.setBPM = setBPM;
+exports.getBPM = getBPM;
+exports.isRegistered = isRegistered;
+exports.register = register;
+
+});
+
 require.define("/scripts/grid.js",function(require,module,exports,__dirname,__filename,process,global){/*globals document, navigator, window*/
 
 var three = require('three');
 var sound = require('./sound.js');
+var model = require('../gridModel.js');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
 var geometry, material, mesh, mesh2;
@@ -36323,12 +36381,18 @@ function initAudio() {
 }
 
 function animate() {
-  var note;
   window.requestAnimationFrame(animate);
-  for (note in notes) {
-    if (notes.hasOwnProperty('note') && note.active) {
-      note.rotation.x += 0.01;
-      note.rotation.y += 0.02;
+  var column = model.getActiveColumn();
+  for (var i = 0; i < 64; i++) {
+    if (notes[i] !== undefined) {
+      if (i % 8 == column) {
+        notes[i].rotation.x += 0.1;
+        notes[i].rotation.y += 0.2;
+      }
+      else {
+        notes[i].rotation.x = 0;  
+        notes[i].rotation.y = 0;  
+      }
     }
   }
   renderer.render(scene, camera);
@@ -36358,6 +36422,7 @@ function initGraphics() {
     notes.push(note);
     scene.add(note);
   }
+  //notes[1].active = true;
   renderer = new three.THREE.CanvasRenderer();
   grid = document.getElementById('grid');
   renderer.setSize(
@@ -36379,7 +36444,7 @@ function launch() {
       // });
   //    });
   var browserString = navigator.vendor;
-  if (!browserString.match(/[gG]oogle|[aA]pple/g)) {
+  if (!browserString.match(/google|apple/i)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
     return;
   }
@@ -36417,7 +36482,7 @@ function onDocumentMouseDown(event) {
   //console.log("Worldspace is (" + raycaster.tX + ", " + event.clientY + ")");
   scene.add(particle);
   if (intersects.length > 0) {
-    intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+    intersects[0].object.material.color.setHex(0x000f00);
   }
 }
 
@@ -36454,15 +36519,60 @@ document.addEventListener("keydown", onDocumentKeyDown, false);
 require("/scripts/grid.js");
 
 require.define("/scripts/gridModel.js",function(require,module,exports,__dirname,__filename,process,global){/**/
+var metro = require('./metronome.js');
+var width = 8;
+var height = 8;
+var beat = 0;
+
+var getActiveColumn = function () {
+  return (metro.getBeat() % 8);  
+};
+
+exports.getActiveColumn = getActiveColumn;
 
 });
 require("/scripts/gridModel.js");
 
 require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
-var getBPM = function () { return BPM; };
-var setBPM = function (newBPM) { BPM = newBPM; };
-exports.getBPM = getBPM;
+var beat = 0;
+var beats = {};
+var getBPM = function() { return BPM; };
+var setBPM = function(newBPM) { BPM = newBPM; };
+var register = function(beatInterval, callback) {
+  beats[beatInterval] = callback; 
+};
+var isRegistered = function(callback) {
+  var keys = Object.keys(beats);
+  for (var key = 0; key < keys.length; key++) {
+    console.log(keys[key]);
+    if (beats[keys[key]] == callback) {
+      return true;
+    }
+  }
+  return false;
+};
+
+var advance = function() {
+  var keys = Object.keys(beats);
+  for (var key = 0; key < keys.length; key++) {
+    beats[keys[key]]();
+  }
+};
+var advanceBeat = function () {
+  return ++beat;
+};
+var getBeat = function () { return beat; };
+var saySomething = function() { console.log("something"); };
+
+window.setInterval(advanceBeat, 500);
+//var worker = new Worker('worker.js');
+//window.worker = worker;
+//window.worker.postMessage(saySomething);
+exports.getBeat = getBeat;
 exports.setBPM = setBPM;
+exports.getBPM = getBPM;
+exports.isRegistered = isRegistered;
+exports.register = register;
 
 });
 require("/scripts/metronome.js");
@@ -36528,4 +36638,18 @@ require.define("/scripts/soundModel.js",function(require,module,exports,__dirnam
 
 });
 require("/scripts/soundModel.js");
+
+require.define("/scripts/worker.js",function(require,module,exports,__dirname,__filename,process,global){self.isActive = 0;
+
+self.onclose = function() {
+};
+
+self.onmessage = function(event) {
+  //self.func = event.data;
+};
+
+setInterval(self.func, 500);
+
+});
+require("/scripts/worker.js");
 })();

@@ -2,6 +2,7 @@
 
 var three = require('three');
 var sound = require('./sound.js');
+var model = require('../gridModel.js');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
 var geometry, material, mesh, mesh2;
@@ -23,12 +24,18 @@ function initAudio() {
 }
 
 function animate() {
-  var note;
   window.requestAnimationFrame(animate);
-  for (note in notes) {
-    if (notes.hasOwnProperty('note') && note.active) {
-      note.rotation.x += 0.01;
-      note.rotation.y += 0.02;
+  var column = model.getActiveColumn();
+  for (var i = 0; i < 64; i++) {
+    if (notes[i] !== undefined) {
+      if (i % 8 == column) {
+        notes[i].rotation.x += 0.1;
+        notes[i].rotation.y += 0.2;
+      }
+      else {
+        notes[i].rotation.x = 0;  
+        notes[i].rotation.y = 0;  
+      }
     }
   }
   renderer.render(scene, camera);
@@ -58,6 +65,7 @@ function initGraphics() {
     notes.push(note);
     scene.add(note);
   }
+  //notes[1].active = true;
   renderer = new three.THREE.CanvasRenderer();
   grid = document.getElementById('grid');
   renderer.setSize(
@@ -79,7 +87,7 @@ function launch() {
       // });
   //    });
   var browserString = navigator.vendor;
-  if (!browserString.match(/[gG]oogle|[aA]pple/g)) {
+  if (!browserString.match(/google|apple/i)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
     return;
   }
@@ -117,7 +125,7 @@ function onDocumentMouseDown(event) {
   //console.log("Worldspace is (" + raycaster.tX + ", " + event.clientY + ")");
   scene.add(particle);
   if (intersects.length > 0) {
-    intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
+    intersects[0].object.material.color.setHex(0x000f00);
   }
 }
 

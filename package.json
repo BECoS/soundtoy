@@ -13,11 +13,12 @@
   "dependencies": { "three" : "*", 
                     "jquery" : "*",
                     "browserify" : "*",
-                    "jshint" : "*",
-                    "jasmine-node" : "*",
                     "node-static" : "*"
                   },
-  "devDependencies": { },
+  "devDependencies": { "jshint" : "*",
+                       "jasmine-node" : "*",
+                       "phantom-jasmine" : "*"
+                     },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
