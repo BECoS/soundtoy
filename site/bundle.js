@@ -36247,18 +36247,20 @@ var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
 		440, 493.883];
 var oscillator;
+
 function play() {
+	oscillator.connect(context.destination);
 	oscillator.noteOn(0);
+}
+
+function stop() {
+  oscillator.disconnect();
 }
 
 function freqUp() {
 	oscillator.frequency.value = freqValues[x++ % freqValues.length];
 }
 
-function stop() {
-  console.log("note off");
-  oscillator.noteOff(0);
-}
 
 function getFreq(x) {
   try {
@@ -36301,7 +36303,7 @@ require.define("/scripts/metronome.js",function(require,module,exports,__dirname
 var BPM = 120;
 var beat = 0;
 var beats = {};
-var playing;
+var playing = false;
 
 var timerID;
 
@@ -36313,17 +36315,17 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
- // sound.play();
+  sound.play();
 };
 
 var isPlaying = function() {
-  return playing;
+  return playing ;
 };
 
 var stop = function() {
   playing = false;
   advanceBeat();
-//  sound.stop();
+  sound.stop();
   clearInterval(timerID);
 };
 
@@ -57706,7 +57708,7 @@ require.define("/scripts/metronome.js",function(require,module,exports,__dirname
 var BPM = 120;
 var beat = 0;
 var beats = {};
-var playing;
+var playing = false;
 
 var timerID;
 
@@ -57718,17 +57720,17 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
- // sound.play();
+  sound.play();
 };
 
 var isPlaying = function() {
-  return playing;
+  return playing ;
 };
 
 var stop = function() {
   playing = false;
   advanceBeat();
-//  sound.stop();
+  sound.stop();
   clearInterval(timerID);
 };
 
@@ -57796,12 +57798,10 @@ $(function() {
     .click(function( event ) {
       event.preventDefault();
       if (metro.isPlaying()) {
-        $('#play').html('&#9616;&#9616;&nbsp;');
-        metro.stop();
-        sound.stop();
-      } else {
         $('#play').html('&#9654;');
-        sound.play();
+        metro.stop();
+      } else {
+        $('#play').html('&#9616;&#9616;&nbsp;');
         metro.play();
       }
     });
@@ -57825,7 +57825,7 @@ $(function() {
   bpmSelect.html(metro.getBPM());
   bpmSelect.css('color', '#FFFFFF');
   bpmSelect.click(function() { 
-    bpmSelect.html(metro.setBPM(metro.getBPM() + 10)); 
+    bpmSelect.html(metro.setBPM(metro.getBPM() + 5)); 
   });
   
   //$("#bpm").val($("#slider").slider("value") );
@@ -57840,18 +57840,20 @@ var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
 		440, 493.883];
 var oscillator;
+
 function play() {
+	oscillator.connect(context.destination);
 	oscillator.noteOn(0);
+}
+
+function stop() {
+  oscillator.disconnect();
 }
 
 function freqUp() {
 	oscillator.frequency.value = freqValues[x++ % freqValues.length];
 }
 
-function stop() {
-  console.log("note off");
-  oscillator.noteOff(0);
-}
 
 function getFreq(x) {
   try {
@@ -57881,4 +57883,18 @@ require.define("/scripts/soundModel.js",function(require,module,exports,__dirnam
 
 });
 require("/scripts/soundModel.js");
+
+require.define("/scripts/worker.js",function(require,module,exports,__dirname,__filename,process,global){self.isActive = 0;
+
+self.onclose = function() {
+};
+
+self.onmessage = function(event) {
+  //self.func = event.data;
+};
+
+setInterval(self.func, 500);
+
+});
+require("/scripts/worker.js");
 })();

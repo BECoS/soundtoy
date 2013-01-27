@@ -2,7 +2,7 @@ var sound = require('./sound.js');
 var BPM = 120;
 var beat = 0;
 var beats = {};
-var playing;
+var playing = false;
 
 var timerID;
 
@@ -14,17 +14,17 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
- // sound.play();
+  sound.play();
 };
 
 var isPlaying = function() {
-  return playing;
+  return playing ;
 };
 
 var stop = function() {
   playing = false;
   advanceBeat();
-//  sound.stop();
+  sound.stop();
   clearInterval(timerID);
 };
 

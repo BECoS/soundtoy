@@ -12,12 +12,10 @@ $(function() {
     .click(function( event ) {
       event.preventDefault();
       if (metro.isPlaying()) {
-        $('#play').html('&#9616;&#9616;&nbsp;');
-        metro.stop();
-        sound.stop();
-      } else {
         $('#play').html('&#9654;');
-        sound.play();
+        metro.stop();
+      } else {
+        $('#play').html('&#9616;&#9616;&nbsp;');
         metro.play();
       }
     });
@@ -41,7 +39,7 @@ $(function() {
   bpmSelect.html(metro.getBPM());
   bpmSelect.css('color', '#FFFFFF');
   bpmSelect.click(function() { 
-    bpmSelect.html(metro.setBPM(metro.getBPM() + 10)); 
+    bpmSelect.html(metro.setBPM(metro.getBPM() + 5)); 
   });
   
   //$("#bpm").val($("#slider").slider("value") );
