@@ -12,6 +12,7 @@
   },
   "dependencies": { "three" : "*", 
                     "jquery-browserify" : "*",
+                    "jqueryuify" : "*",
                     "browserify" : "*",
                     "node-static" : "*"
                   },
