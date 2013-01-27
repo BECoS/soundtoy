@@ -12,12 +12,10 @@ $(function() {
     .click(function( event ) {
       event.preventDefault();
       if (metro.isPlaying()) {
-        $('#play').html('&#9616;&#9616;&nbsp;');
-        metro.stop();
-        sound.stop();
-      } else {
         $('#play').html('&#9654;');
-        sound.play();
+        metro.stop();
+      } else {
+        $('#play').html('&#9616;&#9616;&nbsp;');
         metro.play();
       }
     });
