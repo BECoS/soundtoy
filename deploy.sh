@@ -23,8 +23,6 @@ function prepareTestPage {
 }
 
 rm -f $site/$bundle
-rm -f $site/$worker
-cp scripts/worker.js $site/
 
 echo -e "\n${yellow}Running tests${reset}"
 ./node_modules/jasmine-node/bin/jasmine-node $tests

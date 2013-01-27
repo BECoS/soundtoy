@@ -26,6 +26,10 @@ function initAudio() {
   }
 }
 
+function setNote(noteIndex) {
+  //sound.osc.setFreq(Math.floor(noteIndex / 8)); 
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   if (metro.isPlaying()) {
@@ -35,6 +39,13 @@ function animate() {
         if (i % 8 == column) {
           notes[i].rotation.x += 0.1;
           notes[i].rotation.y += 0.2;
+          if (notes[i].active) {
+            setNote(i);
+          }
+          //if (column === 0) { sound.osc.play(); }
+          //else { 
+          //  sound.osc.stop(); 
+          //}
         }
         else {
           notes[i].rotation.x = 0;  
@@ -69,6 +80,7 @@ function initGraphics() {
         new three.THREE.MeshLambertMaterial({color: cubeInactiveColor}));
     note.position.x = 16 * (i % 8);
     note.position.y = 16 * Math.floor(i / 8);
+    note.active = false;
     notes.push(note);
     scene.add(note);
   }

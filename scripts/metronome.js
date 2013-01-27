@@ -1,4 +1,3 @@
-var sound = require('./sound.js');
 var BPM = 120;
 var beat = 0;
 var beats = {};
@@ -14,7 +13,6 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
-  sound.play();
 };
 
 var isPlaying = function() {
@@ -24,7 +22,6 @@ var isPlaying = function() {
 var stop = function() {
   playing = false;
   advanceBeat();
-  sound.stop();
   clearInterval(timerID);
 };
 
