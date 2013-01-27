@@ -36260,6 +36260,17 @@ function stop() {
   oscillator.noteOff(0);
 }
 
+function getFreq(x) {
+  try {
+    oscillator.frequency.value = freqValues[x];
+  }
+  catch (IndexOutOfRangeException) {
+    oscillator.freqquency.value = freqValues[0];
+  }
+  oscillator.noteOn(0);
+  setTimeout(stop, 1000);
+}
+
 exports.audioinit = function () {
 	context = new webkitAudioContext();
 	oscillator = context.createOscillator();
@@ -36268,6 +36279,7 @@ exports.audioinit = function () {
 
 exports.play = play;
 exports.stop = stop;
+exports.getFreq = getFreq;
 
 });
 
@@ -57841,6 +57853,17 @@ function stop() {
   oscillator.noteOff(0);
 }
 
+function getFreq(x) {
+  try {
+    oscillator.frequency.value = freqValues[x];
+  }
+  catch (IndexOutOfRangeException) {
+    oscillator.freqquency.value = freqValues[0];
+  }
+  oscillator.noteOn(0);
+  setTimeout(stop, 1000);
+}
+
 exports.audioinit = function () {
 	context = new webkitAudioContext();
 	oscillator = context.createOscillator();
@@ -57849,6 +57872,7 @@ exports.audioinit = function () {
 
 exports.play = play;
 exports.stop = stop;
+exports.getFreq = getFreq;
 
 });
 require("/scripts/sound.js");
