@@ -1,13 +1,16 @@
-/*globals document, navigator, window*/
-
 var three = require('three');
 var sound = require('./sound.js');
-var model = require('../gridModel.js');
+var model = require('./gridModel.js');
+var metro = require('./metronome.js'); 
+var $ = require('jquery-browserify');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
 var geometry, material, mesh, mesh2;
 var notes, seqs;
 var audioContext;
+
+var cubeActiveColor = 0x000f00;
+var cubeInactiveColor = 0x0000F0;
 
 function figureOutAnimationCall() {
   var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
@@ -25,18 +28,27 @@ function initAudio() {
 
 function animate() {
   window.requestAnimationFrame(animate);
-  var column = model.getActiveColumn();
-  for (var i = 0; i < 64; i++) {
-    if (notes[i] !== undefined) {
-      if (i % 8 == column) {
-        notes[i].rotation.x += 0.1;
-        notes[i].rotation.y += 0.2;
-      }
-      else {
-        notes[i].rotation.x = 0;  
-        notes[i].rotation.y = 0;  
+  if (metro.isPlaying()) {
+    var column = model.getActiveColumn();
+    for (var i = 0; i < 64; i++) {
+      if (notes[i] !== undefined) {
+        if (i % 8 == column) {
+          notes[i].rotation.x += 0.1;
+          notes[i].rotation.y += 0.2;
+        }
+        else {
+          notes[i].rotation.x = 0;  
+          notes[i].rotation.y = 0;  
+        }
       }
     }
+  } else {
+    for (var j = 0; j < 64; j++) {
+      if (notes[j] !== undefined) {
+        notes[j].rotation.x += 0;
+        notes[j].rotation.y += 0;
+      }
+    } 
   }
   renderer.render(scene, camera);
 }
@@ -44,11 +56,6 @@ function animate() {
 function initGraphics() {
   var i, note, grid;
   camera = new three.THREE.PerspectiveCamera(75, 1, 1, 10000);
-  //camera = new three.THREE.OrthographicCamera(0, 100, 0, 100);
-  //camera = new three.THREE.PerspectiveCamera(75, canvasWidth / canvasHeight, 1, 10000);
-  //camera.position.set(0, 300, 500);
-  //camera.position.set(0, 0, 0);
-  //camera.position.set(100, 60, 50);
   camera.position.z = 100;
   camera.position.x = 60;
   camera.position.y = 50;
@@ -59,13 +66,12 @@ function initGraphics() {
   notes = [];
   for (i = 0; i < 64; i++) {
     note = new three.THREE.Mesh(geometry,
-        new three.THREE.MeshLambertMaterial({color: 0x0000F0}));
+        new three.THREE.MeshLambertMaterial({color: cubeInactiveColor}));
     note.position.x = 16 * (i % 8);
     note.position.y = 16 * Math.floor(i / 8);
     notes.push(note);
     scene.add(note);
   }
-  //notes[1].active = true;
   renderer = new three.THREE.CanvasRenderer();
   grid = document.getElementById('grid');
   renderer.setSize(
@@ -77,15 +83,6 @@ function initGraphics() {
 }
 
 function launch() {
-  //jQuery(document).ready(function(){
-  //    $(document).mousemove(function(e) {
-  //      $('#pos').html("Mouse: " + e.pageX +', '+ e.pageY + "<br/>Camera: " 
-  //        + camera.position.x + ", " + camera.position.y);
-  //      }); 
-      // $(document).click(function(e) {
-      //   catchClick(e.pageX, e.pageY);   
-      // });
-  //    });
   var browserString = navigator.vendor;
   if (!browserString.match(/google|apple/i)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
@@ -97,7 +94,7 @@ function launch() {
   animate();
 }
 
-function onDocumentMouseDown(event) {
+function mouseDown(event) {
   event.preventDefault();
   var x = event.clientX  - canvasWidth / 2;
   var y = event.clientY - canvasHeight / 2;
@@ -119,19 +116,21 @@ function onDocumentMouseDown(event) {
       context.fill();
     }
   });
-  var particle = new three.THREE.Particle(particleMaterial);
-  particle.position = new three.THREE.Vector2(event.clientX, event.clientY);
-  console.log("Clientspace is (" + event.clientX + ", " + event.clientY + ")");
-  //console.log("Worldspace is (" + raycaster.tX + ", " + event.clientY + ")");
-  scene.add(particle);
   if (intersects.length > 0) {
-    intersects[0].object.material.color.setHex(0x000f00);
+    var cube = intersects[0].object;
+    cube.active = !cube.active;
+    if (cube.active) { 
+      cube.material.color.setHex(cubeActiveColor);
+      cube.material.wireframe = true;
+    } else {
+      cube.material.color.setHex(cubeInactiveColor);
+      cube.material.wireframe = false;
+    }
   }
 }
 
 function onDocumentKeyDown(event) {
   var keychar = event.which;
-  console.log("Key: " + keychar);
   switch (keychar) {
     case 38: 
       camera.position.y -= 10;
@@ -155,5 +154,6 @@ function onDocumentKeyDown(event) {
 }
 
 document.addEventListener("DOMContentLoaded", launch, false);
-document.addEventListener("mousedown", onDocumentMouseDown, false);
+//document.addEventListener("mousedown", onDocumentMouseDown, false);
 document.addEventListener("keydown", onDocumentKeyDown, false);
+$('#grid').click(mouseDown);

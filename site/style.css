@@ -15,7 +15,7 @@ body {
   height: 800px;
 }
 
-#cockpit {
+#panel {
   position: fixed;
   right: auto;
   left: 800px;

@@ -1,8 +1,42 @@
 var BPM = 120;
 var beat = 0;
 var beats = {};
+var playing = false;
+
+var timerID;
+
 var getBPM = function() { return BPM; };
-var setBPM = function(newBPM) { BPM = newBPM; };
+var getMSPB = function() {
+  return 1000 * (1 / (BPM / 60));
+};
+
+var play = function() {
+  playing = true;
+  setBPM(getBPM());
+};
+
+var stop = function() {
+  playing = false;
+};
+
+var isPlaying = function() {
+  return playing;
+};
+
+var stop = function() {
+  playing = false;
+  advanceBeat();
+  clearInterval(timerID);
+};
+
+var setBPM = function(newBPM) { 
+  BPM = newBPM;
+  if (playing) {
+    timerID = window.setInterval(advanceBeat, getMSPB());
+  }
+  return BPM;
+};
+
 var register = function(beatInterval, callback) {
   beats[beatInterval] = callback; 
 };
@@ -29,12 +63,15 @@ var advanceBeat = function () {
 var getBeat = function () { return beat; };
 var saySomething = function() { console.log("something"); };
 
-window.setInterval(advanceBeat, 500);
 //var worker = new Worker('worker.js');
 //window.worker = worker;
 //window.worker.postMessage(saySomething);
 exports.getBeat = getBeat;
 exports.setBPM = setBPM;
 exports.getBPM = getBPM;
+exports.getMSPB = getMSPB;
 exports.isRegistered = isRegistered;
 exports.register = register;
+exports.play = play;
+exports.stop = stop;
+exports.isPlaying = isPlaying;

@@ -11,7 +11,7 @@
     "test": "test.js"
   },
   "dependencies": { "three" : "*", 
-                    "jquery" : "*",
+                    "jquery-browserify" : "*",
                     "browserify" : "*",
                     "node-static" : "*"
                   },
