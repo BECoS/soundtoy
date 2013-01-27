@@ -1,6 +1,7 @@
 var $ = require('jquery-browserify');
 require('jqueryuify');
 var metro = require('./metronome.js');
+var sound = require('./sound.js');
 
 $(function() {
   $('<button id="play">&#9654;</button>').appendTo('#panel');
@@ -11,10 +12,12 @@ $(function() {
     .click(function( event ) {
       event.preventDefault();
       if (metro.isPlaying()) {
-        $('#play').html('&#9654;');
-        metro.stop();
-      } else {
         $('#play').html('&#9616;&#9616;&nbsp;');
+        metro.stop();
+        sound.stop();
+      } else {
+        $('#play').html('&#9654;');
+        sound.play();
         metro.play();
       }
     });

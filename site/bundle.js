@@ -36242,59 +36242,32 @@ if (typeof exports !== 'undefined') {
 
 });
 
-require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new window.webkitAudioContext();
-var gainNode;
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context;
+var x = 0;
+var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
+		440, 493.883];
 var oscillator;
-var noise;
-var noiseToggle = false;
-var toneToggle = false;
+function play() {
+	oscillator.noteOn(0);
+}
 
-var Whitenoise = function (context) {
-  var data0, data1, i;
-  this.context = context;
-  this.node = context.createJavaScriptNode(1024, 1, 2);
-  this.node.onaudioprocess = this.process;
-  this.prototype.process = function (e) {
-    data0 = e.outputBuffer.getChannelData(0);
-    data1 = e.outputBuffer.getChannelData(1);
-    for (i = 0; i < data0.length; i += 1) {
-      data0[i] = ((Math.random() * 2) - 1);
-      data1[i] = data0[i];
-    }
-  };
-  this.prototype.connect = function (node) {
-    this.node.connect(node);
-  };
+function freqUp() {
+	oscillator.frequency.value = freqValues[x++ % freqValues.length];
+}
+
+function stop() {
+  console.log("note off");
+  oscillator.noteOff(0);
+}
+
+exports.audioinit = function () {
+	context = new webkitAudioContext();
+	oscillator = context.createOscillator();
+	oscillator.connect(context.destination);
 };
 
-function changeGain(element) {
-  gainNode.gain.value = element.value;
-}
-
-function changeOscType(element) {
-  oscillator.type = element.value;
-}
-
-function changeFreq(element) {
-  oscillator.frequency.value = element.value;
-  //document.getElementById("freq").innerHTML = element.value;
-}
-
-function whitenoise() {
-  noise.connect(gainNode);
-}
-
-exports.audioinit = function audioinit() {
-  console.log('audio init');
-  oscillator = context.createOscillator();
-  oscillator.type = 1;
-  gainNode = context.createGainNode();
-  gainNode.connect(context.destination);
-  gainNode.gain.value = 0.001;
-  oscillator.frequency.value = 30;
-  noise = new Whitenoise(context);
-  return 1;
-};
+exports.play = play;
+exports.stop = stop;
 
 });
 
@@ -36312,10 +36285,11 @@ exports.getActiveColumn = getActiveColumn;
 
 });
 
-require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var sound = require('./sound.js');
+var BPM = 120;
 var beat = 0;
 var beats = {};
-var playing = false;
+var playing;
 
 var timerID;
 
@@ -36327,10 +36301,7 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
-};
-
-var stop = function() {
-  playing = false;
+ // sound.play();
 };
 
 var isPlaying = function() {
@@ -36340,6 +36311,7 @@ var isPlaying = function() {
 var stop = function() {
   playing = false;
   advanceBeat();
+//  sound.stop();
   clearInterval(timerID);
 };
 
@@ -57562,7 +57534,7 @@ function figureOutAnimationCall() {
 
 function initAudio() {
   try {
-    //sound.audioinit();
+    sound.audioinit();
   } catch (e) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
   }
@@ -57718,10 +57690,11 @@ exports.getActiveColumn = getActiveColumn;
 });
 require("/scripts/gridModel.js");
 
-require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var sound = require('./sound.js');
+var BPM = 120;
 var beat = 0;
 var beats = {};
-var playing = false;
+var playing;
 
 var timerID;
 
@@ -57733,10 +57706,7 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
-};
-
-var stop = function() {
-  playing = false;
+ // sound.play();
 };
 
 var isPlaying = function() {
@@ -57746,6 +57716,7 @@ var isPlaying = function() {
 var stop = function() {
   playing = false;
   advanceBeat();
+//  sound.stop();
   clearInterval(timerID);
 };
 
@@ -57802,6 +57773,7 @@ require("/scripts/metronome.js");
 require.define("/scripts/panel.js",function(require,module,exports,__dirname,__filename,process,global){var $ = require('jquery-browserify');
 require('jqueryuify');
 var metro = require('./metronome.js');
+var sound = require('./sound.js');
 
 $(function() {
   $('<button id="play">&#9654;</button>').appendTo('#panel');
@@ -57812,10 +57784,12 @@ $(function() {
     .click(function( event ) {
       event.preventDefault();
       if (metro.isPlaying()) {
-        $('#play').html('&#9654;');
-        metro.stop();
-      } else {
         $('#play').html('&#9616;&#9616;&nbsp;');
+        metro.stop();
+        sound.stop();
+      } else {
+        $('#play').html('&#9654;');
+        sound.play();
         metro.play();
       }
     });
@@ -57849,59 +57823,32 @@ $(function() {
 });
 require("/scripts/panel.js");
 
-require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context = new window.webkitAudioContext();
-var gainNode;
+require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context;
+var x = 0;
+var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
+		440, 493.883];
 var oscillator;
-var noise;
-var noiseToggle = false;
-var toneToggle = false;
+function play() {
+	oscillator.noteOn(0);
+}
 
-var Whitenoise = function (context) {
-  var data0, data1, i;
-  this.context = context;
-  this.node = context.createJavaScriptNode(1024, 1, 2);
-  this.node.onaudioprocess = this.process;
-  this.prototype.process = function (e) {
-    data0 = e.outputBuffer.getChannelData(0);
-    data1 = e.outputBuffer.getChannelData(1);
-    for (i = 0; i < data0.length; i += 1) {
-      data0[i] = ((Math.random() * 2) - 1);
-      data1[i] = data0[i];
-    }
-  };
-  this.prototype.connect = function (node) {
-    this.node.connect(node);
-  };
+function freqUp() {
+	oscillator.frequency.value = freqValues[x++ % freqValues.length];
+}
+
+function stop() {
+  console.log("note off");
+  oscillator.noteOff(0);
+}
+
+exports.audioinit = function () {
+	context = new webkitAudioContext();
+	oscillator = context.createOscillator();
+	oscillator.connect(context.destination);
 };
 
-function changeGain(element) {
-  gainNode.gain.value = element.value;
-}
-
-function changeOscType(element) {
-  oscillator.type = element.value;
-}
-
-function changeFreq(element) {
-  oscillator.frequency.value = element.value;
-  //document.getElementById("freq").innerHTML = element.value;
-}
-
-function whitenoise() {
-  noise.connect(gainNode);
-}
-
-exports.audioinit = function audioinit() {
-  console.log('audio init');
-  oscillator = context.createOscillator();
-  oscillator.type = 1;
-  gainNode = context.createGainNode();
-  gainNode.connect(context.destination);
-  gainNode.gain.value = 0.001;
-  oscillator.frequency.value = 30;
-  noise = new Whitenoise(context);
-  return 1;
-};
+exports.play = play;
+exports.stop = stop;
 
 });
 require("/scripts/sound.js");
@@ -57910,18 +57857,4 @@ require.define("/scripts/soundModel.js",function(require,module,exports,__dirnam
 
 });
 require("/scripts/soundModel.js");
-
-require.define("/scripts/worker.js",function(require,module,exports,__dirname,__filename,process,global){self.isActive = 0;
-
-self.onclose = function() {
-};
-
-self.onmessage = function(event) {
-  //self.func = event.data;
-};
-
-setInterval(self.func, 500);
-
-});
-require("/scripts/worker.js");
 })();
