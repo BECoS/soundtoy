@@ -57839,7 +57839,7 @@ $(function() {
   bpmSelect.html(metro.getBPM());
   bpmSelect.css('color', '#FFFFFF');
   bpmSelect.click(function() { 
-    bpmSelect.html(metro.setBPM(metro.getBPM() + 10)); 
+    bpmSelect.html(metro.setBPM(metro.getBPM() + 5)); 
   });
   
   //$("#bpm").val($("#slider").slider("value") );
