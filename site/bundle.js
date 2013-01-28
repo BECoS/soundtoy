@@ -36243,29 +36243,41 @@ if (typeof exports !== 'undefined') {
 });
 
 require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context;
-var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
     440, 493.883];
 var oscillators = [], gainNodes = [], 
-    num = 8, x;
+    num = 8;
 
 function play(x) {
-  gainNodes[x].gain.value = 1;
-  setTimeout(stop(x), 250);
+  if (!gainNodes[x].playedAlready) {
+    stopAllBut(x);
+    gainNodes[x].gain.value = 1;
+    gainNodes[x].playedAlready = true;
+  } 
 }
 
 function stop(x) {
   gainNodes[x].gain.value = 0;
 }
 
+function stopAllBut(x) {
+  for (var i = 0; i < num; i++) {
+    if (i != x) {
+      gainNodes[i].gain.value = 0;
+      gainNodes[i].playedAlready = false;
+    }
+  }
+}
 
 exports.audioinit = function () {
   context = new webkitAudioContext();
-  for (x = 0; x < num; x++) {
+  for (var x = 0; x < num; x++) {
     oscillators[x]  = context.createOscillator();
     gainNodes[x] = context.createGainNode();
     oscillators[x].frequency.value = freqValues[x % freqValues.length];
     gainNodes[x].gain.value = 0;
+    gainNodes[x].playedAlready = false;
+    oscillators[x].noteOn(0);
     oscillators[x].connect(gainNodes[x]);
     gainNodes[x].connect(context.destination);
   }
@@ -36273,6 +36285,7 @@ exports.audioinit = function () {
 
 exports.play = play;
 exports.stop = stop;
+exports.stopAllBut = stopAllBut;
 
 });
 
@@ -36283,7 +36296,7 @@ var height = 8;
 var beat = 0;
 
 var getActiveColumn = function () {
-  return (metro.getBeat() % 8);  
+  return (metro.getBeat() % 8);
 };
 
 exports.getActiveColumn = getActiveColumn;
@@ -36345,15 +36358,14 @@ var advance = function() {
     beats[keys[key]]();
   }
 };
+
 var advanceBeat = function () {
-  return ++beat;
+  return beat++;
 };
+
 var getBeat = function () { return beat; };
 var saySomething = function() { console.log("something"); };
 
-//var worker = new Worker('worker.js');
-//window.worker = worker;
-//window.worker.postMessage(saySomething);
 exports.getBeat = getBeat;
 exports.setBPM = setBPM;
 exports.getBPM = getBPM;
@@ -57546,10 +57558,6 @@ function setNote(noteIndex) {
   sound.play(Math.floor(noteIndex / 8)); 
 }
 
-function setNoteOff(noteIndex) {
-  sound.stop(Math.floor(noteIndex / 8)); 
-}
-
 function animate() {
   window.requestAnimationFrame(animate);
   if (metro.isPlaying()) {
@@ -57566,7 +57574,6 @@ function animate() {
         else {
           notes[i].rotation.x = 0;  
           notes[i].rotation.y = 0;
-          setNoteOff(i);
         }
       }
     }
@@ -57697,7 +57704,7 @@ var height = 8;
 var beat = 0;
 
 var getActiveColumn = function () {
-  return (metro.getBeat() % 8);  
+  return (metro.getBeat() % 8);
 };
 
 exports.getActiveColumn = getActiveColumn;
@@ -57760,15 +57767,14 @@ var advance = function() {
     beats[keys[key]]();
   }
 };
+
 var advanceBeat = function () {
-  return ++beat;
+  return beat++;
 };
+
 var getBeat = function () { return beat; };
 var saySomething = function() { console.log("something"); };
 
-//var worker = new Worker('worker.js');
-//window.worker = worker;
-//window.worker.postMessage(saySomething);
 exports.getBeat = getBeat;
 exports.setBPM = setBPM;
 exports.getBPM = getBPM;
@@ -57834,29 +57840,41 @@ $(function() {
 require("/scripts/panel.js");
 
 require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context;
-var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
     440, 493.883];
 var oscillators = [], gainNodes = [], 
-    num = 8, x;
+    num = 8;
 
 function play(x) {
-  gainNodes[x].gain.value = 1;
-  setTimeout(stop(x), 250);
+  if (!gainNodes[x].playedAlready) {
+    stopAllBut(x);
+    gainNodes[x].gain.value = 1;
+    gainNodes[x].playedAlready = true;
+  } 
 }
 
 function stop(x) {
   gainNodes[x].gain.value = 0;
 }
 
+function stopAllBut(x) {
+  for (var i = 0; i < num; i++) {
+    if (i != x) {
+      gainNodes[i].gain.value = 0;
+      gainNodes[i].playedAlready = false;
+    }
+  }
+}
 
 exports.audioinit = function () {
   context = new webkitAudioContext();
-  for (x = 0; x < num; x++) {
+  for (var x = 0; x < num; x++) {
     oscillators[x]  = context.createOscillator();
     gainNodes[x] = context.createGainNode();
     oscillators[x].frequency.value = freqValues[x % freqValues.length];
     gainNodes[x].gain.value = 0;
+    gainNodes[x].playedAlready = false;
+    oscillators[x].noteOn(0);
     oscillators[x].connect(gainNodes[x]);
     gainNodes[x].connect(context.destination);
   }
@@ -57864,6 +57882,7 @@ exports.audioinit = function () {
 
 exports.play = play;
 exports.stop = stop;
+exports.stopAllBut = stopAllBut;
 
 });
 require("/scripts/sound.js");
@@ -57872,4 +57891,18 @@ require.define("/scripts/soundModel.js",function(require,module,exports,__dirnam
 
 });
 require("/scripts/soundModel.js");
+
+require.define("/scripts/worker.js",function(require,module,exports,__dirname,__filename,process,global){self.isActive = 0;
+
+self.onclose = function() {
+};
+
+self.onmessage = function(event) {
+  //self.func = event.data;
+};
+
+setInterval(self.func, 500);
+
+});
+require("/scripts/worker.js");
 })();

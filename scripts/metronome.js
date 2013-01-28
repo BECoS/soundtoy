@@ -53,15 +53,14 @@ var advance = function() {
     beats[keys[key]]();
   }
 };
+
 var advanceBeat = function () {
-  return ++beat;
+  return beat++;
 };
+
 var getBeat = function () { return beat; };
 var saySomething = function() { console.log("something"); };
 
-//var worker = new Worker('worker.js');
-//window.worker = worker;
-//window.worker.postMessage(saySomething);
 exports.getBeat = getBeat;
 exports.setBPM = setBPM;
 exports.getBPM = getBPM;

@@ -30,10 +30,6 @@ function setNote(noteIndex) {
   sound.play(Math.floor(noteIndex / 8)); 
 }
 
-function setNoteOff(noteIndex) {
-  sound.stop(Math.floor(noteIndex / 8)); 
-}
-
 function animate() {
   window.requestAnimationFrame(animate);
   if (metro.isPlaying()) {
@@ -50,7 +46,6 @@ function animate() {
         else {
           notes[i].rotation.x = 0;  
           notes[i].rotation.y = 0;
-          setNoteOff(i);
         }
       }
     }
