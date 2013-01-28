@@ -23,10 +23,9 @@ exports.audioinit = function () {
     oscillators[x].frequency.value = freqValues[x % freqValues.length];
     gainNodes[x].gain.value = 0;
     oscillators[x].connect(gainNodes[x]);
-    gainNodes[x].connect(conext.destination);
+    gainNodes[x].connect(context.destination);
   }
 };
 
 exports.play = play;
 exports.stop = stop;
-exports.playFreq = playFreq;

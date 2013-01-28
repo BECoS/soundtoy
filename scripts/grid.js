@@ -27,7 +27,11 @@ function initAudio() {
 }
 
 function setNote(noteIndex) {
-  //sound.osc.setFreq(Math.floor(noteIndex / 8)); 
+  sound.play(Math.floor(noteIndex / 8)); 
+}
+
+function setNoteOff(noteIndex) {
+  sound.stop(Math.floor(noteIndex / 8)); 
 }
 
 function animate() {
@@ -42,14 +46,11 @@ function animate() {
           if (notes[i].active) {
             setNote(i);
           }
-          //if (column === 0) { sound.osc.play(); }
-          //else { 
-          //  sound.osc.stop(); 
-          //}
         }
         else {
           notes[i].rotation.x = 0;  
-          notes[i].rotation.y = 0;  
+          notes[i].rotation.y = 0;
+          setNoteOff(i);
         }
       }
     }

@@ -36245,41 +36245,34 @@ if (typeof exports !== 'undefined') {
 require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context;
 var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
-		440, 493.883];
-var osc;
+    440, 493.883];
+var oscillators = [], gainNodes = [], 
+    num = 8, x;
 
-function Osc(freqIndex) {
-  this.play = function () {
-    this.gainNode.gain.value = 1;
-  };
-  this.stop = function () {
-    this.gainNode.gain.value = 0;
-  };
-  this.osc = context.createOscillator();
-  this.gainNode = context.createGainNode();
-  this.stop();
-  this.osc.connect(gainNode);
-  this.gainNode.connect(context.destination);
-  this.osc.noteOn(0);
-  this.osc.frequency.value = freqValues[freqIndex];
-  this.setFreq = function (x) {
-    try {
-      this.frequency.value = freqValues[x];
-    } catch (IndexOutOfRangeException) {
-      this.frequency.value = freqValues[0];
-    }
-  };
-  return this;
+function play(x) {
+  gainNodes[x].gain.value = 1;
+  setTimeout(stop(x), 250);
 }
 
+function stop(x) {
+  gainNodes[x].gain.value = 0;
+}
+
+
 exports.audioinit = function () {
-  console.log('ok');
-  //osc = new Osc(0);
   context = new webkitAudioContext();
+  for (x = 0; x < num; x++) {
+    oscillators[x]  = context.createOscillator();
+    gainNodes[x] = context.createGainNode();
+    oscillators[x].frequency.value = freqValues[x % freqValues.length];
+    gainNodes[x].gain.value = 0;
+    oscillators[x].connect(gainNodes[x]);
+    gainNodes[x].connect(context.destination);
+  }
 };
 
-
-
+exports.play = play;
+exports.stop = stop;
 
 });
 
@@ -57550,7 +57543,11 @@ function initAudio() {
 }
 
 function setNote(noteIndex) {
-  //sound.osc.setFreq(Math.floor(noteIndex / 8)); 
+  sound.play(Math.floor(noteIndex / 8)); 
+}
+
+function setNoteOff(noteIndex) {
+  sound.stop(Math.floor(noteIndex / 8)); 
 }
 
 function animate() {
@@ -57565,14 +57562,11 @@ function animate() {
           if (notes[i].active) {
             setNote(i);
           }
-          //if (column === 0) { sound.osc.play(); }
-          //else { 
-          //  sound.osc.stop(); 
-          //}
         }
         else {
           notes[i].rotation.x = 0;  
-          notes[i].rotation.y = 0;  
+          notes[i].rotation.y = 0;
+          setNoteOff(i);
         }
       }
     }
@@ -57842,41 +57836,34 @@ require("/scripts/panel.js");
 require.define("/scripts/sound.js",function(require,module,exports,__dirname,__filename,process,global){var context;
 var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
-		440, 493.883];
-var osc;
+    440, 493.883];
+var oscillators = [], gainNodes = [], 
+    num = 8, x;
 
-function Osc(freqIndex) {
-  this.play = function () {
-    this.gainNode.gain.value = 1;
-  };
-  this.stop = function () {
-    this.gainNode.gain.value = 0;
-  };
-  this.osc = context.createOscillator();
-  this.gainNode = context.createGainNode();
-  this.stop();
-  this.osc.connect(gainNode);
-  this.gainNode.connect(context.destination);
-  this.osc.noteOn(0);
-  this.osc.frequency.value = freqValues[freqIndex];
-  this.setFreq = function (x) {
-    try {
-      this.frequency.value = freqValues[x];
-    } catch (IndexOutOfRangeException) {
-      this.frequency.value = freqValues[0];
-    }
-  };
-  return this;
+function play(x) {
+  gainNodes[x].gain.value = 1;
+  setTimeout(stop(x), 250);
 }
 
+function stop(x) {
+  gainNodes[x].gain.value = 0;
+}
+
+
 exports.audioinit = function () {
-  console.log('ok');
-  //osc = new Osc(0);
   context = new webkitAudioContext();
+  for (x = 0; x < num; x++) {
+    oscillators[x]  = context.createOscillator();
+    gainNodes[x] = context.createGainNode();
+    oscillators[x].frequency.value = freqValues[x % freqValues.length];
+    gainNodes[x].gain.value = 0;
+    oscillators[x].connect(gainNodes[x]);
+    gainNodes[x].connect(context.destination);
+  }
 };
 
-
-
+exports.play = play;
+exports.stop = stop;
 
 });
 require("/scripts/sound.js");
