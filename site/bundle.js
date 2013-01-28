@@ -36246,42 +36246,40 @@ require.define("/scripts/sound.js",function(require,module,exports,__dirname,__f
 var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
 		440, 493.883];
-var oscillator;
+var osc;
 
-function play() {
-	oscillator.connect(context.destination);
-	oscillator.noteOn(0);
-}
-
-function stop() {
-  oscillator.disconnect();
-}
-
-function freqUp() {
-	oscillator.frequency.value = freqValues[x++ % freqValues.length];
-}
-
-
-function getFreq(x) {
-  try {
-    oscillator.frequency.value = freqValues[x];
-  }
-  catch (IndexOutOfRangeException) {
-    oscillator.freqquency.value = freqValues[0];
-  }
-  oscillator.noteOn(0);
-  setTimeout(stop, 1000);
+function Osc(freqIndex) {
+  this.play = function () {
+    this.gainNode.gain.value = 1;
+  };
+  this.stop = function () {
+    this.gainNode.gain.value = 0;
+  };
+  this.osc = context.createOscillator();
+  this.gainNode = context.createGainNode();
+  this.stop();
+  this.osc.connect(gainNode);
+  this.gainNode.connect(context.destination);
+  this.osc.noteOn(0);
+  this.osc.frequency.value = freqValues[freqIndex];
+  this.setFreq = function (x) {
+    try {
+      this.frequency.value = freqValues[x];
+    } catch (IndexOutOfRangeException) {
+      this.frequency.value = freqValues[0];
+    }
+  };
+  return this;
 }
 
 exports.audioinit = function () {
-	context = new webkitAudioContext();
-	oscillator = context.createOscillator();
-	oscillator.connect(context.destination);
+  console.log('ok');
+  //osc = new Osc(0);
+  context = new webkitAudioContext();
 };
 
-exports.play = play;
-exports.stop = stop;
-exports.getFreq = getFreq;
+
+
 
 });
 
@@ -36299,8 +36297,7 @@ exports.getActiveColumn = getActiveColumn;
 
 });
 
-require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var sound = require('./sound.js');
-var BPM = 120;
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
 var beat = 0;
 var beats = {};
 var playing = false;
@@ -36315,7 +36312,6 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
-  sound.play();
 };
 
 var isPlaying = function() {
@@ -36325,7 +36321,6 @@ var isPlaying = function() {
 var stop = function() {
   playing = false;
   advanceBeat();
-  sound.stop();
   clearInterval(timerID);
 };
 
@@ -57554,6 +57549,10 @@ function initAudio() {
   }
 }
 
+function setNote(noteIndex) {
+  //sound.osc.setFreq(Math.floor(noteIndex / 8)); 
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   if (metro.isPlaying()) {
@@ -57563,6 +57562,13 @@ function animate() {
         if (i % 8 == column) {
           notes[i].rotation.x += 0.1;
           notes[i].rotation.y += 0.2;
+          if (notes[i].active) {
+            setNote(i);
+          }
+          //if (column === 0) { sound.osc.play(); }
+          //else { 
+          //  sound.osc.stop(); 
+          //}
         }
         else {
           notes[i].rotation.x = 0;  
@@ -57597,6 +57603,7 @@ function initGraphics() {
         new three.THREE.MeshLambertMaterial({color: cubeInactiveColor}));
     note.position.x = 16 * (i % 8);
     note.position.y = 16 * Math.floor(i / 8);
+    note.active = false;
     notes.push(note);
     scene.add(note);
   }
@@ -57704,8 +57711,7 @@ exports.getActiveColumn = getActiveColumn;
 });
 require("/scripts/gridModel.js");
 
-require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var sound = require('./sound.js');
-var BPM = 120;
+require.define("/scripts/metronome.js",function(require,module,exports,__dirname,__filename,process,global){var BPM = 120;
 var beat = 0;
 var beats = {};
 var playing = false;
@@ -57720,7 +57726,6 @@ var getMSPB = function() {
 var play = function() {
   playing = true;
   setBPM(getBPM());
-  sound.play();
 };
 
 var isPlaying = function() {
@@ -57730,7 +57735,6 @@ var isPlaying = function() {
 var stop = function() {
   playing = false;
   advanceBeat();
-  sound.stop();
   clearInterval(timerID);
 };
 
@@ -57795,7 +57799,7 @@ $(function() {
   $('#play').css('color', '#0000FF');
   $('#play').css('text-align', 'center');
   $("button").button()
-    .click(function( event ) {
+    .click(function(event) {
       event.preventDefault();
       if (metro.isPlaying()) {
         $('#play').html('&#9654;');
@@ -57805,14 +57809,14 @@ $(function() {
         metro.play();
       }
     });
-  $('#slider').slider({
-    value:100,
-    min: 0,
-    max: 500,
-    step: 50
-    //slide: function( event, ui ) {
-    //  $("#bpm").val($.ui.value );
-  }).click(function() {event.preventDefault(); console.log('clicked');});
+  //$('#slider').slider({
+  //  value:100,
+  //  min: 0,
+  //  max: 500,
+  //  step: 50
+  //  //slide: function( event, ui ) {
+  //  //  $("#bpm").val($.ui.value );
+  //}).click(function() {event.preventDefault(); console.log('clicked');});
 
   //$('<input id="spinner" name="value" />').appendTo('#panel');
   //var spinner = $('#spinner').spinner();
@@ -57839,42 +57843,40 @@ require.define("/scripts/sound.js",function(require,module,exports,__dirname,__f
 var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
 		440, 493.883];
-var oscillator;
+var osc;
 
-function play() {
-	oscillator.connect(context.destination);
-	oscillator.noteOn(0);
-}
-
-function stop() {
-  oscillator.disconnect();
-}
-
-function freqUp() {
-	oscillator.frequency.value = freqValues[x++ % freqValues.length];
-}
-
-
-function getFreq(x) {
-  try {
-    oscillator.frequency.value = freqValues[x];
-  }
-  catch (IndexOutOfRangeException) {
-    oscillator.freqquency.value = freqValues[0];
-  }
-  oscillator.noteOn(0);
-  setTimeout(stop, 1000);
+function Osc(freqIndex) {
+  this.play = function () {
+    this.gainNode.gain.value = 1;
+  };
+  this.stop = function () {
+    this.gainNode.gain.value = 0;
+  };
+  this.osc = context.createOscillator();
+  this.gainNode = context.createGainNode();
+  this.stop();
+  this.osc.connect(gainNode);
+  this.gainNode.connect(context.destination);
+  this.osc.noteOn(0);
+  this.osc.frequency.value = freqValues[freqIndex];
+  this.setFreq = function (x) {
+    try {
+      this.frequency.value = freqValues[x];
+    } catch (IndexOutOfRangeException) {
+      this.frequency.value = freqValues[0];
+    }
+  };
+  return this;
 }
 
 exports.audioinit = function () {
-	context = new webkitAudioContext();
-	oscillator = context.createOscillator();
-	oscillator.connect(context.destination);
+  console.log('ok');
+  //osc = new Osc(0);
+  context = new webkitAudioContext();
 };
 
-exports.play = play;
-exports.stop = stop;
-exports.getFreq = getFreq;
+
+
 
 });
 require("/scripts/sound.js");

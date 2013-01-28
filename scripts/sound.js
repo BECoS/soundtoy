@@ -2,7 +2,6 @@ var context;
 var x = 0;
 var freqValues = [261.626, 293.665, 329.628, 349.228, 391.995,
     440, 493.883];
-var oscillator;
 var oscillators = [], gainNodes = [], 
     num = 8, x;
 

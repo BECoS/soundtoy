@@ -9,7 +9,7 @@ $(function() {
   $('#play').css('color', '#0000FF');
   $('#play').css('text-align', 'center');
   $("button").button()
-    .click(function( event ) {
+    .click(function(event) {
       event.preventDefault();
       if (metro.isPlaying()) {
         $('#play').html('&#9654;');
@@ -19,14 +19,14 @@ $(function() {
         metro.play();
       }
     });
-  $('#slider').slider({
-    value:100,
-    min: 0,
-    max: 500,
-    step: 50
-    //slide: function( event, ui ) {
-    //  $("#bpm").val($.ui.value );
-  }).click(function() {event.preventDefault(); console.log('clicked');});
+  //$('#slider').slider({
+  //  value:100,
+  //  min: 0,
+  //  max: 500,
+  //  step: 50
+  //  //slide: function( event, ui ) {
+  //  //  $("#bpm").val($.ui.value );
+  //}).click(function() {event.preventDefault(); console.log('clicked');});
 
   //$('<input id="spinner" name="value" />').appendTo('#panel');
   //var spinner = $('#spinner').spinner();
