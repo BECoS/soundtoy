@@ -57883,18 +57883,4 @@ require.define("/scripts/soundModel.js",function(require,module,exports,__dirnam
 
 });
 require("/scripts/soundModel.js");
-
-require.define("/scripts/worker.js",function(require,module,exports,__dirname,__filename,process,global){self.isActive = 0;
-
-self.onclose = function() {
-};
-
-self.onmessage = function(event) {
-  //self.func = event.data;
-};
-
-setInterval(self.func, 500);
-
-});
-require("/scripts/worker.js");
 })();
