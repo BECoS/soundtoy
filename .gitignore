@@ -1,4 +1,7 @@
 node_modules/
 npm-debug.log
 site/bundle.js
+site/specBundle.js
+site/jasmine*
 tags
+.ctags
