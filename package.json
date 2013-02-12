@@ -17,9 +17,7 @@
                     "node-static" : "*"
                   },
   "devDependencies": { "jshint" : "*",
-                       "jasmine-node" : "*",
-                       "webdriver-launcher" : "*",
-                       "selenium-webdriverjs" : "*"
+                       "jasmine-node" : "*"
                      },
   "optionalDependencies": {},
   "engines": {
