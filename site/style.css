@@ -28,3 +28,7 @@ body {
   height: auto;
   z-index: 10;
 }
+
+.jasmine_reporter {
+  padding-top: 900px;
+}

@@ -91,6 +91,7 @@ function initGraphics() {
 }
 
 function launch() {
+  window.dbg = false;
   var browserString = navigator.vendor;
   if (!browserString.match(/google|apple/i)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
@@ -99,13 +100,17 @@ function launch() {
   figureOutAnimationCall();
   initGraphics();
   initAudio();
+  $('#grid').mousedown(onGridMouseDown);
   animate();
 }
 
-function mouseDown(event) {
+function onGridMouseDown(event) {
   event.preventDefault();
   var x = event.clientX  - canvasWidth / 2;
   var y = event.clientY - canvasHeight / 2;
+  if (dbg) {
+    console.log('Clicked: ' + x + ', ' + y);
+  }
   var vector = new three.THREE.Vector3(
     (x / canvasWidth) * 2,
     -(y / canvasHeight) * 2,
@@ -162,6 +167,4 @@ function onDocumentKeyDown(event) {
 }
 
 document.addEventListener("DOMContentLoaded", launch, false);
-//document.addEventListener("mousedown", onDocumentMouseDown, false);
 document.addEventListener("keydown", onDocumentKeyDown, false);
-$('#grid').click(mouseDown);

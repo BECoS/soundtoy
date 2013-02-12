@@ -57619,6 +57619,7 @@ function initGraphics() {
 }
 
 function launch() {
+  window.dbg = false;
   var browserString = navigator.vendor;
   if (!browserString.match(/google|apple/i)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
@@ -57627,13 +57628,17 @@ function launch() {
   figureOutAnimationCall();
   initGraphics();
   initAudio();
+  $('#grid').mousedown(onGridMouseDown);
   animate();
 }
 
-function mouseDown(event) {
+function onGridMouseDown(event) {
   event.preventDefault();
   var x = event.clientX  - canvasWidth / 2;
   var y = event.clientY - canvasHeight / 2;
+  if (dbg) {
+    console.log('Clicked: ' + x + ', ' + y);
+  }
   var vector = new three.THREE.Vector3(
     (x / canvasWidth) * 2,
     -(y / canvasHeight) * 2,
@@ -57690,9 +57695,7 @@ function onDocumentKeyDown(event) {
 }
 
 document.addEventListener("DOMContentLoaded", launch, false);
-//document.addEventListener("mousedown", onDocumentMouseDown, false);
 document.addEventListener("keydown", onDocumentKeyDown, false);
-$('#grid').click(mouseDown);
 
 });
 require("/scripts/grid.js");
@@ -57787,6 +57790,17 @@ exports.isPlaying = isPlaying;
 
 });
 require("/scripts/metronome.js");
+
+require.define("/scripts/Note.js",function(require,module,exports,__dirname,__filename,process,global){exports.Note = function (beat, oscillator) {
+  return Object.create({
+    beat : beat || 0,
+    oscillator : oscillator || undefined,
+    active : false
+  });
+};
+
+});
+require("/scripts/Note.js");
 
 require.define("/scripts/panel.js",function(require,module,exports,__dirname,__filename,process,global){var $ = require('jquery-browserify');
 require('jqueryuify');
@@ -57889,20 +57903,16 @@ require("/scripts/sound.js");
 
 require.define("/scripts/soundModel.js",function(require,module,exports,__dirname,__filename,process,global){var channels = [];
 
+function Channel(scale, beats) {
+  this.scale = scale || 8;
+  this.beats = beats || 8;
+}
+
+function channelFactory(scale, beats, synth) {
+  channels.push(new Channel(scale, beats, synth));
+  return channels.length;
+}
+
 });
 require("/scripts/soundModel.js");
-
-require.define("/scripts/worker.js",function(require,module,exports,__dirname,__filename,process,global){self.isActive = 0;
-
-self.onclose = function() {
-};
-
-self.onmessage = function(event) {
-  //self.func = event.data;
-};
-
-setInterval(self.func, 500);
-
-});
-require("/scripts/worker.js");
 })();

@@ -18,7 +18,8 @@
                   },
   "devDependencies": { "jshint" : "*",
                        "jasmine-node" : "*",
-                       "phantom-jasmine" : "*"
+                       "webdriver-launcher" : "*",
+                       "selenium-webdriverjs" : "*"
                      },
   "optionalDependencies": {},
   "engines": {
