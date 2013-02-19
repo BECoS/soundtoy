@@ -1,3 +1,4 @@
+/* The grid module is the rendered presentation of the sequencer */
 var three = require('three');
 var sound = require('./sound.js');
 var model = require('./gridModel.js');
