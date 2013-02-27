@@ -1,0 +1,210 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Enumerate
+User Requirements
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Users shall be able to activate/deactivate cubes on the grid by clicking
+ on the cubes.
+ 1.1.1 A pleasing animation shall convey the information about which cubes
+ are currently playing notes.
+ 2.1.2  Users shall be able to play sounds when they click the play/pause
+ button.
+ 3.
+  Users shall be able to pause sounds if it is active by clicking the play/pause
+ button.
+ 5.
+  Users shall be able to manipulate the sounds by interacting with the control
+ panel.
+ 6.
+  Users shall be able to stop sounds by clicking the stop button.
+ 7.
+  Users shall be able to modify the tempo by clicking on the up or down
+ icons located next to the tempo display.
+ 8.
+  Users shall be able to pan sounds.
+ 9.
+  Users shall be able to expand the grid.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Desirable 10.
+  Users should be able to record sounds.
+ 11.
+  Users should be able to download their creations.
+\end_layout
+
+\begin_layout Enumerate
+Optional 12.
+  Users should be able to upload samples.
+ 13.
+  Users should be able to select colors for the cubes on the grid.
+   14.
+  Users should be able to select colors for the effect buttons.
+ 15.
+  Users should be able to assign effects/samples to the effects button.
+ 16.
+  Users will be able to save sessions.
+ 17.
+  Users will be able to change the camera view on the grid.
+\end_layout
+
+\begin_layout Enumerate
+2.2 System Requirements
+\end_layout
+
+\begin_layout Enumerate
+2.2.1 Functional
+\end_layout
+
+\begin_layout Enumerate
+Mandatory
+\end_layout
+
+\begin_layout Enumerate
+The system shall animate activated cubes on the grid when they are triggered
+ by the step sequencer.
+ The system shall stop the audio clock, playback, and visuals when the user
+ clicks on the stop button.
+ The system shall start the audio clock, playback, and visuals when the
+ user clicks on the play/pause button.
+ The system shall pause the audio clock, playback, and visuals when the
+ user clicks on the play/pause button.
+ The system shall feature hints when a user mouses over a button, a description
+ of that button’s functionality will be displayed in a small dialog box.
+ The system shall provide users with a sawtooth waveform using Web Audio
+ API.
+ The system shall provide users with a sine waveform using Web Audio API.
+ The system shall provide users with a triangle waveform using Web Audio
+ API.
+ The system shall provide users with a square waveform using Web Audio API.
+ The system shall provide users with a white noise waveform, this waveform
+ consists of a full spectrum of waveform frequencies.
+ The system shall provide users with a pink noise waveform, this waveform
+ is similar to white noise waveform, but lower frequencies are emphasized.
+ The system shall manage an audio clock to precisely schedule audio and
+ visual events.
+ The system shall supply effects that can be used to distort the the user’s
+ sounds when they are triggered.
+ The system will provide a pythagorean tuning system, this will define all
+ notes and intervals of a scale on a 3:2 ratio.
+ The system will provide an equal temperament tuning system, in this tuning
+ system all adjacent notes will have identical frequency ratios.
+ The system shall have a reverb effect, when active the raw audio will pass
+ through the reverb modifier, and the audible 
+\end_layout
+
+\begin_layout Enumerate
+Optional The grid should automatically scroll according to the current step
+ on the grid.
+\end_layout
+
+\begin_layout Enumerate
+Desirable The system should have tabs for displaying different screens (main
+ sequencer screen, options screen, …)
+\end_layout
+
+\begin_layout Enumerate
+2.2.2 Non-Functional [Quantitative]
+\end_layout
+
+\begin_layout Enumerate
+Performance: Sound Toy will have low latency.
+ Sound Toy will have high availability.
+\end_layout
+
+\begin_layout Enumerate
+Testability: Sound Toy testing will be behavior-driven.
+ Sound Toy will be tested using the Jasmine Framework, and JSHint to report
+ problematic sections of the code.
+\end_layout
+
+\begin_layout Enumerate
+Open Source: Sound Toy will be open source, the code is hosted in GitHub
+\end_layout
+
+\begin_layout Enumerate
+Usability: Sound Toy will provide an exciting user interface to engage the
+ user Sound Toy will be intuitive and easy to learn
+\end_layout
+
+\begin_layout Enumerate
+Accessibility: Sound Toy is a web based service, therefore anyone with internet
+ access can play with Sound Toy.
+  Sound Toy requires Javascript, WebGL, Three.js, and WebAudio support.
+  See Compatibility for recommended browsers.
+\end_layout
+
+\begin_layout Enumerate
+Compatibility: Sound Toy is compatible with Safari 6.0 up to the current
+ version.
+ Sound Toy is compatible with Chrome 10.0 up to the current version, however
+ it is recommended that the minimum version users have is Chrome 18.0 as
+ older versions only have partial support for WebGL.
+ 
+\end_layout
+
+\end_body
+\end_document
