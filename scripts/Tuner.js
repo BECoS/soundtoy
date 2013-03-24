@@ -13,7 +13,7 @@ Tuner.prototype.buildChromaticScale = function () {
     this.chromatic[i] = this.chromatic[i-1] * Math.pow(2,
       this.cents/1200);
   }
-  for (var i = 1; i < this.OCTAVES * this.INTERVALS; i++) {
+  for (var j = 1; j < this.OCTAVES * this.INTERVALS; j++) {
     this.chromatic.unshift(this.chromatic[0] / Math.pow(2, 
       this.cents/1200));
   }
@@ -53,7 +53,7 @@ Tuner.prototype.classic2Seconds = function (noteDuration) {
 Tuner.prototype.classic2Midi = function (note) {
   var letter = (note.match(/[a-gA-G]#?/))[0]; 
   letter = letter.toUpperCase();
-  var octave = parseInt((note.match(/[0-9]+/))[0]);
+  var octave = parseInt((note.match(/[0-9]+/))[0], 10);
   return (12 * (octave + 1)) + Tuner.letterNoteLookup[letter];
 };
 
@@ -64,3 +64,5 @@ Tuner.prototype.midi2Freq = function (midi) {
 Tuner.prototype.classic2Freq = function (note) {
   return this.midi2Freq(this.classic2Midi(note));
 };
+
+exports.Tuner = Tuner;

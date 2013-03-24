@@ -38,13 +38,13 @@ fi
 ./node_modules/browserify/bin/cmd.js $specs -o $site/$specBundle
 ./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle
 
-for req in $jasmineReqs
-do
-  if [[ ! -e $site/$req ]]; then
-    cp ./node_modules/jasmine-node/node_modules/jasmine-reporters/ext/$req $site
-  fi
-done
+#for req in $jasmineReqs
+#do
+#  if [[ ! -e $site/$req ]]; then
+#    cp ./node_modules/jasmine-node/node_modules/jasmine-reporters/ext/$req $site
+#  fi
+#done
 
-echo -e "\n${blue}Listening on 80${reset}"
+echo -e "\n${blue}Listening on `egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+'`${reset}"
 echo -ne "${white}Ctrl-c to restart. Use Ctrl-\ to quit.${reset}\t"
 node app.js

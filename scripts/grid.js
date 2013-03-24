@@ -1,8 +1,9 @@
 /* The grid module is the rendered presentation of the sequencer */
 var three = require('three');
-var sound = require('./sound.js');
-var model = require('./gridModel.js');
-var metro = require('./metronome.js'); 
+//var sound = require('./sound.js');
+var gmodel = require('./gridModel.js');
+//var smodel = require('./soundModel.js');
+//var metro = require('./metronome.js'); 
 var $ = require('jquery-browserify');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
@@ -21,42 +22,64 @@ function figureOutAnimationCall() {
 
 function initAudio() {
   try {
-    sound.audioinit();
+    gmodel.initialize();
   } catch (e) {
-    alert("This won't work unless you use a recent version of Chrome or Safari.");
+    //alert("This won't work unless you use a recent version of Chrome or Safari.");
+    console.log(e.name);
+    console.log(e.message);
   }
 }
 
-function setNote(noteIndex) {
-  sound.play(Math.floor(noteIndex / 8)); 
-}
+//function setNote(noteIndex) {
+//  sound.play(Math.floor(noteIndex / 8)); 
+//}
 
 function animate() {
   window.requestAnimationFrame(animate);
-  if (metro.isPlaying()) {
-    var column = model.getActiveColumn();
-    for (var i = 0; i < 64; i++) {
-      if (notes[i] !== undefined) {
-        if (i % 8 == column) {
-          notes[i].rotation.x += 0.1;
-          notes[i].rotation.y += 0.2;
-          if (notes[i].active) {
-            setNote(i);
-          }
-        }
-        else {
-          notes[i].rotation.x = 0;  
-          notes[i].rotation.y = 0;
-        }
-      }
+  //if (gmodel.isPlaying()) {
+  //  var column = gmodel.getActiveColumn();
+  //  for (var i = 0; i < 64; i++) {
+  //    if (notes[i] !== undefined) {
+  //      if (i % 8 == column) {
+  //        notes[i].rotation.x += 0.1;
+  //        notes[i].rotation.y += 0.2;
+  //        //if (notes[i].active) {
+  //        //  setNote(i);
+  //        //}
+  //      }
+  //      else {
+  //        notes[i].rotation.x = 0;  
+  //        notes[i].rotation.y = 0;
+  //      }
+  //    }
+  //  }
+  //} else {
+  //  for (var j = 0; j < 64; j++) {
+  //    if (notes[j] !== undefined) {
+  //      notes[j].rotation.x += 0;
+  //      notes[j].rotation.y += 0;
+  //    }
+  //  } 
+  //}
+  var activeColumn = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
+  activeColumn = activeColumn === -1 ? 7 : activeColumn;
+  console.log("active column " + activeColumn); 
+  for (var i = 0; i < 64; i++) {
+    var colActive = i % 8 === activeColumn ? 
+      true : false;
+    var cube = notes[i];
+    if (colActive) {
+      cube.rotation.x += 0.2;
+    } else {
+      cube.rotation.x = 0;
     }
-  } else {
-    for (var j = 0; j < 64; j++) {
-      if (notes[j] !== undefined) {
-        notes[j].rotation.x += 0;
-        notes[j].rotation.y += 0;
-      }
-    } 
+    if (cube.active) { 
+      cube.material.color.setHex(cubeActiveColor);
+      cube.material.wireframe = true;
+    } else {
+      cube.material.color.setHex(cubeInactiveColor);
+      cube.material.wireframe = false;
+    }
   }
   renderer.render(scene, camera);
 }
@@ -77,7 +100,9 @@ function initGraphics() {
         new three.THREE.MeshLambertMaterial({color: cubeInactiveColor}));
     note.position.x = 16 * (i % 8);
     note.position.y = 16 * Math.floor(i / 8);
-    note.active = false;
+    note.column = i % 8;
+    note.row = Math.floor(i / 8);
+    note.active = Boolean(gmodel.getState(note.column, note.row));
     notes.push(note);
     scene.add(note);
   }
@@ -99,8 +124,8 @@ function launch() {
     return;
   }
   figureOutAnimationCall();
-  initGraphics();
   initAudio();
+  initGraphics();
   $('#grid').mousedown(onGridMouseDown);
   animate();
 }
@@ -133,13 +158,7 @@ function onGridMouseDown(event) {
   if (intersects.length > 0) {
     var cube = intersects[0].object;
     cube.active = !cube.active;
-    if (cube.active) { 
-      cube.material.color.setHex(cubeActiveColor);
-      cube.material.wireframe = true;
-    } else {
-      cube.material.color.setHex(cubeInactiveColor);
-      cube.material.wireframe = false;
-    }
+    gmodel.updateModel(cube.column, cube.row, Number(cube.active));
   }
 }
 

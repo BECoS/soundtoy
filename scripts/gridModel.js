@@ -1,23 +1,30 @@
 /**/
 
-var rows, columns, model;
+var model = require('./soundModel.js');
 
 function initialize(rows, columns) {
-  model = new Array(rows);
-  model.forEach(function(e, i, A) { 
-    e = new Array(rows);
-  });
-}
-
-function getActive(beat) {
-  return model.map(function (e, i, A) {
-    if (e[beat] === 1) return i; 
-  });
+//TODO: Seperate this module's sequence from the soundModel's
+  model.initialize();
 }
 
 function updateModel(x, y, state) {
-  model[x][y] = state;
+  model.updateSequence(x, y, state);
+}
+
+function getActiveColumn() {
+  return model.getActiveColumn();
+}
+
+function getState(x, y) {
+  return model.getState(x, y);  
+}
+
+function isPlaying() {
+  return model.isPlaying();
 }
 
 exports.initialize = initialize;
-exports.getActive = getActive;
+exports.updateModel = updateModel;
+exports.getState = getState;
+exports.getActiveColumn = getActiveColumn;
+exports.isPlaying = isPlaying;

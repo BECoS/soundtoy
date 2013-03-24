@@ -1,42 +1,49 @@
 //var context = new webkitAudioContext();
 //
 
-var tuner; // = new Tuner();
+var Tune = require('./Tuner.js');
+var AdditiveSynth = require('./AdditiveSynth.js').AdditiveSynth;
+var tuner = new Tune.Tuner(); // = new Tuner();
+var synths = [];
+var sequence = [];
 
-function initialize(context) {
-
-
-
-}
-
-var synths = [
-  new AdditiveSynth(2, context, tuner, "C3"),
-  new AdditiveSynth(2, context, tuner, "D3"),
-  new AdditiveSynth(2, context, tuner, "E3"),
-  new AdditiveSynth(2, context, tuner, "F3"),
-  new AdditiveSynth(2, context, tuner, "G3"),
-  new AdditiveSynth(2, context, tuner, "A3"),
-  new AdditiveSynth(2, context, tuner, "B3"),
-  new AdditiveSynth(2, context, tuner, "C4"),
-];
-
-var sequence = [
-/*C3*/ [ 1, 0, 0, 0, 0, 0, 0, 0,],
-/*D3*/ [ 0, 1, 0, 0, 0, 0, 0, 0,],
-/*E4*/ [ 0, 0, 1, 0, 0, 0, 0, 0,],
-/*F3*/ [ 0, 0, 0, 1, 0, 0, 0, 0,],
-/*G3*/ [ 0, 0, 0, 0, 1, 0, 0, 0,],
-/*A3*/ [ 0, 0, 0, 0, 0, 1, 0, 0,],
-/*B3*/ [ 0, 0, 0, 0, 0, 0, 1, 0,],
-/*C4*/ [ 0, 0, 0, 0, 0, 0, 0, 1,],
-];
-
+//TODO: Get this stuff from the metronome
 var beat = 0;
 var timePerBeat = 0.5;
 var startTime = 0;
-var totalBeats = sequence[0].length;
+var totalBeats;
 
 var handle;
+var context = new webkitAudioContext();
+
+function initialize() {
+  synths = [
+    new AdditiveSynth(2, context, tuner, "C3"),
+    new AdditiveSynth(2, context, tuner, "D3"),
+    new AdditiveSynth(2, context, tuner, "E3"),
+    new AdditiveSynth(2, context, tuner, "F3"),
+    new AdditiveSynth(2, context, tuner, "G3"),
+    new AdditiveSynth(2, context, tuner, "A3"),
+    new AdditiveSynth(2, context, tuner, "B3"),
+    new AdditiveSynth(2, context, tuner, "C4"),
+  ];
+  sequence = [
+  /*C3*/ [ 1, 0, 0, 0, 0, 0, 0, 0,],
+  /*D3*/ [ 0, 1, 0, 0, 0, 0, 0, 0,],
+  /*E4*/ [ 0, 0, 1, 0, 0, 0, 0, 0,],
+  /*F3*/ [ 0, 0, 0, 1, 0, 0, 0, 0,],
+  /*G3*/ [ 0, 0, 0, 0, 1, 0, 0, 0,],
+  /*A3*/ [ 0, 0, 0, 0, 0, 1, 0, 0,],
+  /*B3*/ [ 0, 0, 0, 0, 0, 0, 1, 0,],
+  /*C4*/ [ 0, 0, 0, 0, 0, 0, 0, 1,],
+  ];
+  totalBeats = sequence[0].length;
+  console.log("Initializing grid");
+}
+
+function isPlaying() {
+  return (handle === null);
+}
 
 function start() {
   handle = setInterval(function () {
@@ -58,9 +65,30 @@ function start() {
   }, 0);
 }
 
+function getActiveColumn() {
+  return beat % totalBeats;
+}
+
+function getState(x, y) {
+  console.log(sequence[x][y].toString());
+  return sequence[x][y];
+}
+
 function stop() {
   clearInterval(handle);
   for (var i = 0; i < synths.length; i++) {
     synths[i].keyUp();
   }
 }
+
+function updateSequence(voice, beat, state) {
+  sequence[voice][beat] = state;
+}
+
+exports.initialize = initialize;
+exports.start = start;
+exports.stop = stop;
+exports.updateSequence = updateSequence;
+exports.getActiveColumn = getActiveColumn;
+exports.getState = getState;
+exports.isPlaying = isPlaying;

@@ -1,19 +1,35 @@
-var static = require('node-static');
+// Basic Static File Server From:
+// http://stackoverflow.com/questions/7268033/basic-static-file-server-in-nodejs
 
-var file = new(static.Server)('./site');
+var http = require('http'),
+    url = require('url'),
+    path = require('path'),
+    fs = require('fs');
 
-var fileserver = function (request, response) {
-  request.addListener('end', function () {
-    request.url = request.url === '/' ? '/index.html' : request.url; 
-    request.url = request.url === '/specs' ? '/specs.html' : request.url; 
-    file.serve(request, response);
+var mimeTypes = {
+  "html"  :   "text/html",
+  "jpeg"  :   "image/jpeg",
+  "jpg"   :   "image/jpeg",
+  "png"   :   "image/png",
+  "js"    :   "text/javascript",
+  "css"   :   "text/css"
+};
+
+http.createServer(function(req, res) {
+  var uri = url.parse(req.url).pathname;
+  if (uri === '/') uri = '/index.html';
+  var filename = path.join(path.join(process.cwd(), 'site'), uri);
+  fs.exists(filename, function(exists) {
+    if (!exists) {
+      console.log("Requested: " + uri + " does not exist at " + filename);
+      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.write('404 Not Found\n');
+      res.end();
+      return;
+    }
+    var mimeType = mimeTypes[path.extname(filename).split(".")[1]];
+    res.writeHead(200, {'Content-Type' : mimeType});
+    var fileStream = fs.createReadStream(filename);
+    fileStream.pipe(res);
   });
-}
-
-require('http').createServer(fileserver).listen(80, 
-      function(err) {
-        if (err) return console.log(err);
-        var uid = parseInt(process.env.SUDIO_UID);
-        if (uid) process.setuid(uid);
-      }
-    );
+}).listen(3000);

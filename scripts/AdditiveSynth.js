@@ -10,7 +10,7 @@ function AdditiveSynth(wavetype, context, tuner, note) {
     this.lastNote = "A4";
   }
   this.tuner = tuner;
-  this.buildPartials(440, wavetype, 1);
+  this.buildPartials(440, wavetype, 8);
   this.oscs = [];
   this.gain = context.createGainNode(); 
   this.gain.connect(context.destination);
@@ -33,6 +33,10 @@ function AdditiveSynth(wavetype, context, tuner, note) {
     osc.noteOn(0);
     this.oscs.push(osc);
   }
+  var freq = this.tuner.classic2Freq(this.lastNote);
+  this.oscs.forEach(function(e, i) {
+    e.frequency.value = freq * (i + 1);
+  });
   return this;
 }
 
@@ -66,19 +70,24 @@ AdditiveSynth.prototype.keyUp = function () {
 };
 
 AdditiveSynth.prototype.keyDown = function (time, note) {
-  if (time === undefined || time === null) {
+  var shouldChangeFreq = true;
+  if (typeof time === 'undefined' || time === null) {
     time = 0;
-    note = this.lastNote
-  } else if (note === undefined || note === null) {
     note = this.lastNote;
+    shouldChangeFreq = false;
+  } else if (typeof note === 'undefined' || note === null) {
+    note = this.lastNote;
+    shouldChangeFreq = false;
   }
   this.gain.gain.cancelScheduledValues(0);
   this.gain.gain.value = 0;
   var freq = this.tuner.classic2Freq(note);
   var currentTime = this.context.currentTime;
-  this.oscs.forEach(function(e, i) {
-    e.frequency.value = freq * (i + 1);
-  });
+  if (shouldChangeFreq) {
+    this.oscs.forEach(function(e, i) {
+      e.frequency.value = freq * (i + 1);
+    });
+  }
   if (this.envelopeOn) {
     this.gain.gain.setValueAtTime(0, currentTime);
     this.gain.gain.linearRampToValueAtTime(1, time + this.Attack);
@@ -89,3 +98,5 @@ AdditiveSynth.prototype.keyDown = function (time, note) {
   }
   return this;
 };
+
+exports.AdditiveSynth = AdditiveSynth;
