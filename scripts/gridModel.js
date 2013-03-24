@@ -1,11 +1,23 @@
 /**/
-var metro = require('./metronome.js');
-var width = 8;
-var height = 8;
-var beat = 0;
 
-var getActiveColumn = function () {
-  return (metro.getBeat() % 8);
-};
+var rows, columns, model;
 
-exports.getActiveColumn = getActiveColumn;
+function initialize(rows, columns) {
+  model = new Array(rows);
+  model.forEach(function(e, i, A) { 
+    e = new Array(rows);
+  });
+}
+
+function getActive(beat) {
+  return model.map(function (e, i, A) {
+    if (e[beat] === 1) return i; 
+  });
+}
+
+function updateModel(x, y, state) {
+  model[x][y] = state;
+}
+
+exports.initialize = initialize;
+exports.getActive = getActive;

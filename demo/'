@@ -1,51 +1,59 @@
-const SINE = 0;
-const SQUARE = 1;
-const QUANTUM = 10;
-const SAW = 2;
-const TRIANGLE = 3;
-var context = new webkitAudioContext();
-var masterGain = context.createGain();
-var synthGain = context.createGain();
-var lfo = context.createBiquadFilter();
-var chromatics = tuner();
+AdditiveSynth.SINE = 0;
+AdditiveSynth.SQUARE = 1;
+AdditiveSynth.SAW = 2;
+AdditiveSynth.TRIANGLE = 3;
 
-function pitchBuilder(offset) {
-  return 440*Math.pow(2, offset/12);
+
+function AdditiveSynth(wavetype, context) {
+  this.buildPartials(440, wavetype, 32);
+  this.oscs = [];
+  this.gain = context.createGainNode(); 
+  this.gain.gain.value = 0;
+  for (var i = 0; i < partials.length; i++) {
+    var osc = context.createOscillator();
+    osc.type = partials[i].type;
+    osc.frequency.value = partials[i].freq;
+    osc.noteOn(0);
+    osc.gain = context.createGain();
+    osc.gain.gain.value = partials[i].gain;
+    osc.connect(osc.gain);
+    osc.gain.connect(this.gain);
+    this.oscs.push(osc);
+  }
+  return this;
 }
 
-function harmonix(fundamental, type) {
+AdditiveSynth.prototype.buildPartials = function (fundamental, type, num) {
   var tone = {
     freq : fundamental,
     gain : 1,
     type : type,
   };
   var partials = [tone];
-  for (var i = 1; i < 8; i++) {
+  for (var i = 1; i < num; i++) {
     var partial = Object.create(tone);
     partial.freq = partials[i-1].freq * (i + 1);
     partial.gain = Math.log(partials[i-1].gain / (i+1));
     partial.type = type;
     partials.push(partial);
   }
-  return partials;
-}
+  this.partials = partials;
+  return this;
+};
 
-function buildSynth(partials, context, masterGain) {
-  var synths = [];
-  for (var i = 0; i < partials.length; i++) {
-    var synth = context.createOscillator();
-    synth.type = partials[i].type;
-    synth.frequency.value = partials[i].freq;
-    synth.gain = context.createGain();
-    synth.gain.gain.value = partials[i].gain;
-    synth.connect(synth.gain);
-    synth.gain.connect(synthGain);
-    synths.push(synth);
-  }
-  return synths;
-}
+AdditiveSynth.prototype.keyUp = function () {
+  this.gain.gain.value = 0;
+};
 
+AdditiveSynth.prototype.keyDown = function (note) {
+  this.oscs.forEach(function(e, i) {
+    e.frequency.value = freq * (i + 1);
+  });
+};
+  
 var freqHandle = null;
+
+const QUANTUM = 10;
 
 function moveFreq(delta, interval) {
   clearInterval(freqHandle);
@@ -161,12 +169,6 @@ function envelope(drop, interval) {
   synthGain.gain.linearRampToValueAtTime(drop, context.currentTime + interval);
 }
 
-function setFreq(freq) {
-  clearInterval(freqHandle);
-  synths.forEach(function(e, i) {
-    e.frequency.value = freq * (i + 1);
-  });
-}
 
 function setLFOFreq(freq) {
   lfo.frequency.value = freq;
@@ -210,7 +212,7 @@ lfo.gain.value = 1;
 lfo.Q.value = 0.5;
 synthGain.connect(lfo);
 lfo.connect(masterGain);
-var partials = harmonix(440, SAW);
+var partials = harmonix(440);
 var synths = buildSynth(partials, context, lfo);
 masterGain.connect(context.destination);
 masterGain.gain.value = 1;

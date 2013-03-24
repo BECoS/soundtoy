@@ -1,13 +1,5 @@
-//var context = new webkitAudioContext();
-//
-
-var tuner; // = new Tuner();
-
-function initialize(context) {
-
-
-
-}
+var context = new webkitAudioContext();
+var tuner = new Tuner();
 
 var synths = [
   new AdditiveSynth(2, context, tuner, "C3"),

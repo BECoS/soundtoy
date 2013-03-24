@@ -45,6 +45,6 @@ do
   fi
 done
 
-echo -e "\n${blue}Listening on `egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+'`${reset}"
+echo -e "\n${blue}Listening on 80${reset}"
 echo -ne "${white}Ctrl-c to restart. Use Ctrl-\ to quit.${reset}\t"
 node app.js
