@@ -63,7 +63,6 @@ function animate() {
   //}
   var activeColumn = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
   activeColumn = activeColumn === -1 ? 7 : activeColumn;
-  console.log("active column " + activeColumn); 
   for (var i = 0; i < 64; i++) {
     var colActive = i % 8 === activeColumn ? 
       true : false;
@@ -134,9 +133,6 @@ function onGridMouseDown(event) {
   event.preventDefault();
   var x = event.clientX  - canvasWidth / 2;
   var y = event.clientY - canvasHeight / 2;
-  if (dbg) {
-    console.log('Clicked: ' + x + ', ' + y);
-  }
   var vector = new three.THREE.Vector3(
     (x / canvasWidth) * 2,
     -(y / canvasHeight) * 2,
@@ -146,19 +142,14 @@ function onGridMouseDown(event) {
   var raycaster = new three.THREE.Raycaster(camera.position, 
       vector.sub(camera.position).normalize());
   var intersects = raycaster.intersectObjects(notes);
-  particleMaterial = new three.THREE.ParticleCanvasMaterial({
-    color: 0x000000,
-    program: function(context) {
-      context.beginPath();
-      context.arc(0, 0, 0.25, 0, Math.PI * 2, true);
-      context.closePath();
-      context.fill();
-    }
-  });
   if (intersects.length > 0) {
     var cube = intersects[0].object;
     cube.active = !cube.active;
     gmodel.updateModel(cube.column, cube.row, Number(cube.active));
+    console.log('Clicked: ' + cube.column + ', ' + cube.row);
+  }
+  if (dbg) {
+    console.log('Clicked: ' + x + ', ' + y);
   }
 }
 

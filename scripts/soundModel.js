@@ -42,7 +42,7 @@ function initialize() {
 }
 
 function isPlaying() {
-  return (handle === null);
+  return (handle !== null);
 }
 
 function start() {
@@ -76,12 +76,13 @@ function getState(x, y) {
 
 function stop() {
   clearInterval(handle);
+  handle = null;
   for (var i = 0; i < synths.length; i++) {
     synths[i].keyUp();
   }
 }
 
-function updateSequence(voice, beat, state) {
+function updateSequence(beat, voice, state) {
   sequence[voice][beat] = state;
 }
 
