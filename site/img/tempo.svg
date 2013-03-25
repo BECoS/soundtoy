@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.1"
+   width="113"
+   height="36"
+   id="svg3183">
+  <defs
+     id="defs3185">
+    <linearGradient
+       id="linearGradient4306">
+      <stop
+         id="stop4308"
+         style="stop-color:#000000;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop4310"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="514.25977"
+       y1="249.77339"
+       x2="483.23779"
+       y2="157.49048"
+       id="linearGradient3195"
+       xlink:href="#linearGradient3189"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient3189">
+      <stop
+         id="stop3191"
+         style="stop-color:#ffb7b7;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3197"
+         style="stop-color:#ff0000;stop-opacity:1"
+         offset="0.51460546" />
+      <stop
+         id="stop3193"
+         style="stop-color:#ffb7b7;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <filter
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       color-interpolation-filters="sRGB"
+       id="filter3214">
+      <feGaussianBlur
+         result="result0"
+         in="SourceAlpha"
+         stdDeviation="2.3"
+         id="feGaussianBlur3216" />
+      <feMorphology
+         result="result1"
+         radius="6.6"
+         in="SourceAlpha"
+         id="feMorphology3218" />
+      <feGaussianBlur
+         in="result1"
+         stdDeviation="8.9"
+         id="feGaussianBlur3220" />
+      <feColorMatrix
+         result="result91"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.3 0"
+         id="feColorMatrix3222" />
+      <feComposite
+         in2="result91"
+         operator="out"
+         in="result0"
+         result="result2"
+         id="feComposite3224" />
+      <feGaussianBlur
+         result="result4"
+         stdDeviation="1.7"
+         id="feGaussianBlur3226" />
+      <feDiffuseLighting
+         result="result92"
+         surfaceScale="10"
+         id="feDiffuseLighting3228">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3230" />
+      </feDiffuseLighting>
+      <feBlend
+         in2="SourceGraphic"
+         mode="multiply"
+         result="result93"
+         id="feBlend3232" />
+      <feComposite
+         in2="SourceAlpha"
+         operator="in"
+         result="result3"
+         id="feComposite3234" />
+      <feSpecularLighting
+         result="result94"
+         specularExponent="17.89999962"
+         surfaceScale="5"
+         in="result4"
+         id="feSpecularLighting3236">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3238" />
+      </feSpecularLighting>
+      <feComposite
+         in2="result3"
+         operator="atop"
+         id="feComposite3240" />
+    </filter>
+    <filter
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       color-interpolation-filters="sRGB"
+       id="filter3242">
+      <feGaussianBlur
+         result="result0"
+         in="SourceAlpha"
+         stdDeviation="2.3"
+         id="feGaussianBlur3244" />
+      <feMorphology
+         result="result1"
+         radius="6.6"
+         in="SourceAlpha"
+         id="feMorphology3246" />
+      <feGaussianBlur
+         in="result1"
+         stdDeviation="8.9"
+         id="feGaussianBlur3248" />
+      <feColorMatrix
+         result="result91"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.3 0"
+         id="feColorMatrix3250" />
+      <feComposite
+         in2="result91"
+         operator="out"
+         in="result0"
+         result="result2"
+         id="feComposite3252" />
+      <feGaussianBlur
+         result="result4"
+         stdDeviation="1.7"
+         id="feGaussianBlur3254" />
+      <feDiffuseLighting
+         result="result92"
+         surfaceScale="10"
+         id="feDiffuseLighting3256">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3258" />
+      </feDiffuseLighting>
+      <feBlend
+         in2="SourceGraphic"
+         mode="multiply"
+         result="result93"
+         id="feBlend3260" />
+      <feComposite
+         in2="SourceAlpha"
+         operator="in"
+         result="result3"
+         id="feComposite3262" />
+      <feSpecularLighting
+         result="result94"
+         specularExponent="17.89999962"
+         surfaceScale="5"
+         in="result4"
+         id="feSpecularLighting3264">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3266" />
+      </feSpecularLighting>
+      <feComposite
+         in2="result3"
+         operator="atop"
+         result="fbSourceGraphic"
+         id="feComposite3268" />
+      <feColorMatrix
+         id="feColorMatrix3270"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         in="fbSourceGraphic"
+         result="fbSourceGraphicAlpha" />
+      <feFlood
+         in="fbSourceGraphic"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.5"
+         id="feFlood3272" />
+      <feComposite
+         in2="fbSourceGraphic"
+         operator="in"
+         in="flood"
+         result="composite1"
+         id="feComposite3274" />
+      <feGaussianBlur
+         result="blur"
+         stdDeviation="4"
+         id="feGaussianBlur3276" />
+      <feOffset
+         result="offset"
+         dy="6.9"
+         dx="7"
+         id="feOffset3278" />
+      <feComposite
+         in2="offset"
+         operator="over"
+         in="fbSourceGraphic"
+         result="composite2"
+         id="feComposite3280" />
+    </filter>
+    <filter
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       color-interpolation-filters="sRGB"
+       id="filter3080">
+      <feColorMatrix
+         result="fbSourceGraphic"
+         values="0"
+         type="hueRotate"
+         id="feColorMatrix3082" />
+      <feColorMatrix
+         result="result91"
+         values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0 "
+         in="fbSourceGraphic"
+         id="feColorMatrix3084" />
+      <feBlend
+         in2="result91"
+         mode="darken"
+         in="fbSourceGraphic"
+         result="result92"
+         id="feBlend3086" />
+      <feBlend
+         in2="result92"
+         mode="screen"
+         result="result93"
+         id="feBlend3088" />
+      <feComposite
+         in2="SourceGraphic"
+         operator="in"
+         result="fbSourceGraphic"
+         id="feComposite3090" />
+      <feColorMatrix
+         id="feColorMatrix3092"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         in="fbSourceGraphic"
+         result="fbSourceGraphicAlpha" />
+      <feGaussianBlur
+         in="fbSourceGraphic"
+         stdDeviation="1.5"
+         result="result6"
+         id="feGaussianBlur3094" />
+      <feComposite
+         in2="result6"
+         operator="atop"
+         in="fbSourceGraphic"
+         result="result8"
+         id="feComposite3096" />
+      <feComposite
+         in2="fbSourceGraphicAlpha"
+         operator="atop"
+         in="result8"
+         result="result9"
+         id="feComposite3098" />
+    </filter>
+    <filter
+       color-interpolation-filters="sRGB"
+       id="filter3965">
+      <feGaussianBlur
+         result="result8"
+         stdDeviation="10"
+         id="feGaussianBlur3967" />
+      <feComposite
+         in2="result8"
+         operator="in"
+         in="SourceGraphic"
+         result="result6"
+         id="feComposite3969" />
+      <feComposite
+         in2="result6"
+         operator="in"
+         result="result11"
+         id="feComposite3971" />
+      <feFlood
+         flood-color="rgb(255,222,85)"
+         flood-opacity="1"
+         in="result11"
+         result="result10"
+         id="feFlood3973" />
+      <feBlend
+         in2="result10"
+         mode="normal"
+         in="result11"
+         result="result12"
+         id="feBlend3975" />
+      <feComposite
+         in2="SourceGraphic"
+         operator="in"
+         in="result12"
+         result="result2"
+         id="feComposite3977" />
+    </filter>
+    <filter
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       color-interpolation-filters="sRGB"
+       id="filter3214-5">
+      <feGaussianBlur
+         result="result0"
+         in="SourceAlpha"
+         stdDeviation="2.3"
+         id="feGaussianBlur3216-6" />
+      <feMorphology
+         result="result1"
+         radius="6.6"
+         in="SourceAlpha"
+         id="feMorphology3218-5" />
+      <feGaussianBlur
+         in="result1"
+         stdDeviation="8.9"
+         id="feGaussianBlur3220-2" />
+      <feColorMatrix
+         result="result91"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.3 0"
+         id="feColorMatrix3222-9" />
+      <feComposite
+         in2="result91"
+         operator="out"
+         in="result0"
+         result="result2"
+         id="feComposite3224-9" />
+      <feGaussianBlur
+         result="result4"
+         stdDeviation="1.7"
+         id="feGaussianBlur3226-4" />
+      <feDiffuseLighting
+         result="result92"
+         surfaceScale="10"
+         id="feDiffuseLighting3228-0">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3230-3" />
+      </feDiffuseLighting>
+      <feBlend
+         in2="SourceGraphic"
+         mode="multiply"
+         result="result93"
+         id="feBlend3232-3" />
+      <feComposite
+         in2="SourceAlpha"
+         operator="in"
+         result="result3"
+         id="feComposite3234-3" />
+      <feSpecularLighting
+         result="result94"
+         specularExponent="17.89999962"
+         surfaceScale="5"
+         in="result4"
+         id="feSpecularLighting3236-4">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3238-7" />
+      </feSpecularLighting>
+      <feComposite
+         in2="result3"
+         operator="atop"
+         id="feComposite3240-3" />
+    </filter>
+    <filter
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       color-interpolation-filters="sRGB"
+       id="filter3214-5-0">
+      <feGaussianBlur
+         result="result0"
+         in="SourceAlpha"
+         stdDeviation="2.3"
+         id="feGaussianBlur3216-6-5" />
+      <feMorphology
+         result="result1"
+         radius="6.6"
+         in="SourceAlpha"
+         id="feMorphology3218-5-1" />
+      <feGaussianBlur
+         in="result1"
+         stdDeviation="8.9"
+         id="feGaussianBlur3220-2-4" />
+      <feColorMatrix
+         result="result91"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.3 0"
+         id="feColorMatrix3222-9-9" />
+      <feComposite
+         in2="result91"
+         operator="out"
+         in="result0"
+         result="result2"
+         id="feComposite3224-9-9" />
+      <feGaussianBlur
+         result="result4"
+         stdDeviation="1.7"
+         id="feGaussianBlur3226-4-9" />
+      <feDiffuseLighting
+         result="result92"
+         surfaceScale="10"
+         id="feDiffuseLighting3228-0-9">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3230-3-1" />
+      </feDiffuseLighting>
+      <feBlend
+         in2="SourceGraphic"
+         mode="multiply"
+         result="result93"
+         id="feBlend3232-3-3" />
+      <feComposite
+         in2="SourceAlpha"
+         operator="in"
+         result="result3"
+         id="feComposite3234-3-5" />
+      <feSpecularLighting
+         result="result94"
+         specularExponent="17.89999962"
+         surfaceScale="5"
+         in="result4"
+         id="feSpecularLighting3236-4-7">
+        <feDistantLight
+           elevation="45"
+           azimuth="225"
+           id="feDistantLight3238-7-0" />
+      </feSpecularLighting>
+      <feComposite
+         in2="result3"
+         operator="atop"
+         id="feComposite3240-3-7" />
+    </filter>
+    <linearGradient
+       x1="-133.47618"
+       y1="5.4402046"
+       x2="-112.71753"
+       y2="-26.201221"
+       id="linearGradient4312"
+       xlink:href="#linearGradient4306"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       x1="-133.47618"
+       y1="5.4402046"
+       x2="-112.71753"
+       y2="-26.201221"
+       id="linearGradient4312-4"
+       xlink:href="#linearGradient4306-7"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient4306-7">
+      <stop
+         id="stop4308-4"
+         style="stop-color:#000000;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop4310-8"
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="-133.47618"
+       y1="5.4402046"
+       x2="-112.71753"
+       y2="-26.201221"
+       id="linearGradient4407"
+       xlink:href="#linearGradient4306-7"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <metadata
+     id="metadata3188">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="matrix(1.6376812,0,0,0.62068966,-341.64896,-245.70206)"
+     id="layer2">
+    <rect
+       width="160"
+       height="120"
+       x="167.71915"
+       y="364.5271"
+       transform="matrix(0.43125,0,0,0.48333333,136.28862,219.66522)"
+       id="rect3210"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;filter:url(#filter3214)" />
+  </g>
+  <g
+     transform="translate(-208.61751,-417.85332)"
+     id="layer1" />
+  <rect
+     width="105.7439"
+     height="25.817074"
+     x="6.719512"
+     y="6.3658538"
+     transform="matrix(0.9503313,0,0,0.99342745,-0.13162847,-1.1477088)"
+     id="rect3034"
+     style="fill:#c8c4b7;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:28.37999846;filter:url(#filter3080)" />
+</svg>
