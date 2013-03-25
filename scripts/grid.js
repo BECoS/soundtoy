@@ -8,7 +8,7 @@ var $ = require('jquery-browserify');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
 var geometry, material, mesh, mesh2;
-var notes, seqs;
+var cubes;
 var audioContext;
 
 var cubeActiveColor = 0x000f00;
@@ -30,81 +30,55 @@ function initAudio() {
   }
 }
 
-//function setNote(noteIndex) {
-//  sound.play(Math.floor(noteIndex / 8)); 
-//}
-
 function animate() {
   window.requestAnimationFrame(animate);
-  //if (gmodel.isPlaying()) {
-  //  var column = gmodel.getActiveColumn();
-  //  for (var i = 0; i < 64; i++) {
-  //    if (notes[i] !== undefined) {
-  //      if (i % 8 == column) {
-  //        notes[i].rotation.x += 0.1;
-  //        notes[i].rotation.y += 0.2;
-  //        //if (notes[i].active) {
-  //        //  setNote(i);
-  //        //}
-  //      }
-  //      else {
-  //        notes[i].rotation.x = 0;  
-  //        notes[i].rotation.y = 0;
-  //      }
-  //    }
-  //  }
-  //} else {
-  //  for (var j = 0; j < 64; j++) {
-  //    if (notes[j] !== undefined) {
-  //      notes[j].rotation.x += 0;
-  //      notes[j].rotation.y += 0;
-  //    }
-  //  } 
-  //}
-  var activeColumn = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
-  activeColumn = activeColumn === -1 ? 7 : activeColumn;
-  for (var i = 0; i < 64; i++) {
-    var colActive = i % 8 === activeColumn ? 
-      true : false;
-    var cube = notes[i];
-    if (colActive) {
-      cube.rotation.x += 0.2;
-    } else {
-      cube.rotation.x = 0;
-    }
-    if (cube.active) { 
-      cube.material.color.setHex(cubeActiveColor);
-      cube.material.wireframe = true;
-    } else {
-      cube.material.color.setHex(cubeInactiveColor);
-      cube.material.wireframe = false;
+  var activeCol = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
+  activeCol = activeCol === -1 ? 7 : activeCol; 
+  for (var voice = 0; voice < gmodel.numVoices; voice++) {
+    for (var note = 0; note < gmodel.numNotes; note++) {
+      var cube = cubes[voice][note];
+      if (cube.note === activeCol) {
+        cube.rotation.x += 0.2;
+      } else {
+        cube.rotation.x = 0;
+      }
+      if (cube.active) { 
+        cube.material.color.setHex(cubeActiveColor);
+        cube.material.wireframe = true;
+      } else {
+        cube.material.color.setHex(cubeInactiveColor);
+        cube.material.wireframe = false;
+      }
     }
   }
   renderer.render(scene, camera);
 }
 
 function initGraphics() {
-  var i, note, grid;
+  var grid;
   camera = new three.THREE.PerspectiveCamera(75, 1, 1, 10000);
   camera.position.z = 100;
   camera.position.x = 60;
   camera.position.y = 50;
-
+  cubes = new Array(gmodel.numVoices);
   scene = new three.THREE.Scene();
   projector = new three.THREE.Projector();
   geometry = new three.THREE.CubeGeometry(8, 8, 8);
-  notes = [];
-  for (i = 0; i < 64; i++) {
-    note = new three.THREE.Mesh(geometry,
-        new three.THREE.MeshLambertMaterial({color: cubeInactiveColor}));
-    note.position.x = 16 * (i % 8);
-    note.position.y = 16 * Math.floor(i / 8);
-    note.column = i % 8;
-    note.row = Math.floor(i / 8);
-    note.active = Boolean(gmodel.getState(note.column, note.row));
-    notes.push(note);
-    scene.add(note);
+  for (var voice = 0; voice < gmodel.numVoices; voice++) {
+    cubes[voice] = new Array(gmodel.numNotes);
+    for (var note = 0; note < gmodel.numNotes; note++) {
+      var cube = new three.THREE.Mesh(geometry,
+          new three.THREE.MeshLambertMaterial({Color: cubeInactiveColor}));
+      cube.position.x = 16 * note;
+      cube.position.y = 16 * voice;
+      cube.voice = voice;
+      cube.note = note;
+      cube.active = Boolean(gmodel.getState(cube.note, cube.voice));
+      cubes[voice][note] = cube;
+      scene.add(cube);
+    }
   }
+  console.log(cubes[0][0]);
   renderer = new three.THREE.CanvasRenderer();
   grid = document.getElementById('grid');
   renderer.setSize(
@@ -141,7 +115,10 @@ function onGridMouseDown(event) {
   projector.unprojectVector(vector, camera);
   var raycaster = new three.THREE.Raycaster(camera.position, 
       vector.sub(camera.position).normalize());
-  var intersects = raycaster.intersectObjects(notes);
+  var intersects = [];
+  for (var voice = 0; voice < gmodel.numVoices; voice++) {
+    intersects.push(raycaster.intersectObjects(cubes[voice]));
+  }
   if (intersects.length > 0) {
     var cube = intersects[0].object;
     cube.active = !cube.active;
