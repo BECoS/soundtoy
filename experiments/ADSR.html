@@ -1,0 +1,368 @@
+<!Doctype HTML>
+<html>
+  <head>
+    <title>
+      ADSR Envelope
+    </title>
+    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v4.3.3.min.js"></script>
+    <script src="imgpreload.js"></script>
+  </head>
+  <body>
+    <div id = "container">
+    </div>
+  </body>
+
+  <script>
+    var stage = new Kinetic.Stage({
+      container: 'container',
+      width: 425,
+      height: 300
+    });
+    var TO_RADIANS = Math.PI/180;
+    var ypos;
+
+    var lineLayer = new Kinetic.Layer();
+    var centerLayer = new Kinetic.Layer();
+    var dialLayer = new Kinetic.Layer();
+
+    // build ATK
+    var stem = new Kinetic.Line({
+      strokeWidth: 3,
+      stroke: 'green',
+      points: [{
+        x: 0,
+        y: stage.getHeight() / 2
+        }, {
+        x: 100,
+        y: 0
+      }],
+      draggable: false
+    });
+
+    // build DCY
+    var stem2 = new Kinetic.Line({
+      strokeWidth: 3,
+      stroke: 'orange',
+      points: [{
+        x: 100,
+        y: 0
+        }, {
+        x: 200,
+        y: stage.getHeight() / 2 - 50
+      }],
+      draggable: false
+    });
+
+    // build STN
+    var stem3 = new Kinetic.Line({
+      strokeWidth: 3,
+      stroke: 'lightblue',
+      points: [{
+        x: 200,
+        y: stage.getHeight() / 2 - 50
+        }, {
+        x: 300,
+        y: stage.getHeight() / 2 - 50
+      }],
+      draggable: false
+    });
+
+    // build RLS
+    var stem4 = new Kinetic.Line({
+      strokeWidth: 3,
+      stroke: 'pink',
+      points: [{
+        x: 300,
+        y: stage.getHeight() / 2 - 50
+        }, {
+        x: 400,
+        y: stage.getHeight() / 2
+      }],
+      draggable: false
+    });
+
+    // build draggable (some) connectors
+    var c1 = new Kinetic.Circle({
+      x: 0,
+      y: 0,
+      radius: 6,
+      fill: 'black',
+      draggable: false,
+      x: 0,
+      y: stage.getHeight() / 2
+    });
+
+    var c2 = new Kinetic.Circle({
+      x: 100,
+      y: 0,
+      radius: 6,
+      fill: 'blue',
+      draggable: true,
+      dragBoundFunc: function(pos) {
+        var newX = pos.x > c3.getX() ? c3.getX() : pos.x
+        return {
+          x: newX,
+          y: this.getAbsolutePosition().y
+        }
+      }
+    });
+
+    var c3 = new Kinetic.Circle({
+      x: 200,
+      y: stage.getHeight() / 2 - 50,
+      radius: 6,
+      fill: 'purple',
+      draggable: true,
+      dragBoundFunc: function(pos) {
+        var newY;
+        if (pos.y > stage.getHeight() / 2) {
+          newY = stage.getHeight() / 2;
+        }
+        else if (pos.y < 0) {
+          newY = 0;
+        }
+        else {
+          newY = pos.y;
+        }
+        var newX;
+        if (pos.x < c2.getX()) {
+          newX = c2.getX();
+        }
+        else if (pos.x > c4.getX()) {
+          newX = c4.getX();
+        }
+        else {
+          newX = pos.x;
+        }
+        return {
+          x: newX,
+          y: newY
+        }
+      }
+    });
+
+    var c4 = new Kinetic.Circle({
+      x: 300,
+      y: stage.getHeight() / 2 - 50,
+      radius: 6,
+      fill: 'lightgreen',
+      draggable: false
+    });
+
+    var c5 = new Kinetic.Circle({
+      x: 400,
+      y: stage.getHeight() / 2,
+      radius: 6,
+      fill: 'hotpink',
+      draggable: true,
+      dragBoundFunc: function(pos) {
+        var newX = pos.x < c4.getX() ? c4.getX() : pos.x
+        return {
+          x: newX,
+          y: this.getAbsolutePosition().y
+        }
+      }
+    });
+
+    lineLayer.add(stem);
+    lineLayer.add(stem2);
+    lineLayer.add(stem3);
+    lineLayer.add(stem4);
+
+    centerLayer.add(c1);
+    centerLayer.add(c2);
+    centerLayer.add(c3);
+    centerLayer.add(c4);
+    centerLayer.add(c5);
+
+    stage.add(lineLayer);
+    stage.add(centerLayer);
+
+    centerLayer.draw();
+
+    c2.on('dragstart', (function () {
+      c2.getLayer().afterDraw(function () {
+        stem.attrs.points[1].x = c2.getX()-stem.getX();
+        stem2.attrs.points[0].x = c2.getX()-stem2.getX();
+        lineLayer.draw();
+      });
+    }));
+
+    c3.on('dragstart', (function () {
+      c3.getLayer().afterDraw(function () {
+        stem2.attrs.points[1].x = c3.getX()-stem2.getX();
+        stem2.attrs.points[1].y = c3.getY()-stem2.getY();
+        stem3.attrs.points[0].x = c3.getX()-stem3.getX();
+        stem3.attrs.points[0].y = c3.getY()-stem3.getY();
+        stem3.attrs.points[1].y = c3.getY()-stem3.getY();
+        c4.setY(stem3.attrs.points[1].y);
+        stem4.attrs.points[0].y = c4.getY()-stem3.getY();
+        lineLayer.draw();
+        centerLayer.draw();
+      });
+    }));
+
+    c5.on('dragstart', (function () {
+      c5.getLayer().afterDraw(function () {
+        stem4.attrs.points[1].x = c5.getX()-stem4.getX();
+        lineLayer.draw();
+      });
+    }));
+
+    function updateConnectors(name) {
+      if (name === 'ATK') {
+        stem.attrs.points[1].x = c2.getX()-stem.getX();
+        stem2.attrs.points[0].x = c2.getX()-stem2.getX();
+      }
+      else if (name === 'DCY') {
+        stem2.attrs.points[1].x = c3.getX()-stem2.getX();
+        stem2.attrs.points[1].y = c3.getY()-stem2.getY();
+        stem3.attrs.points[0].x = c3.getX()-stem3.getX();
+        stem3.attrs.points[0].y = c3.getY()-stem3.getY();
+        stem3.attrs.points[1].y = c3.getY()-stem3.getY();
+        c4.setY(stem3.attrs.points[1].y);
+        stem4.attrs.points[0].y = c4.getY()-stem3.getY();
+      }
+
+      else if (name === 'RLS') {
+        stem4.attrs.points[1].x = c5.getX()-stem4.getX();
+      }
+      centerLayer.draw();
+      lineLayer.draw();
+    }
+
+
+    imgpreload(["base1.svg", "dial1.svg"], function(images) {
+      var atkBase = new Kinetic.Image({
+        x: 50,
+        y: 250,
+        height: 57,
+        width: 57,
+        image: images[0],
+        offset: [57/2, 57/2]
+      });
+
+      var atkDial = new Kinetic.Image({
+        x: 50,
+        y: 250,
+        width: 57,
+        height: 57,
+        image: images[1],
+        offset: [57/2, 57/2],
+        name: 'ATK'
+      });
+
+      atkDial.angle = -135;
+
+      var dcyBase = atkBase.clone({x: 125});
+      var dcyDial = atkDial.clone({x: 125, name: 'DCY'});
+      dcyDial.angle = -135;
+
+      var stnBase = atkBase.clone({x: 200});
+      var stnDial = atkDial.clone({x: 200, name: 'STN'});
+      stnDial.angle = -135;
+
+      var rlsBase = atkBase.clone({x: 275});
+      var rlsDial = atkDial.clone({x: 275, name: 'RLS'});
+      rlsDial.angle = -135;
+
+
+
+      /*atkDial.createImageHitRegion(function() {
+        atkDial.getLayer().drawHit();
+      });
+
+      atkDial.on('mousedown', function(event) {
+        ypos = event.pageY;
+        stage.on('mousemove', function(evt) {
+          handleMouseMove(evt, atkDial)
+        });
+      });
+
+      dcyDial.on('mousedown', function(event) {
+        ypos = event.pageY;
+        stage.on('mousemove', function(evt) {
+          handleMouseMove(evt, dcyDial);
+        });
+      });
+
+      atkDial.on('mouseup', function(event) {
+        stage.off('mousemove');
+      });
+
+      dcyDial.on('mouseup', function(event) {
+        stage.off('mousemove');
+      });*/
+
+      atkDial.setRotation(atkDial.angle * TO_RADIANS);
+      dcyDial.setRotation(dcyDial.angle * TO_RADIANS);
+      stnDial.setRotation(stnDial.angle * TO_RADIANS);
+      rlsDial.setRotation(rlsDial.angle * TO_RADIANS);
+
+      dialLayer.add(atkBase);
+      dialLayer.add(atkDial);
+      dialLayer.add(dcyBase);
+      dialLayer.add(dcyDial);
+      dialLayer.add(stnBase);
+      dialLayer.add(stnDial);
+      dialLayer.add(rlsBase);
+      dialLayer.add(rlsDial);
+
+      stage.add(dialLayer);
+
+      dialLayer.draw();
+    });
+
+
+    function handleMouseMove(e, control) {
+      if (e.pageY < ypos) {
+        if (control.angle + 5 <= 0) {
+          console.log(control.getName());
+          control.angle += 5;
+          control.setRotation(control.angle * TO_RADIANS);
+          dialLayer.draw();
+          if (control.getName() === 'ATK' && c2.getX() > c1.getX()) {
+            c2.setX(c2.getX() - 1);
+          }
+          else if (control.getName() === 'DCY' && c3.getX() > c2.getX()) {
+            c3.setX(c3.getX() - 1);
+          }
+          else if (control.getName() === 'RLS' && c5.getX() > c4.getX()) {
+            c5.setX(c5.getX() - 1);
+          }
+          updateConnectors(control.getName());
+        }
+      }
+      else if (e.pageY > ypos) {
+        if (control.angle - 5 >= -135) {
+          control.angle -= 5;
+          control.setRotation(control.angle * TO_RADIANS);
+          dialLayer.draw();
+          if (control.getName() === 'ATK' && c2.getX() < c3.getX()) {
+            c2.setX(c2.getX() + 1);
+          }
+          else if (control.getName() === 'DCY' && c3.getX() < c4.getX()) {
+            c3.setX(c3.getX() + 1);
+          }
+          else if (control.getName() === 'RLS') {
+            c5.setX(c5.getX() + 1);
+          }
+          updateConnectors(control.getName());
+        }
+      }
+      ypos = e.pageY;
+    }
+
+    dialLayer.on('mousedown', function(event) {
+      var shape = event.shape;
+      //alert('my name is  ' + shape.getName());
+      dialLayer.on('mousemove', function(event) {
+        handleMouseMove(event, shape);
+      });
+    });
+
+    dialLayer.on('mouseup', function(event) {
+      dialLayer.off('mousemove');
+    });
+  </script>
+</html>
