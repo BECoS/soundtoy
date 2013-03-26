@@ -10,7 +10,7 @@ var camera, scene, renderer, projector, canvasWidth, canvasHeight;
 var geometry, material, mesh, mesh2;
 var cubes;
 var audioContext;
-
+var lastFrameTime = 0;
 var cubeActiveColor = 0x000f00;
 var cubeInactiveColor = 0x0000F0;
 
@@ -32,6 +32,12 @@ function initAudio() {
 
 function animate() {
   window.requestAnimationFrame(animate);
+  var frameTime = gmodel.getTime(); 
+  if (frameTime - lastFrameTime  < 0.016666667) {
+    // Don't bother trying to do more than 60fps
+    return;
+  }
+  lastFrameTime = frameTime;
   var activeCol = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
   activeCol = activeCol === -1 ? 7 : activeCol; 
   for (var voice = 0; voice < gmodel.numVoices; voice++) {
@@ -78,7 +84,6 @@ function initGraphics() {
       scene.add(cube);
     }
   }
-  console.log(cubes[0][0]);
   renderer = new three.THREE.CanvasRenderer();
   grid = document.getElementById('grid');
   renderer.setSize(

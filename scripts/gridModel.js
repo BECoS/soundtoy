@@ -26,6 +26,9 @@ function isPlaying() {
   return model.isPlaying();
 }
 
+function getTime() {
+  return model.getTime();
+}
 
 exports.initialize = initialize;
 exports.updateModel = updateModel;
@@ -34,3 +37,4 @@ exports.getActiveColumn = getActiveColumn;
 exports.isPlaying = isPlaying;
 exports.numVoices = numVoices;
 exports.numNotes = numNotes;
+exports.getTime = getTime;

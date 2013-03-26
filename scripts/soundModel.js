@@ -38,7 +38,6 @@ function initialize() {
   /*C4*/ [ 0, 0, 0, 0, 0, 0, 0, 1,],
   ];
   totalBeats = sequence[0].length;
-  console.log("Initializing grid");
 }
 
 function isPlaying() {
@@ -70,7 +69,6 @@ function getActiveColumn() {
 }
 
 function getState(x, y) {
-  console.log(sequence[x][y].toString());
   return sequence[x][y];
 }
 
@@ -86,6 +84,10 @@ function updateSequence(beat, voice, state) {
   sequence[voice][beat] = state;
 }
 
+function getTime() {
+  return context.currentTime;
+}
+
 exports.initialize = initialize;
 exports.start = start;
 exports.stop = stop;
@@ -93,3 +95,4 @@ exports.updateSequence = updateSequence;
 exports.getActiveColumn = getActiveColumn;
 exports.getState = getState;
 exports.isPlaying = isPlaying;
+exports.getTime = getTime;
