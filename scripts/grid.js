@@ -117,21 +117,24 @@ function onGridMouseDown(event) {
     -(y / canvasHeight) * 2,
     1 
   );
+  captureCubeClick(vector);
+}
+
+function captureCubeClick (vector) {
   projector.unprojectVector(vector, camera);
+  var allCubes = []; 
+  for (var voice = 0; voice < gmodel.numVoices; voice++) { 
+    for (var note = 0; note < gmodel.numNotes; note++) { 
+      allCubes.push(cubes[voice][note]);
+    }
+  }
   var raycaster = new three.THREE.Raycaster(camera.position, 
       vector.sub(camera.position).normalize());
-  var intersects = [];
-  for (var voice = 0; voice < gmodel.numVoices; voice++) {
-    intersects.push(raycaster.intersectObjects(cubes[voice]));
-  }
+  var intersects = raycaster.intersectObjects(allCubes);
   if (intersects.length > 0) {
     var cube = intersects[0].object;
     cube.active = !cube.active;
-    gmodel.updateModel(cube.column, cube.row, Number(cube.active));
-    console.log('Clicked: ' + cube.column + ', ' + cube.row);
-  }
-  if (dbg) {
-    console.log('Clicked: ' + x + ', ' + y);
+    gmodel.updateModel(cube.note, cube.voice, Number(cube.active));
   }
 }
 
