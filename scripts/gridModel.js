@@ -2,8 +2,8 @@
 
 var model = require('./soundModel.js');
 
-var numVoices = 8,
-    numNotes = 8;
+var numVoices = 16,
+    numNotes = 16;
 
 function initialize(rows, columns) {
 //TODO: Seperate this module's sequence from the soundModel's

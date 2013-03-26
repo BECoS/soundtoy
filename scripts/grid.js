@@ -69,14 +69,14 @@ function initGraphics() {
   cubes = new Array(gmodel.numVoices);
   scene = new three.THREE.Scene();
   projector = new three.THREE.Projector();
-  geometry = new three.THREE.CubeGeometry(8, 8, 8);
+  geometry = new three.THREE.CubeGeometry(8, 8, 2);
   for (var voice = 0; voice < gmodel.numVoices; voice++) {
     cubes[voice] = new Array(gmodel.numNotes);
     for (var note = 0; note < gmodel.numNotes; note++) {
       var cube = new three.THREE.Mesh(geometry,
           new three.THREE.MeshLambertMaterial({Color: cubeInactiveColor}));
-      cube.position.x = 16 * note;
-      cube.position.y = 16 * voice;
+      cube.position.x = 10 * note;
+      cube.position.y = 10 * voice;
       cube.voice = voice;
       cube.note = note;
       cube.active = Boolean(gmodel.getState(cube.note, cube.voice));
