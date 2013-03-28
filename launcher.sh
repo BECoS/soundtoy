@@ -3,6 +3,7 @@
 
 trap "$0" SIGINT
 
+port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
 scriptdir=scripts
 scripts=$scriptdir/*.js
 specdir=specs
@@ -45,6 +46,12 @@ fi
 #  fi
 #done
 
-echo -e "\n${blue}Listening on `egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+'`${reset}"
-echo -ne "${white}Ctrl-c to restart. Use Ctrl-\ to quit.${reset}\t"
-node app.js
+netstat -anp tcp 2>/dev/null | awk '$6 == "LISTEN"' | grep -o $port &> /dev/null
+if [[ $? -eq 0 ]]; then
+  echo "${boldred}Port $port is in use already${reset}"
+  exit 1
+else
+  echo -e "\n${blue}Listening on $port ${reset}"
+  echo -ne "${white}Ctrl-c to restart. Use Ctrl-\ to quit.${reset}\t"
+  node app.js
+fi
