@@ -2,11 +2,9 @@
 
 var model = require('./soundModel.js');
 
-var numVoices = 16,
-    numNotes = 16;
-
 function initialize(rows, columns) {
 //TODO: Seperate this module's sequence from the soundModel's
+  console.log("gridModel initialized");
   model.initialize();
 }
 
@@ -28,6 +26,14 @@ function isPlaying() {
 
 function getTime() {
   return model.getTime();
+}
+
+function numVoices() {
+  return model.numVoices();
+}
+
+function numNotes() {
+  return model.numNotes();
 }
 
 exports.initialize = initialize;

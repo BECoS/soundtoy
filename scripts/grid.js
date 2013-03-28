@@ -20,16 +20,6 @@ function figureOutAnimationCall() {
   window.requestAnimationFrame = requestAnimationFrame;
 }
 
-function initAudio() {
-  try {
-    gmodel.initialize();
-  } catch (e) {
-    //alert("This won't work unless you use a recent version of Chrome or Safari.");
-    console.log(e.name);
-    console.log(e.message);
-  }
-}
-
 function animate() {
   window.requestAnimationFrame(animate);
   var frameTime = gmodel.getTime(); 
@@ -40,8 +30,8 @@ function animate() {
   lastFrameTime = frameTime;
   var activeCol = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
   activeCol = activeCol === -1 ? 7 : activeCol; 
-  for (var voice = 0; voice < gmodel.numVoices; voice++) {
-    for (var note = 0; note < gmodel.numNotes; note++) {
+  for (var voice = 0; voice < gmodel.numVoices(); voice++) {
+    for (var note = 0; note < gmodel.numNotes(); note++) {
       var cube = cubes[voice][note];
       if (cube.note === activeCol) {
         cube.rotation.x += 0.2;
@@ -60,6 +50,16 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+function initAudio() {
+  try {
+    gmodel.initialize();
+  } catch (e) {
+    //alert("This won't work unless you use a recent version of Chrome or Safari.");
+    console.log(e.name);
+    console.log(e.message);
+  }
+}
+
 function initGraphics() {
   var grid;
   camera = new three.THREE.PerspectiveCamera(75, 1, 1, 10000);
@@ -69,12 +69,16 @@ function initGraphics() {
   cubes = new Array(gmodel.numVoices);
   scene = new three.THREE.Scene();
   projector = new three.THREE.Projector();
-  geometry = new three.THREE.CubeGeometry(8, 8, 2);
-  for (var voice = 0; voice < gmodel.numVoices; voice++) {
-    cubes[voice] = new Array(gmodel.numNotes);
-    for (var note = 0; note < gmodel.numNotes; note++) {
+  geometry = new three.THREE.CubeGeometry(8, 8, 2, 10, 10, 10);
+  for (var voice = 0; voice < gmodel.numVoices(); voice++) {
+    cubes[voice] = new Array(gmodel.numNotes());
+    for (var note = 0; note < gmodel.numNotes(); note++) {
       var cube = new three.THREE.Mesh(geometry,
-          new three.THREE.MeshLambertMaterial({Color: cubeInactiveColor}));
+          new three.THREE.MeshBasicMaterial({
+            Color: 0xFFFFFF, //cubeInactiveColor,
+            //Emissive: 0x005689, 
+          })
+      );
       cube.position.x = 10 * note;
       cube.position.y = 10 * voice;
       cube.voice = voice;
@@ -82,9 +86,13 @@ function initGraphics() {
       cube.active = Boolean(gmodel.getState(cube.note, cube.voice));
       cubes[voice][note] = cube;
       scene.add(cube);
+      var pointLight = new three.THREE.DirectionalLight(0xFFFFFF);
+      pointLight.position.set(0, 0, 1);
+      scene.add(pointLight);
     }
   }
-  renderer = new three.THREE.CanvasRenderer();
+  renderer = //new three.THREE.CanvasRenderer();
+    new three.THREE.WebGLRenderer({antialias: true});
   grid = document.getElementById('grid');
   renderer.setSize(
     canvasHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('height').replace(/px/g, ""), 10),

@@ -54,6 +54,7 @@ function initialize() {
   /*B5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
   ];
   totalBeats = sequence[0].length;
+  console.log("soundModel initialized");
 }
 
 function isPlaying() {
@@ -104,6 +105,14 @@ function getTime() {
   return context.currentTime;
 }
 
+function numVoices() {
+  return sequence.length;
+}
+
+function numNotes() {
+  return sequence[0].length;
+}
+
 exports.initialize = initialize;
 exports.start = start;
 exports.stop = stop;
@@ -112,3 +121,5 @@ exports.getActiveColumn = getActiveColumn;
 exports.getState = getState;
 exports.isPlaying = isPlaying;
 exports.getTime = getTime;
+exports.numVoices = numVoices;
+exports.numNotes = numNotes;
