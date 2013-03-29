@@ -10,15 +10,20 @@ body {
 }
 
 #grid {
-  position: fixed;
-  width: 800px;
-  height: 800px;
+  float: left;
+  position: relative;
+  z-index: 0;
 }
 
 #panel {
-  position: fixed;
-  right: auto;
-  left: 800px;
+  float: right;
+  position: absolute;
+  margin-left: 75%;
+  width: 22%;
+  height: 90%;
+  border-style: outset;
+  border-width: 8px;
+  z-index: 9;
 }
 
 #footer {
