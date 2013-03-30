@@ -85,8 +85,14 @@ function getActiveColumn() {
   return beat % totalBeats;
 }
 
-function getState(x, y) {
-  return sequence[x][y];
+function getState(voice, note) {
+  var state;
+  try {
+   state = sequence[voice][note];
+  } catch (e) {
+    console.log("No note at " + x + ", " + y);
+  }
+  return state;
 }
 
 function stop() {
@@ -97,8 +103,8 @@ function stop() {
   }
 }
 
-function updateSequence(beat, voice, state) {
-  sequence[voice][beat] = state;
+function updateSequence(voice, note, state) {
+  sequence[voice][note] = state;
 }
 
 function getTime() {

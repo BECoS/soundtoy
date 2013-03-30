@@ -18,6 +18,7 @@ $(function() {
         smodel.start();
       }
     });
+  $('<h2>Additive</h2>').appendTo('#panel');
   //$('#slider').slider({
   //  value:100,
   //  min: 0,
