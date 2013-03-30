@@ -21,8 +21,12 @@ body {
   margin-left: 75%;
   width: 22%;
   height: 90%;
-  border-style: outset;
+  color: #00f5f0;
+  border-color: #073642;
   border-width: 8px;
+  border-style: double;
+  background-image: 
+    -webkit-radial-gradient(top left, circle, #000000, #586e75 10%, #000000 40%);
   z-index: 9;
 }
 
