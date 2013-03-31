@@ -17,7 +17,7 @@ $(function() {
   var ctrlLayer = new kinetic.Layer();
   stage.add(ctrlLayer);
 
-  imgpreload(["site/img/playButtonOff.svg", "site/img/playButtonOn.svg"], function(images) {
+  imgpreload(["/img/playButtonOff.svg", "/img/playButtonOn.svg"], function(images) {
     var playInactive = new kinetic.Image({
       x: 50,
         y: 250,
