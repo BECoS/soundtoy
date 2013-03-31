@@ -1,4 +1,3 @@
-const dbg = true;
 const offset = 15;
 const documentBorder = 20;
 
@@ -22,6 +21,14 @@ function figureOutAnimationCall() {
   window.requestAnimationFrame = requestAnimationFrame;
 }
 
+function toggleCubesVisible(visible) {
+  for (var voice = 0; voice < cubes.length; voice++) {
+    for (var note = 0; note < cubes[0].length; note++) {
+      cubes[voice][note].visible = visible;
+    }
+  }
+}
+
 function animate() {
   window.requestAnimationFrame(animate);
   var frameTime = gmodel.getTime(); 
@@ -30,6 +37,7 @@ function animate() {
     return;
   }
   lastFrameTime = frameTime;
+  toggleCubesVisible(window.isGridVisible); 
   var activeCol = gmodel.getActiveColumn() - 1; // Go back in time to sync with the music
   activeCol = activeCol === -1 ? gmodel.numVoices() - 1: activeCol; 
   for (var voice = 0; voice < gmodel.numVoices(); voice++) {
@@ -105,11 +113,10 @@ function addStars() {
 
 function initGraphics() {
   var grid;
-  //camera = new THREE.PerspectiveCamera(75, 1, 1, 10000);
   var width = document.width;
   var height = document.height;
-  camera = new THREE.OrthographicCamera(width / -2, width / 2,
-      height / 2, height / -2, 1, 1000);
+  //camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
+  camera = new THREE.PerspectiveCamera(75, 1, 1, 20000);
   camera.position.z = 100;
   camera.position.x = 0;
   camera.position.y = 0;
@@ -166,8 +173,13 @@ function initGraphics() {
   }
 }
 
+function toggleGrid() {
+  window.isGridVisible = !window.isGridVisible; 
+}
+
 function launch() {
-  window.dbg = false;
+  window.dbg = true;
+  window.isGridVisible = true;
   var browserString = navigator.vendor;
   if (!browserString.match(/google|apple/i)) {
     alert("This won't work unless you use a recent version of Chrome or Safari.");
@@ -192,8 +204,8 @@ function onGridMouseDown(event) {
 }
 
 function createSphere(x, y) {
-  var geom = new THREE.SphereGeometry(1, 1, 1);
-  var mat = new THREE.MeshLambertMaterial({color:0x000000});
+  var geom = new THREE.SphereGeometry(10, 10, 10);
+  var mat = new THREE.MeshLambertMaterial({color:0xa2a200});
   sphere = new THREE.Mesh(geom, mat);
   sphere.position.x = 0;
   sphere.position.y = 0;
@@ -245,7 +257,7 @@ function captureCubeClick (vector) {
 
 function onDocumentKeyDown(event) {
   var keychar = event.which;
-  spherePos();
+  //window.spherePos();
   switch (keychar) {
     case 38: 
       camera.position.y -= 10;
@@ -294,7 +306,7 @@ document.addEventListener("DOMContentLoaded", launch, false);
 document.addEventListener("keydown", onDocumentKeyDown, false);
 
 // DEBUG
-if (dbg) {
+if (window.dbg) {
   window.spherePos = function () {
     console.log("X: " + sphere.position.x + ", " + 
         "Y: " + sphere.position.y + ", " +

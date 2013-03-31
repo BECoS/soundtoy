@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>rotate</title>
+    <style type="text/css">
+      canvas {
+        background: url(backdrop1.svg) no-repeat 100%;
+        font-family:'Black Ops One', cursive;
+      }
+    </style>
+    <style id="css">
+      @font-face {
+        font-family: 'Black Ops One', cursive;
+        src: url('Black_Ops_One/BlackOpsOne-Regular.ttf');
+      }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="imgpreload.js"></script>
+  </head>
+  <body>
+  </body>
+  <script>
+    window.addEventListener("load", init);
+    var knobBase = new Image(),
+    knobDial = new Image(),
+    knobZero = new Image(),
+    arcBtnUp = new Image(),
+    arcBtnDn = new Image(),
+    sliderDial = new Image(),
+    sliderBase = new Image(),
+    TO_RADIANS = Math.PI/180,
+    counter = 0,
+    radius = 24,
+    width,
+    height,
+    plause,
+    mouseStillDown,
+    ypos;
+    arcBtnUp.src = 'arcadeUp.svg';
+    arcBtnDn.src = 'arcadeDown2.svg';
+    knobBase.src = 'base1.svg';
+    knobDial.src = 'dial1.svg';
+    knobZero.src = 'zero1.svg';
+    sliderDial.src = 'sliderDial.svg';
+    sliderBase.src = 'sliderBase.svg';
+    var canvas = document.createElement('canvas');
+    width = canvas.width = 500;
+    height = canvas.height = 650;
+    var controls = [];
+    var context = canvas.getContext('2d');
+    document.getElementsByTagName('body')[0].appendChild(canvas);
+
+    function init() {
+
+      imgpreload(["base1.svg", "dial1.svg", "zero1.svg"], function(images) {
+        hi = makeControls(images[0], images[1], images[2], counter, radius, 50, 200);
+        controls.push(hi);
+        med = makeControls(images[0], images[1], images[2], counter, radius, 50, 275);
+        controls.push(med);
+        lo = makeControls(images[0], images[1], images[2], counter, radius, 50, 350);
+        controls.push(lo);
+
+        drawNormalImage(hi.knobBase, hi.x, hi.y);
+        drawRotatedImage(hi.knobDial, hi.x, hi.y, hi.counter);
+        drawNormalImage(hi.knobZero, hi.x, hi.y);
+        drawNormalImage(med.knobBase, med.x, med.y);
+        drawRotatedImage(med.knobDial, med.x, med.y, med.counter);
+        drawNormalImage(med.knobZero, med.x, med.y);
+        drawNormalImage(lo.knobBase, lo.x, lo.y);
+        drawRotatedImage(lo.knobDial, lo.x, lo.y, lo.counter);
+        drawNormalImage(lo.knobZero, lo.x, lo.y);
+
+      });
+
+      imgpreload(["arcadeUp.svg", "arcadeDown2.svg"], function(images) {
+
+        arcade1 = makeArcadeButton(images[0], images[1], 30, 60,585);
+        arcade2 = makeArcadeButton(images[0], images[1], 30, 60,500);
+        arcade3 = makeArcadeButton(images[0], images[1], 30, 160,585);
+        arcade4 = makeArcadeButton(images[0], images[1], 30, 160,500);     
+        arcade5 = makeArcadeButton(images[0], images[1], 30, 260,585);
+        arcade6 = makeArcadeButton(images[0], images[1], 30, 260,500);
+        arcade7 = makeArcadeButton(images[0], images[1], 30, 360,585);
+        arcade8 = makeArcadeButton(images[0], images[1], 30, 360,500);
+        arcade9 = makeArcadeButton(images[0], images[1], 30, 460,585);
+        arcade0 = makeArcadeButton(images[0], images[1], 30, 460,500);
+        controls.push(arcade1);
+        controls.push(arcade2);
+        controls.push(arcade3);
+        controls.push(arcade4);
+        controls.push(arcade5);
+        controls.push(arcade6);
+        controls.push(arcade7);
+        controls.push(arcade8);
+        controls.push(arcade9);
+        controls.push(arcade0);
+
+        drawNormalImage(arcade1.arcadeButton, arcade1.x, arcade1.y);
+        drawNormalImage(arcade2.arcadeButton, arcade2.x, arcade2.y);
+        drawNormalImage(arcade3.arcadeButton, arcade3.x, arcade3.y);
+        drawNormalImage(arcade4.arcadeButton, arcade4.x, arcade4.y);
+        drawNormalImage(arcade5.arcadeButton, arcade5.x, arcade5.y);
+        drawNormalImage(arcade6.arcadeButton, arcade6.x, arcade6.y);
+        drawNormalImage(arcade7.arcadeButton, arcade7.x, arcade7.y);
+        drawNormalImage(arcade8.arcadeButton, arcade8.x, arcade8.y);
+        drawNormalImage(arcade9.arcadeButton, arcade9.x, arcade9.y);
+        drawNormalImage(arcade0.arcadeButton, arcade0.x, arcade0.y);
+      });
+
+      imgpreload(["sliderBase.svg", "sliderDial.svg"], function(images) {
+        slider1 = makeSlider(images[0], images[1], 34, 100);
+        controls.push(slider1);
+        drawSlider(slider1);
+      });
+
+      imgpreload(["playButtonOff.svg", "playButtonOn.svg"], function(images) {
+        plause = makePlauseButton(images[0], images[1], 25, 25);
+        controls.push(plause);
+        context.drawImage(images[0], plause.x, plause.y);
+      });
+
+      imgpreload(["recordOff.svg", "recordOn.svg"], function(images) {
+        record = makeRecordButton(images[0], images[1], 175, 25);
+        controls.push(record);
+        context.drawImage(images[0], record.x, record.y);
+      });
+
+      imgpreload(["stopOff.svg", "stopOn.svg"], function(images) {
+        stop = makeStopButton(images[0], images[1], 100, 25);
+        controls.push(stop);
+        context.drawImage(stop.inactive, stop.x, stop.y);
+      });
+
+      imgpreload(["tempo.svg"], function(images) {
+
+        tempoView = makeTempoView(images[0], 250, 25);
+        controls.push(tempoView);
+
+        context.drawImage(tempoView.tempoView, tempoView.x, tempoView.y);
+        context.font = '20pt "Black Ops One"';
+        context.fillStyle = 'white';
+        context.fillText(tempoView.bpm, tempoView.x + (tempoView.width/3), tempoView.y + (tempoView.height/1.35));
+      });
+
+      imgpreload(["tempoToggleOff.svg", "tempoToggleOn.svg"], function(images) {
+        tempoToggleUp = makeTempoToggle(images[0], images[1], 250 + tempoView.width + 1, 25, "up");
+        controls.push(tempoToggleUp);
+        context.drawImage(tempoToggleUp.inactive, tempoToggleUp.x, tempoToggleUp.y);
+      });
+
+      imgpreload(["tempoToggleDown.svg", "tempoToggleOnDown.svg"], function(images) {
+        tempoToggleDown = makeTempoToggle(images[0], images[1], 250 + tempoView.width + 1, 25 + tempoToggleUp.height + 2, "down");
+
+        controls.push(tempoToggleDown);
+
+        context.drawImage(tempoToggleDown.inactive, tempoToggleDown.x,tempoToggleDown.y);
+      });
+      /*var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'http://fonts.googleapis.com/css?family=Black+Ops+One';
+      document.getElementsByTagName('head')[0].appendChild(link);
+
+      // Trick from http://stackoverflow.com/questions/2635814/
+      var image = new Image;
+      image.src = link.href;
+      image.onerror = function() {
+        context.fillStyle = 'white';
+        context.font = '20px "Black Ops One"';
+        context.textBaseline = 'top';
+        context.fillText(tempoView.bpm, tempoView.x + (tempoView.width/3), tempoView.y + (tempoView.height/5));
+      };
+      /*context.font = '20pt "Black Ops One"';
+      context.fillStyle = 'white';
+      context.fillText(tempoView.bpm, tempoView.x + (tempoView.width/3), tempoView.y + (tempoView.height/1.35));*/
+
+    }
+
+    function drawRotatedImage(image, x, y, angle) {
+      //save the current co-ordinate system
+      //before we screw with it
+      context.save();
+
+      context.translate(x, y);
+
+      //move to the middle of where we want to draw our image
+      //context.translate((image.width/2), (image.height/2));
+
+      //rotate around that point, converting our
+      //angle from degrees to radians
+      console.log("angle  " +  angle);
+      console.log("radians  " + angle * TO_RADIANS);
+      context.rotate(angle * TO_RADIANS);
+
+      //draw it up and to the left by half the width
+      //and height of the image
+      context.drawImage(image, -(image.width/2), -(image.height/2));
+
+      context.restore();
+    }
+
+    function drawNormalImage(image, x, y) {
+      context.save();
+      context.translate(x, y);
+      context.drawImage(image, -(image.width/2), -(image.height/2));
+      context.restore();
+    }
+
+    function drawKnob(z, button) {
+      if (button.counter + z >= -135 && button.counter + z <= 135) {
+        context.save();
+        context.translate(button.x, button.y);
+        context.clearRect(-(button.width/2), -(button.height/2), button.width, button.height);
+        context.restore();
+        button.counter += z;
+        drawNormalImage(button.knobBase, button.x, button.y);
+        drawRotatedImage(button.knobDial, button.x, button.y, button.counter);
+        drawNormalImage(button.knobZero, button.x, button.y);}
+    }
+
+    function drawArcadeButton(button) {
+      context.save();
+      context.translate(button.x, button.y);
+      context.clearRect(-(button.width/2), -(button.height/2), button.width, button.height);
+      context.restore();
+      drawNormalImage(button.arcadeButton, button.x, button.y);
+    }
+
+    function drawSlider(control) {
+      context.clearRect(control.x, control.y, control.width, control.height);
+      context.drawImage(control.base, control.x, control.y);
+      context.drawImage(control.dial, control.dx, control.y);
+    }
+
+    function drawSquareButton(control) {
+      context.clearRect(control.x, control.y, control.width, control.height);
+      if (control.alive) {
+        control.alive = false;
+        context.drawImage(control.inactive, control.x, control.y);
+      }
+      else {
+        control.alive = true;
+        context.drawImage(control.active, control.x, control.y);
+      }
+    }
+
+    function makeControls(knobBase, knobDial, knobZero, counter, radius, xpos, ypos) {
+      return {
+        radius: radius,
+        counter: counter,
+        knobBase: knobBase,
+        knobDial: knobDial,
+        knobZero: knobZero,
+        x: xpos,
+        y: ypos,
+        width: knobBase.width,
+        height: knobBase.height,
+        type: "knob"
+      };
+    }
+
+    function makeArcadeButton(arcadeButton, arcadeButtonDown,  radius, xpos, ypos) {
+      return {
+        arcadeButton: arcadeButton,
+        arcadeButtonDown: arcadeButtonDown,
+        radius: radius,
+        x: xpos,
+        y: ypos,
+        width: arcadeButton.width,
+        height: arcadeButton.height,
+        type: "arcade"
+      };
+    }
+
+    function makeSlider(base, dial, xpos, ypos) {
+      return {
+        base: base,
+        dial: dial,
+        x: xpos,
+        y: ypos, 
+        dialWidth: dial.width,
+        width: base.width,
+        height: dial.height,
+        dx: base.width / 2 - dial.width / 2 + xpos,
+        type: "slider",
+        max: 208.5,
+        min: 34.5,
+        value: 0,
+        convertScaleMax: 20,
+        convertScaleMin: -20
+      };
+    }
+
+    function makePlauseButton(inactive, active, xpos, ypos) {
+      return {
+      active: active,
+      inactive: inactive,
+      x: xpos,
+      y: ypos,
+      width: inactive.width,
+      height: inactive.height,
+      alive: false,
+      type: "square",
+      name: "play"
+    };
+  }
+
+    function makeRecordButton(inactive, active, xpos, ypos) {
+      return {
+      active: active,
+      inactive: inactive,
+      x: xpos,
+      y: ypos,
+      width: inactive.width,
+      height: inactive.height,
+      alive: false,
+      type: "square",
+      name: "record"
+    };
+  }
+
+    function makeStopButton(inactive, active, xpos, ypos) {
+      return {
+      active: active,
+      inactive: inactive,
+      x: xpos,
+      y: ypos,
+      width: inactive.width,
+      height: inactive.height,
+      alive: false,
+      type: "square",
+      name: "stop"
+    };
+  }
+
+  function makeTempoView(tempoView, xpos, ypos) {
+    return {
+      tempoView: tempoView,
+      x: xpos,
+      y: ypos,
+      width: tempoView.width,
+      height: tempoView.height,
+      bpm: 120
+    };
+  }
+
+  function makeTempoToggle(inactive, active, xpos, ypos, name) {
+    return {
+      active: active,
+      inactive: inactive,
+      x: xpos,
+      y: ypos,
+      width: active.width,
+      height: active.height,
+      alive: false,
+      type: "square",
+      name: name
+    };
+  }
+
+    /*function makeTempoToggleDown(xpos, ypos, name) {
+      tempoToggleActive = new Image();
+      tempoToggleActive.src = 'tempoToggleOnDown.svg';
+      tempoToggleInactive = new Image();
+      tempoToggleInactive.src = 'tempoToggleDown.svg';
+      this.active = tempoToggleActive;
+      this.inactive = tempoToggleInactive;
+      this.x = xpos;
+      this.y = ypos;
+      this.width = tempoToggleActive.width;
+      this.height = tempoToggleActive.height;
+      this.alive = false;
+      this.type = "square";
+      this.name = "down";
+    }*/
+
+    $("canvas").mousedown(function (event) {
+      var dx, dy, x, y, dist;
+      ypos = event.pageY;
+      for (z = 0; z<controls.length; z++) {
+        x = event.pageX - this.offsetLeft;
+        y = event.pageY - this.offsetTop;
+        dx = x - controls[z].x;
+        dy = y - controls[z].y;
+        dist = Math.sqrt(dx * dx + dy * dy);
+        if (controls[z].type == "slider" && x > controls[z].dx &&
+        x < controls[z].dx + controls[z].dialWidth &&
+        y > controls[z].y && y < controls[z].y + controls[z].height) {
+          var clickX = x - controls[z].dx;    
+          $("canvas").bind("mousemove", function(event) {
+            if (event.pageX - this.offsetLeft - clickX > controls[z].x &&
+            event.pageX - this.offsetLeft - clickX < controls[z].width + controls[z].x - controls[z].dialWidth)
+            controls[z].dx = event.pageX - this.offsetLeft - clickX;
+            updateSlider(controls[z]);
+          });
+          return;
+        }
+        else if (controls[z].type == "knob" && dist < controls[z].radius) {
+          $("canvas").bind("mousemove", function(event) {
+            handleMouseMove(event, controls[z]);
+          });
+          return;
+        }
+        else if (controls[z].type == "arcade" && dist < controls[z].radius) {
+          controls[z].arcadeButton = arcBtnDn;
+          drawArcadeButton(controls[z]);
+        }
+        else if (controls[z].type == "square" && x > controls[z].x &&
+        x < controls[z].x + controls[z].width &&
+        y > controls[z].y && y < controls[z].y + controls[z].height) {
+          drawSquareButton(controls[z]);
+          if (controls[z].name == "up") {
+            updateTempo(1);
+            mouseStillDown = setInterval(function() {
+              updateTempo(1);}, 100);
+          }
+          else if (controls[z].name == "down") {
+            updateTempo(-1);
+            mouseStillDown = setInterval(function() {
+              updateTempo(-1);}, 100);
+          }
+        }
+      }
+    });
+
+    $("canvas").mouseup(function(event) {
+      clearInterval(mouseStillDown);
+      $("canvas").unbind("mousemove");
+      if (tempoToggleUp.alive)
+      drawSquareButton(tempoToggleUp);
+      else if (tempoToggleDown.alive)
+      drawSquareButton(tempoToggleDown);
+      else if (stop.alive)
+      drawSquareButton(stop);
+      restoreArcadeButtons();
+    });
+
+    $("canvas").keypress(function(event) {
+      if (event.keyCode) {
+        keycode = event.keyCode;
+      }
+      else {
+        keycode = event.which;
+      }
+      if (keycode == 48) {
+        arcade0.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade0);
+      }
+      else if (keycode == 49) {
+        arcade1.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade1);
+      }
+      else if (keycode == 50) {
+        arcade2.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade2);
+      }
+      else if (keycode == 51) {
+        arcade3.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade3);
+      }
+      else if (keycode == 52) {
+        arcade4.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade4);
+      }
+      else if (keycode == 53) {
+        arcade5.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade5);
+      }
+      else if (keycode == 54) {
+        arcade6.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade6);
+      }
+      else if (keycode == 55) {
+        arcade7.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade7);
+      }
+      else if (keycode == 56) {
+        arcade8.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade8);
+      }
+      else if (keycode == 57) {
+        arcade9.arcadeButton = arcBtnDn;
+        drawArcadeButton(arcade9);
+      }
+    });
+
+    $("canvas").keyup(function(event) {
+    if (event.keyCode) {
+    keycode = event.keyCode;
+    }
+    else {
+    keycode = event.which;
+    }
+    if (keycode == 48) {
+    arcade0.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade0);
+    }
+    else if (keycode == 49) {
+    arcade1.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade1);
+    }
+    else if (keycode == 50) {
+    arcade2.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade2);
+    }
+    else if (keycode == 51) {
+    arcade3.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade3);
+    }
+    else if (keycode == 52) {
+    arcade4.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade4);
+    }
+    else if (keycode == 53) {
+    arcade5.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade5);
+    }
+    else if (keycode == 54) {
+    arcade6.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade6);
+    }
+    else if (keycode == 55) {
+    arcade7.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade7);
+    }
+    else if (keycode == 56) {
+    arcade8.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade8);
+    }
+    else if (keycode == 57) {
+    arcade9.arcadeButton = arcBtnUp;
+    drawArcadeButton(arcade9);
+    }
+    });  
+
+    function updateTempo(amount) {
+    tempoView.bpm += amount;
+    context.clearRect(tempoView.x, tempoView.y, tempoView.width, tempoView.height);
+    context.drawImage(tempoView.tempoView, tempoView.x, tempoView.y);
+    context.font = '20pt "Black Ops One"';
+    context.fillStyle = 'white';
+    context.fillText(tempoView.bpm, tempoView.x + (tempoView.width/3), tempoView.y + (tempoView.height/1.35));
+    }
+
+    function handleMouseMove(e, button) {
+    if (e.pageY < ypos) {
+    console.log("the event y " + e.pageY);
+    console.log("the ypos " + ypos);
+    drawKnob(5, button);
+    }
+    else if (e.pageY > ypos) {
+    drawKnob(-5, button);
+    }
+    ypos = e.pageY;
+    }
+
+    function updateSlider(control) {
+    control.value = ((((control.dx - control.min) / (control.max - control.min)) *
+    (control.convertScaleMax - control.convertScaleMin)) + control.convertScaleMin).toFixed(2);
+    drawSlider(control);
+    }
+
+
+    function restoreArcadeButtons() {
+    for (i = 0; i < controls.length; i++)
+    {
+    if (controls[i].type == "arcade") {
+    controls[i].arcadeButton = arcBtnUp;
+    drawArcadeButton(controls[i]);
+    }
+    else if (controls[i].type == "square" && (controls[i].name == "up" || 
+    controls[i].name == "down" || controls[i].name == "stop")) {
+    //drawSquareButton(controls[i]);
+    }
+    }
+    }
+
+    $("canvas").attr("tabindex", "1");
+    $("canvas").focus();
+  </script>
+</html>

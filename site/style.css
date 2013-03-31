@@ -15,6 +15,20 @@ body {
   z-index: 0;
 }
 
+#bar {
+  float: top;
+  position: absolute;
+  width: 77%;
+  height: 2%;
+  color: #00f5f0;
+  border-color: #073642;
+  border-width: 8px;
+  border-style: double;
+  background-image: 
+    -webkit-radial-gradient(top right, circle, #000000, #586e75 10%, #000000 40%);
+  z-index: 9;
+}
+
 #panel {
   float: right;
   position: absolute;
@@ -27,6 +41,20 @@ body {
   border-style: double;
   background-image: 
     -webkit-radial-gradient(top left, circle, #000000, #586e75 10%, #000000 40%);
+  z-index: 9;
+}
+
+#selector {
+  float: left;
+  position: absolute;
+  width: 4%;
+  height: 90%;
+  color: #00f5f0;
+  border-color: #073642;
+  border-width: 8px;
+  border-style: double;
+  background-image: 
+    -webkit-radial-gradient(bottom left, circle, #000000, #586e75 10%, #000000 40%);
   z-index: 9;
 }
 

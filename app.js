@@ -8,10 +8,10 @@ var http = require('http'),
 
 var mimeTypes = {
   "html"  :   "text/html",
-  "jpeg"  :   "image/jpeg",
   "jpg"   :   "image/jpeg",
   "png"   :   "image/png",
   "js"    :   "text/javascript",
+  "svg"   :   "image/svg+xml",
   "css"   :   "text/css"
 };
 
