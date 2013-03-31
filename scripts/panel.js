@@ -1,46 +1,52 @@
 var $ = require('jquery-browserify');
 require('jqueryuify');
 var smodel = require('./soundModel.js');
+var imgpreload = 
+  require('../node_modules/imgpreload/imgpreload.js').imgpreload;
+
 
 $(function() {
-  $('<button id="play">&#9654;</button>').appendTo('#panel');
-  $('#play').css('width', 50);
-  $('#play').css('color', '#0000FF');
-  $('#play').css('text-align', 'center');
-  $("button").button()
-    .click(function(event) {
-      event.preventDefault();
-      if (smodel.isPlaying()) {
-        $('#play').html('&#9654;');
-        smodel.stop();
-      } else {
-        $('#play').html('&#9616;&#9616;&nbsp;');
-        smodel.start();
-      }
+  var kinetic = require('../node_modules/kinetic/kinetic.js').Kinetic;
+  window.kinetic = kinetic;
+  var stage = new kinetic.Stage({
+    container: 'panel',
+      width: 425,
+      height: 300
+  });
+
+  var ctrlLayer = new kinetic.Layer();
+  stage.add(ctrlLayer);
+
+  imgpreload(["site/img/playButtonOff.svg", "site/img/playButtonOn.svg"], function(images) {
+    var playInactive = new kinetic.Image({
+      x: 50,
+        y: 250,
+        height: 58,
+        width: 70,
+        image: images[0],
     });
-  //$('#slider').slider({
-  //  value:100,
-  //  min: 0,
-  //  max: 500,
-  //  step: 50
-  //  //slide: function( event, ui ) {
-  //  //  $("#bpm").val($.ui.value );
-  //}).click(function() {event.preventDefault(); console.log('clicked');});
 
-  //$('<input id="spinner" name="value" />').appendTo('#panel');
-  //var spinner = $('#spinner').spinner();
+    ctrlLayer.add(playInactive);
+    ctrlLayer.draw();
+
+    var playActive = playInactive.clone({image: images[1]});
+
+    playActive.createImageHitRegion(function() {
+      playActive.getLayer().drawHit();
+    });
+
+    playInactive.on('mousedown', function(event) {
+      ctrlLayer.removeChildren();
+      ctrlLayer.add(playActive);
+      ctrlLayer.draw();
+    });
+
+    playActive.on('mousedown', function(event) {
+      ctrlLayer.removeChildren();
+      ctrlLayer.add(playInactive);
+      ctrlLayer.draw();
+    });   
+
+  });
+
 });
-
-//$('<div id="slider">Slider</div>').appendTo('#panel');
-//$(function() {
-//  $('<p id="bpm"></p>').appendTo('#panel');
-//  var bpmSelect = $('#bpm');
-//  bpmSelect.html(metro.getBPM());
-//  bpmSelect.css('color', '#FFFFFF');
-//  bpmSelect.click(function() { 
-//    bpmSelect.html(metro.setBPM(metro.getBPM() + 5)); 
-//  });
-//  
-//  //$("#bpm").val($("#slider").slider("value") );
-//});
-
