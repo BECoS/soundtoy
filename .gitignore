@@ -1,5 +1,8 @@
 **~
 **.swp
+
+report
+
 node_modules/*
 !node_modules/kinetic/
 !node_modules/imgpreload/
@@ -8,6 +11,5 @@ node_modules/
 npm-debug.log
 site/bundle.js
 site/specBundle.js
-site/jasmine/
 tags
 .ctags
