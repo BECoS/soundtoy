@@ -18,6 +18,7 @@ var mimeTypes = {
 http.createServer(function(req, res) {
   var uri = url.parse(req.url).pathname;
   if (uri === '/') uri = '/index.html';
+  if (uri === '/specs') uri = '/specs.html';
   var filename = path.join(path.join(process.cwd(), 'site'), uri);
   fs.exists(filename, function(exists) {
     if (!exists) {
