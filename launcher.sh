@@ -12,8 +12,6 @@ bundle=bundle.js
 site=site
 specBundle=specBundle.js
 
-jasmineReqs="jasmine.js jasmine-html.js jasmine.css"
-
 bold=$(tput bold)
 boldred=${bold}$(tput setaf 1) 
 boldgreen=${bold}$(tput setaf 2) 
@@ -38,13 +36,6 @@ fi
 
 ./node_modules/browserify/bin/cmd.js $specs -o $site/$specBundle
 ./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle
-
-#for req in $jasmineReqs
-#do
-#  if [[ ! -e $site/$req ]]; then
-#    cp ./node_modules/jasmine-node/node_modules/jasmine-reporters/ext/$req $site
-#  fi
-#done
 
 netstat -anp tcp 2>/dev/null | awk '$6 == "LISTEN"' | grep -o $port &> /dev/null
 if [[ $? -eq 0 ]]; then
