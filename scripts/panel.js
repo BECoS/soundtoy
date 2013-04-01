@@ -19,8 +19,8 @@ $(function() {
 
   imgpreload(["/img/playButtonOff.svg", "/img/playButtonOn.svg"], function(images) {
     var playInactive = new kinetic.Image({
-      x: 50,
-        y: 250,
+      x: 0,
+        y: 0,
         height: 58,
         width: 70,
         image: images[0],
@@ -30,20 +30,22 @@ $(function() {
 
     var playActive = playInactive.clone({image: images[1]});
 
-    playActive.createImageHitRegion(function() {
-      playActive.getLayer().drawHit();
+    playInactive.createImageHitRegion(function() {
+      playInactive.getLayer().drawHit();
     });
 
     playInactive.on('mousedown', function(event) {
-      ctrlLayer.removeChildren();
+      ctrlLayer.clear();
       ctrlLayer.add(playActive);
       ctrlLayer.draw();
+      smodel.start();
     });
 
     playActive.on('mousedown', function(event) {
-      ctrlLayer.removeChildren();
+      ctrlLayer.clear();
       ctrlLayer.add(playInactive);
       ctrlLayer.draw();
+      smodel.stop();
     });   
 
   });
