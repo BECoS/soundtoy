@@ -19,8 +19,8 @@ $(function() {
 
   imgpreload(["/img/playButtonOff.svg", "/img/playButtonOn.svg"], function(images) {
     var playInactive = new kinetic.Image({
-      x: 0,
-        y: 0,
+      x: 5,
+        y: 5,
         height: 58,
         width: 70,
         image: images[0],
