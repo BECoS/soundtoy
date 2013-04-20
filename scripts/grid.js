@@ -1,5 +1,6 @@
 const offset = 15;
 const documentBorder = 20;
+dbg = true;
 
 var THREE = require('three').THREE;
 //var sound = require('./sound.js');
@@ -9,7 +10,7 @@ var gmodel = require('./gridModel.js');
 var $ = require('jquery-browserify');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
-var cubes, pointLight, ambientLight, squareViewSize, sphere, particleSystem;
+var cubes, pointLight, ambientLight, sphere, particleSystem;
 var lastFrameTime = 0;
 var cubeActiveColor = 0x000000;
 var cubeInactiveColor = 0x0000F0;
@@ -77,10 +78,8 @@ window.$ = $;
 function getGridSize() {
   var panelWidth = Number($('#panel').css("width").match(/\d+/));
   var panelHeight = Number($('#panel').css("height").match(/\d+/));
-  var gridWidth = (document.width - 75) - panelWidth;
-  var gridHeight = document.height - (document.height - panelHeight);
-  console.log("gridWidth is " + gridWidth + " gridHeight is " + gridHeight);
-  return [gridWidth, gridHeight];
+  console.log("gridWidth is " + panelWidth + " gridHeight is " + panelHeight);
+  return [panelWidth, panelHeight];
 }
 
 function getGridOffset() {
@@ -112,13 +111,12 @@ function addStars() {
 }
 
 function initGraphics() {
-  var grid;
   var width = document.width;
   var height = document.height;
-  //camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
-  camera = new THREE.PerspectiveCamera(75, 1, 1, 20000);
-  camera.position.z = 100;
-  camera.position.x = 0;
+  camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
+  //camera = new THREE.PerspectiveCamera(75, 1, 1, 20000);
+  camera.position.z = 500;
+  camera.position.x = 100;
   camera.position.y = 0;
   cubes = new Array(gmodel.numVoices());
   scene = new THREE.Scene();
@@ -156,20 +154,14 @@ function initGraphics() {
   //ambientLight = new THREE.AmbientLight(0x0066FF);
   //ambientLight.intensity = 0.2;
   //scene.add(ambientLight);
-  renderer = //new THREE.CanvasRenderer();
-    new THREE.WebGLRenderer({antialias: true});
-  grid = document.getElementById('grid');
-  squareViewSize = document.width > document.height ? document.width : document.height;
-  renderer.setSize(
-    //canvasHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('height').replace(/px/g, ""), 10),
-    //canvasWidth = parseInt(window.getComputedStyle(grid).getPropertyValue('width').replace(/px/g, ""), 10)
-    document.width,
-    document.height 
-  );
+  renderer = new THREE.CanvasRenderer();
+    //CanvasRenderernew THREE.WebGLRenderer({antialias: true});
+  var grid = $('#grid');
+  renderer.setSize(grid.css('width'), grid.css('height'));
   camera.updateProjectionMatrix();
   document.getElementById('grid').appendChild(renderer.domElement);
   if (dbg) {
-    createSphere(0, 0);
+    createSphere(0, 0, 0);
   }
 }
 
@@ -200,6 +192,7 @@ function onGridMouseDown(event) {
   console.log("In window space you clicked: " + x + ", " + y);
   //var vector = new THREE.Vector3(x3, y3, 1);
   console.log("In three space the coordinates are: " + coords[0] + ", " + coords[1]);
+  createSphere(coords[0], coords[1]);
   //captureCubeClick(vector);
 }
 
@@ -207,8 +200,8 @@ function createSphere(x, y) {
   var geom = new THREE.SphereGeometry(10, 10, 10);
   var mat = new THREE.MeshLambertMaterial({color:0xa2a200});
   sphere = new THREE.Mesh(geom, mat);
-  sphere.position.x = 0;
-  sphere.position.y = 0;
+  sphere.position.x = x;
+  sphere.position.y = y;
   sphere.position.z = 0;
   scene.add(sphere);
 }
@@ -299,6 +292,9 @@ function onDocumentKeyDown(event) {
       console.log(keychar + " pressed");
       break;
   }
+  if (dbg) {
+    console.log("Camera position: " + camera.position.x + ", " + camera.position.y);
+  }
 }
 
 //$(window).resize(initGraphics);
@@ -306,7 +302,7 @@ document.addEventListener("DOMContentLoaded", launch, false);
 document.addEventListener("keydown", onDocumentKeyDown, false);
 
 // DEBUG
-if (window.dbg) {
+if (dbg) {
   window.spherePos = function () {
     console.log("X: " + sphere.position.x + ", " + 
         "Y: " + sphere.position.y + ", " +

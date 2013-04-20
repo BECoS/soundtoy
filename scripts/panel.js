@@ -10,14 +10,14 @@ $(function() {
   window.kinetic = kinetic;
   var stage = new kinetic.Stage({
     container: 'panel',
-      width: 425,
-      height: 300
+      width: $('#panel').css('width'),
+      height: $('#panel').css('height'), 
   });
 
   var ctrlLayer = new kinetic.Layer();
   stage.add(ctrlLayer);
 
-  imgpreload(["/img/playButtonOff.svg", "/img/playButtonOn.svg"], function(images) {
+  imgpreload(["img/playButtonOff.svg", "img/playButtonOn.svg"], function(images) {
     var playInactive = new kinetic.Image({
       x: 5,
         y: 5,
