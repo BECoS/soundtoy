@@ -3,17 +3,29 @@ body {
   margin: 0;
 }
 
-#logo {
-  position: fixed;
+#centerpiece {
+  display: table-cell; 
+  position: relative;
+  height: 100%;
+}
+
+#bar {
+  vertical-align: top;
   width: 100%;
-  z-index: 10;
-  width: 960px;
+  height: 80px;
 }
 
 #grid {
-  display: table-cell; 
-  height: 100%;
-  position: static;
+  vertical-align: top;
+  position: absolute;
+  top: 80px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+#logo {
+  margin: 8px;
 }
 
 .sideControls {
@@ -23,12 +35,12 @@ body {
   padding: 0; 
   height: 100%; 
   background:#ccc;
+  min-width: 20px;
 }
 
 #panel {
   color: #00f5f0;
   width: 20%; 
-    
 }
 
 #selector {
@@ -37,41 +49,17 @@ body {
   padding: 0;
   border: 0;
   margin: 0;
-  overflow: hidden;
 }
-
 
 #container { 
   position: absolute;
   height: 100%;
+  max-height: 100%;
   width: 100%;
   display: table;
   border: 0;
   margin: 0;
   padding: 0;
-}
-
-#topLevel {
-  display: block;
-  height: 100%;
-  width: 100%;
-  border: 0;
-  margin: 0;
-  padding: 0;
-}
-
-#bar {
-  width: 74%;
-  height: 5%;
-  color: #00f5f0;
-}
-
-#footer {
-  padding-top: 50px;
-  bottom: 0;
-  width: 100%;
-  height: auto;
-  z-index: 10;
 }
 
 .jasmine_reporter {
