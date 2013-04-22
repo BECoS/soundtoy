@@ -42,13 +42,13 @@ function animate() {
   for (var voice = 0; voice < gmodel.numVoices(); voice++) {
     for (var note = 0; note < gmodel.numNotes(); note++) {
       var cube = cubes[voice][note];
-      if (cube.note === activeCol) {
-        cube.rotation.x += 0.04;
-        cube.rotation.y += 0.04;
-      } else {
-        cube.rotation.x = 0;
-        cube.rotation.y = 0;
-      }
+      //if (cube.note === activeCol) {
+      //  cube.rotation.x += 0.04;
+      //  cube.rotation.y += 0.04;
+      //} else {
+      //  cube.rotation.x = 0;
+      //  cube.rotation.y = 0;
+      //}
       if (cube.active) { 
         cube.material.color.setHex(cubeActiveColor);
         cube.material.wireframe = true;
@@ -85,20 +85,23 @@ function getNoteSize() {
     size[1] / gmodel.numVoices()];
 }
 
-function initGraphics() {
+function removeAllCubes() {
+  if (typeof scene === 'undefined' || typeof cubes === 'undefined') { return; }
+  for (var voice = 0; voice < gmodel.numVoices(); voice++) {
+    for (var note = 0; note < gmodel.numNotes(); note++) {
+      if (typeof cubes[voice] !== 'undefined') {
+        scene.remove(cubes[voice][note]);
+      }
+    }
+  }
+}
+
+function sizeNotes() {
+  removeAllCubes();
   var grid = $('#grid');
   var width = grid.width();
   var height = grid.height();
-  camera = new THREE.OrthographicCamera(width / 2, width / -2, 
-       height / 2, height / -2, -100, 1000);
-  camera.position.x = 0;
-  camera.position.y = 0;
-  camera.position.z = -100;
-  camera.lookAt(new THREE.Vector3(0, 0, 0));
-  cubes = new Array(gmodel.numVoices());
-  scene = new THREE.Scene();
-  projector = new THREE.Projector();
-  //addStars();
+  console.log("Resizing cubes\nGrid is " + width + " by " + height);
   var noteSep = 4;
   var noteSize = getNoteSize();
   for (var voice = 0; voice < gmodel.numVoices(); voice++) {
@@ -118,6 +121,23 @@ function initGraphics() {
       scene.add(cube);
     }
   }
+}
+
+function initGraphics() {
+  var grid = $('#grid');
+  var width = grid.width();
+  var height = grid.height();
+  camera = new THREE.OrthographicCamera(width / 2, width / -2, 
+       height / 2, height / -2, -100, 1000);
+  camera.position.x = 0;
+  camera.position.y = 0;
+  camera.position.z = -100;
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
+  cubes = new Array(gmodel.numVoices());
+  projector = new THREE.Projector();
+  scene = new THREE.Scene();
+  sizeNotes();
+  //addStars();
   //ambientLight = new THREE.AmbientLight(0x268bd2);
   //ambientLight.intensity = 0.001;
   //scene.add(ambientLight);
@@ -125,9 +145,11 @@ function initGraphics() {
     //new THREE.WebGLRenderer({canvas : document.getElementById('grid'), antialias: true});
   renderer.setSize(width, height);
   camera.updateProjectionMatrix();
-  //gridContainer.appendChild(renderer.domElement);
+  $(window).resize(function () { 
+    console.log("Grid height is: " + $('#grid').height());
+  });
   if (dbg) {
-    createSphere(height / 2, width / 2, 0);
+    //createSphere(0, 0, 0);
   }
 }
 
@@ -152,14 +174,13 @@ function launch() {
 
 function onGridMouseDown(event) {
   event.preventDefault();
-  var x = event.clientX;
-  var y = event.clientY;
+  var x = event.pageX;
+  var y = event.pageY;
   var coords = windowSpaceToThreeSpace(x, y);
-  //console.log("In window space you clicked: " + x + ", " + y);
-  //var vector = new THREE.Vector3(x3, y3, 1);
-  //console.log("In three space the coordinates are: " + coords[0] + ", " + coords[1]);
-  //createSphere(coords[0], coords[1]);
-  //captureCubeClick(vector);
+  console.log("In window space you clicked: " + x + ", " + y);
+  var vector = new THREE.Vector3(coords[0], coords[1], 1);
+  console.log("In three space the coordinates are: " + coords[0] + ", " + coords[1]);
+  captureCubeClick(vector);
 }
 
 function createSphere(x, y) {
@@ -173,7 +194,10 @@ function createSphere(x, y) {
 }
 
 function windowSpaceToThreeSpace (x, y) {
-  y = document.height - y;
+  y -= $('#bar').height(); 
+  x -= $('#selector').width();
+  y = 2 * (-y / $('#grid').height()) + 1;
+  x = 2 * (x / $('#grid').width()) - 1;
   return [x, y];
 }
 
@@ -190,18 +214,13 @@ function boundingBox(coords, x1, x2, y1, y2) {
 }
 
 function captureCubeClick (vector) {
-  if (dbg) {
-    //scene.add(new THREE.Line(new THREE.Geometry(vector), new THREE.LineBasicMaterial()));
-  }
-  projector.unprojectVector(vector, camera);
   var allCubes = []; 
   for (var voice = 0; voice < gmodel.numVoices(); voice++) { 
     for (var note = 0; note < gmodel.numNotes(); note++) { 
       allCubes.push(cubes[voice][note]);
     }
   }
-  var raycaster = new THREE.Raycaster(camera.position, 
-      vector.sub(camera.position).normalize());
+  var raycaster = projector.pickingRay(vector, camera);
   var intersects = raycaster.intersectObjects(allCubes);
   if (intersects.length > 0) {
     var cube = intersects[0].object;
@@ -216,7 +235,6 @@ function captureCubeClick (vector) {
 
 function onDocumentKeyDown(event) {
   var keychar = event.which;
-  //window.spherePos();
   switch (keychar) {
     case 38: 
       camera.position.y -= 10;
@@ -263,9 +281,6 @@ function onDocumentKeyDown(event) {
   }
 }
 
-//$(window).resize(initGraphics);
-document.addEventListener("DOMContentLoaded", launch, false);
-document.addEventListener("keydown", onDocumentKeyDown, false);
 
 // DEBUG
 if (dbg) {
@@ -276,3 +291,7 @@ if (dbg) {
   };
 }
 
+document.addEventListener("DOMContentLoaded", launch, false);
+document.addEventListener("keydown", onDocumentKeyDown, false);
+
+exports.sizeNotes = sizeNotes;
