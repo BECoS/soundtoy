@@ -4,9 +4,10 @@ body {
 }
 
 #centerpiece {
-  display: table-cell; 
+  display: table; 
   position: relative;
   height: 100%;
+  width: 100%;
 }
 
 #bar {
@@ -16,17 +17,11 @@ body {
 }
 
 #grid {
-  max-width: 100%;
-  min-height: 98%;
-}
-
-#gridContainer {
-  vertical-align: top;
+  display: table-cell;
   position: absolute;
-  top: 40px; //Needs to be whatever bar is
-  bottom: 0;
-  right: 0;
-  left: 0;
+  height: 94%;
+  width: 100%;
+  //top: 40px; //Needs to be whatever bar is
 }
 
 #logo {
