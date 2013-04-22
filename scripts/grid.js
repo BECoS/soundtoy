@@ -1,6 +1,4 @@
-const offset = 15;
-const documentBorder = 20;
-dbg = true;
+var dbg = true;
 
 var THREE = require('three').THREE;
 //var sound = require('./sound.js');
@@ -10,9 +8,9 @@ var gmodel = require('./gridModel.js');
 var $ = require('jquery-browserify');
 
 var camera, scene, renderer, projector, canvasWidth, canvasHeight;
-var cubes, pointLight, ambientLight, sphere, particleSystem;
+var cubes, ambientLight, sphere, particleSystem;
 var lastFrameTime = 0;
-var cubeActiveColor = 0x000000;
+var cubeActiveColor = 0xF6FBA2;
 var cubeInactiveColor = 0x0000F0;
 
 
@@ -76,15 +74,9 @@ function initAudio() {
 window.$ = $;
 
 function getGridSize() {
-  var panelWidth = Number($('#panel').css("width").match(/\d+/));
-  var panelHeight = Number($('#panel').css("height").match(/\d+/));
-  console.log("gridWidth is " + panelWidth + " gridHeight is " + panelHeight);
-  return [panelWidth, panelHeight];
-}
-
-function getGridOffset() {
-  var panelHeight = Number($('#panel').css("height").match(/\d+/));
-  return [0, document.height - panelHeight];
+  var gridWidth = $('#grid').width();
+  var gridHeight = $('#grid').height();
+  return [gridWidth, gridHeight];
 }
 
 function getNoteSize() {
@@ -93,52 +85,32 @@ function getNoteSize() {
     size[1] / gmodel.numVoices()];
 }
 
-function addStars() {
-  var particleCount = 1800,
-      particles = new THREE.Geometry(),
-      pMaterial =
-        new THREE.ParticleBasicMaterial({
-          color: 0xFFFFFF,
-          size: 0.01
-        });
-  for(var p = 0; p < particleCount; p++) {
-    var pX = Math.random() * 1000 - 500 , pY = Math.random() * 1200 - 450,
-         pZ = 1, particle = new THREE.Vector3(pX, pY, pZ);
-    particles.vertices.push(particle);
-  }
-  particleSystem = new THREE.ParticleSystem(particles, pMaterial);
-  scene.add(particleSystem);
-}
-
 function initGraphics() {
-  var width = document.width;
-  var height = document.height;
-  camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
-  //camera = new THREE.PerspectiveCamera(75, 1, 1, 20000);
-  camera.position.z = 500;
-  camera.position.x = 100;
+  var grid = $('#grid');
+  var width = grid.width();
+  var height = grid.height();
+  camera = new THREE.OrthographicCamera(width / 2, width / -2, 
+       height / 2, height / -2, -100, 1000);
+  camera.position.x = 0;
   camera.position.y = 0;
+  camera.position.z = -100;
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
   cubes = new Array(gmodel.numVoices());
   scene = new THREE.Scene();
   projector = new THREE.Projector();
   //addStars();
-  var noteSep = 2;
+  var noteSep = 4;
   var noteSize = getNoteSize();
   for (var voice = 0; voice < gmodel.numVoices(); voice++) {
     cubes[voice] = new Array(gmodel.numNotes());
     for (var note = 0; note < gmodel.numNotes(); note++) {
       var material = new THREE.MeshLambertMaterial({
-        color: 0x0000AF,
-        //emissive: 0x0000FF,
-        //shininess: 100,
-        depthTest: false,
         blending: THREE.AdditiveBlending,
       });
       var geometry = new THREE.CubeGeometry(noteSize[0] - noteSep, noteSize[1] - noteSep, 10, 1, 1, 1);
       var cube = new THREE.Mesh(geometry, material);
-      cube.position.x = (noteSize[0] + noteSep) * note - width/2 + documentBorder;
-      cube.position.y = 
-        (noteSize[1] + noteSep) * voice - height/2 - documentBorder + getGridOffset()[1];
+      cube.position.y = -noteSize[1] * voice + (height / 2) - noteSize[1] / 2;
+      cube.position.x = noteSize[0] * note - (width / 2) + noteSize[0] / 2;
       cube.voice = voice;
       cube.note = note;
       cube.active = Boolean(gmodel.getState(cube.voice, cube.note));
@@ -146,22 +118,16 @@ function initGraphics() {
       scene.add(cube);
     }
   }
-  pointLight = new THREE.DirectionalLight(0xFF66FF);
-  pointLight.position.set(0, 0, 1000);
-  pointLight.distance = 10;
-  pointLight.intensity = 0.2;
-  scene.add(pointLight);
-  //ambientLight = new THREE.AmbientLight(0x0066FF);
-  //ambientLight.intensity = 0.2;
+  //ambientLight = new THREE.AmbientLight(0x268bd2);
+  //ambientLight.intensity = 0.001;
   //scene.add(ambientLight);
-  renderer = new THREE.CanvasRenderer();
-    //CanvasRenderernew THREE.WebGLRenderer({antialias: true});
-  var grid = $('#grid');
-  renderer.setSize(grid.css('width'), grid.css('height'));
+  renderer = new THREE.CanvasRenderer({ canvas : document.getElementById('grid') });
+    //new THREE.WebGLRenderer({canvas : document.getElementById('grid'), antialias: true});
+  renderer.setSize(width, height);
   camera.updateProjectionMatrix();
-  document.getElementById('grid').appendChild(renderer.domElement);
+  //gridContainer.appendChild(renderer.domElement);
   if (dbg) {
-    createSphere(0, 0, 0);
+    createSphere(height / 2, width / 2, 0);
   }
 }
 
@@ -189,10 +155,10 @@ function onGridMouseDown(event) {
   var x = event.clientX;
   var y = event.clientY;
   var coords = windowSpaceToThreeSpace(x, y);
-  console.log("In window space you clicked: " + x + ", " + y);
+  //console.log("In window space you clicked: " + x + ", " + y);
   //var vector = new THREE.Vector3(x3, y3, 1);
-  console.log("In three space the coordinates are: " + coords[0] + ", " + coords[1]);
-  createSphere(coords[0], coords[1]);
+  //console.log("In three space the coordinates are: " + coords[0] + ", " + coords[1]);
+  //createSphere(coords[0], coords[1]);
   //captureCubeClick(vector);
 }
 
@@ -293,7 +259,7 @@ function onDocumentKeyDown(event) {
       break;
   }
   if (dbg) {
-    console.log("Camera position: " + camera.position.x + ", " + camera.position.y);
+    console.log("Sphere position: " + sphere.position.x + ", " + sphere.position.y);
   }
 }
 
