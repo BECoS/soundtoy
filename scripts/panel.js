@@ -9,22 +9,20 @@ $(function() {
   var kinetic = require('../node_modules/kinetic/kinetic.js').Kinetic;
   window.kinetic = kinetic;
   var stage = new kinetic.Stage({
-    container: 'panel',
-      width: $('#panel').css('width'),
-      height: $('#panel').css('height'), 
+      container: 'bar',
+      width: $('#bar').width() / 2,
+      height: $('#bar').height() * 0.9, 
   });
 
   var ctrlLayer = new kinetic.Layer();
   stage.add(ctrlLayer);
-
   imgpreload(["img/playButtonOff.svg", "img/playButtonOn.svg"], function(images) {
     var playInactive = new kinetic.Image({
-      x: 5,
-        y: 5,
-        height: 58,
-        width: 70,
+        height: $('#bar').height() * 0.7,
         image: images[0],
     });
+    window.playInactive = playInactive;
+    playInactive.setWidth(playInactive.getHeight());
     ctrlLayer.add(playInactive);
     ctrlLayer.draw();
 
@@ -49,5 +47,5 @@ $(function() {
     });   
 
   });
-
+  $('#panel').append('<h1 class="instrument">Additive &#43;</h1>');
 });
