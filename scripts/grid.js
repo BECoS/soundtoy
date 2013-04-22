@@ -12,6 +12,7 @@ var cubes, ambientLight, sphere, particleSystem;
 var lastFrameTime = 0;
 var cubeActiveColor = 0xF6FBA2;
 var cubeInactiveColor = 0x0000F0;
+var cubeActiveColColor = 0x00A0F0;
 
 
 function figureOutAnimationCall() {
@@ -42,13 +43,14 @@ function animate() {
   for (var voice = 0; voice < gmodel.numVoices(); voice++) {
     for (var note = 0; note < gmodel.numNotes(); note++) {
       var cube = cubes[voice][note];
-      //if (cube.note === activeCol) {
-      //  cube.rotation.x += 0.04;
-      //  cube.rotation.y += 0.04;
-      //} else {
-      //  cube.rotation.x = 0;
-      //  cube.rotation.y = 0;
-      //}
+      if (cube.note === activeCol) {
+        cube.material.color.setHex(cubeActiveColColor);
+        cube.rotation.x += 0.08;
+        cube.rotation.y += 0.08;
+      } else {
+        cube.rotation.x = 0;
+        cube.rotation.y = 0;
+      }
       if (cube.active) { 
         cube.material.color.setHex(cubeActiveColor);
         cube.material.wireframe = true;
@@ -137,10 +139,6 @@ function initGraphics() {
   projector = new THREE.Projector();
   scene = new THREE.Scene();
   sizeNotes();
-  //addStars();
-  //ambientLight = new THREE.AmbientLight(0x268bd2);
-  //ambientLight.intensity = 0.001;
-  //scene.add(ambientLight);
   renderer = new THREE.CanvasRenderer({ canvas : document.getElementById('grid') });
     //new THREE.WebGLRenderer({canvas : document.getElementById('grid'), antialias: true});
   renderer.setSize(width, height);
