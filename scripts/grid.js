@@ -44,19 +44,31 @@ function animate() {
     for (var note = 0; note < gmodel.numNotes(); note++) {
       var cube = cubes[voice][note];
       if (cube.note === activeCol) {
-        cube.material.color.setHex(cubeActiveColColor);
-        cube.rotation.x += 0.08;
-        cube.rotation.y += 0.08;
+        //cube.material.color.setHex(cubeActiveColColor);
+        if (!gmodel.isPlaying()) {
+          cube.rotation.x += 0.08;
+          cube.rotation.y += 0.08;
+        } else {
+          if (!cube.lit) {
+            cube.light = new THREE.PointLight(0x0000FF, 100, 50);
+            cube.light.position.set(cube.position.x, cube.position.y, -10);
+            scene.add(cube.light);
+            //createSphere(cube.position.x, cube.position.y, 0);
+            cube.lit = true;
+          }
+        }
       } else {
         cube.rotation.x = 0;
         cube.rotation.y = 0;
+        cube.lit = false;
+        scene.remove(cube.light);
       }
       if (cube.active) { 
-        cube.material.color.setHex(cubeActiveColor);
-        cube.material.wireframe = true;
-      } else {
-        cube.material.color.setHex(cubeInactiveColor);
+        //cube.material.color.setHex(cubeActiveColor);
         cube.material.wireframe = false;
+      } else {
+        //cube.material.color.setHex(cubeInactiveColor);
+        cube.material.wireframe = true;
       }
     }
   }
@@ -73,7 +85,6 @@ function initAudio() {
   }
 }
 
-window.$ = $;
 
 function getGridSize() {
   var gridWidth = $('#grid').width();
@@ -109,18 +120,31 @@ function sizeNotes() {
   for (var voice = 0; voice < gmodel.numVoices(); voice++) {
     cubes[voice] = new Array(gmodel.numNotes());
     for (var note = 0; note < gmodel.numNotes(); note++) {
-      var material = new THREE.MeshLambertMaterial({
-        blending: THREE.AdditiveBlending,
+      //var material = new THREE.MeshLambertMaterial({
+      //  blending: THREE.AdditiveBlending,
+      //});
+      var material = new THREE.MeshPhongMaterial({
+          color : 0x0000BB,
+          shading : THREE.SmoothShading,
+          shininess : 100,
+          specular : 0x0000BB,
       });
-      var geometry = new THREE.CubeGeometry(noteSize[0] - noteSep, noteSize[1] - noteSep, 10, 1, 1, 1);
+      var geometry = new THREE.CubeGeometry(noteSize[0] - noteSep, noteSize[1] - noteSep, 1, 10, 10, 1);
       var cube = new THREE.Mesh(geometry, material);
-      cube.position.y = -noteSize[1] * voice + (height / 2) - noteSize[1] / 2;
-      cube.position.x = noteSize[0] * note - (width / 2) + noteSize[0] / 2;
       cube.voice = voice;
       cube.note = note;
-      cube.active = Boolean(gmodel.getState(cube.voice, cube.note));
+      cube.span = gmodel.getState(cube.voice, cube.note);
+      cube.position.y = -noteSize[1] * voice + (height / 2) - noteSize[1] / 2;
+      cube.position.x = noteSize[0] * note - (width / 2) + noteSize[0] / 2;
+      if (cube.span > 1) { 
+        cube.scale.x = cube.span;
+        cube.position.x += (noteSize[0] / 2) * (cube.span - 1);
+      }
+      cube.active = Boolean(cube.span);
       cubes[voice][note] = cube;
-      scene.add(cube);
+      if (note === 0 || cubes[voice][note - 1].span <= 1) {
+        scene.add(cube);
+      }
     }
   }
 }
@@ -138,17 +162,17 @@ function initGraphics() {
   cubes = new Array(gmodel.numVoices());
   projector = new THREE.Projector();
   scene = new THREE.Scene();
+  var ambientLight = new THREE.AmbientLight(0x404040);
+  scene.add(ambientLight);
   sizeNotes();
-  renderer = new THREE.CanvasRenderer({ canvas : document.getElementById('grid') });
-    //new THREE.WebGLRenderer({canvas : document.getElementById('grid'), antialias: true});
+  renderer = //new THREE.CanvasRenderer({ canvas : document.getElementById('grid') });
+    new THREE.WebGLRenderer({canvas : document.getElementById('grid'), antialias: true});
   renderer.setSize(width, height);
   camera.updateProjectionMatrix();
+  window.cubes = cubes;
   $(window).resize(function () { 
     console.log("Grid height is: " + $('#grid').height());
   });
-  if (dbg) {
-    //createSphere(0, 0, 0);
-  }
 }
 
 function toggleGrid() {
@@ -280,16 +304,17 @@ function onDocumentKeyDown(event) {
 }
 
 
+
+document.addEventListener("DOMContentLoaded", launch, false);
+document.addEventListener("keydown", onDocumentKeyDown, false);
+
 // DEBUG
 if (dbg) {
+  window.$ = $;
   window.spherePos = function () {
     console.log("X: " + sphere.position.x + ", " + 
         "Y: " + sphere.position.y + ", " +
         "Z: " + sphere.position.z); 
   };
 }
-
-document.addEventListener("DOMContentLoaded", launch, false);
-document.addEventListener("keydown", onDocumentKeyDown, false);
-
 exports.sizeNotes = sizeNotes;
