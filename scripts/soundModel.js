@@ -103,8 +103,8 @@ function stop() {
   }
 }
 
-function updateSequence(voice, note, state) {
-  sequence[voice][note] = state;
+function updateState(voice, note, state) {
+  return sequence[voice][note] = state;
 }
 
 function getTime() {
@@ -122,7 +122,7 @@ function numNotes() {
 exports.initialize = initialize;
 exports.start = start;
 exports.stop = stop;
-exports.updateSequence = updateSequence;
+exports.updateState = updateState;
 exports.getActiveColumn = getActiveColumn;
 exports.getState = getState;
 exports.isPlaying = isPlaying;

@@ -20,6 +20,10 @@ function getState(x, y) {
   return model.getState(x, y);  
 }
 
+function updateState(x, y, state) {
+  return model.updateState(x, y, state);
+}
+
 function isPlaying() {
   return model.isPlaying();
 }
@@ -39,6 +43,7 @@ function numNotes() {
 exports.initialize = initialize;
 exports.updateModel = updateModel;
 exports.getState = getState;
+exports.updateState = updateState;
 exports.getActiveColumn = getActiveColumn;
 exports.isPlaying = isPlaying;
 exports.numVoices = numVoices;

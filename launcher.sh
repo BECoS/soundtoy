@@ -44,5 +44,5 @@ if [[ $? -eq 0 ]]; then
 else
   echo -e "\n${blue}Listening on $port ${reset}"
   echo -ne "${white}Ctrl-c to restart. Use Ctrl-\ to quit.${reset}\t"
-  node app.js
+  nodejs app.js
 fi
