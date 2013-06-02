@@ -62,11 +62,11 @@ figure {
 }
 
 figure:hover {
-  -webkit-transition: 400ms;
+  -webkit-transition: 250ms;
   font-color: black;
   text-align: middle;
   -webkit-perspective: -200px;
-  cursor: crosshair;
+  cursor: pointer;
   z-index: 2;
 }
 
@@ -75,22 +75,21 @@ figure:hover {
 }
 
 .inactive:hover {
-  background-color: #990;
+  background-color: #f9f9f9;
 }
 
 .active {
-  background-color: rgba(99, 99, 00, 10);
+  background-color: #9f9fff;
 }
 
 
-/*.scale {
+.scale {
   -webkit-transform: scale(2, 4);
 }
 
-/*.clicked {
-  //background-color: #990;
-  -webkit-transform: rotateX( 90deg ) rotateY( 90deg );
-}*/
+.clicked {
+  -webkit-transform: rotateX( 180deg ) rotateY( 180deg );
+}
 
 
 #logo {
