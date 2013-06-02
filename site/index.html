@@ -1,21 +1,53 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>SndToy</title>
-  <link rel="stylesheet" type="text/css" href="style.css"></link>
-  <script type="text/javascript" src="bundle.js"></script>
-</head>
-<body>
-  <div id="container">
-    <div id="selector" class="sideControls metal" ></div>
-    <div id="centerpiece">
-      <div id="bar" class="metal">
-        <img id="logo" src="img/logo.png">
+  <head>
+    <meta charset="utf-8">
+    <title>SndToy</title>
+    <link rel="stylesheet" type="text/css" href="style.css"></link>
+    <script type="text/javascript" src="bundle.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="selector" class="sideControls metal" >
+        <div class="what">
+        </div>       
+        <!--<div class="item">
+          <div class="roundedOne">
+            <input type="checkbox" value="None" id="roundedOne"
+            name="check1" checked="checked" />
+            <label for="roundedOne"></label>
+          </div>
+          <span contenteditable="true">Track</span>
+        </div>
+        <div class="item">
+          <div class="roundedOne">
+            <input type="checkbox" value="None" id="roundedTwo"
+            name="check2" checked="checked" />
+            <label for="roundedTwo"></label>
+          </div>
+          <span contenteditable="true">Track</span>
+        </div>
+        <div class="item">
+          <div class="roundedOne">
+            <input type="checkbox" value="None" id="roundedThree"
+            name="check3" checked="checked" />
+            <label for="roundedThree"></label>
+          </div>
+          <span contenteditable="true">Track</span>
+        </div>-->		    
       </div>
-      <canvas id="grid">
+      <div id="centerpiece">
+        <div id="bar" class="metal">
+          <img id="logo" src="img/logo.png">
+        </div>
+        <canvas id="grid">
+      </div>
+      <div id="panel" class="sideControls metal" >
+        <div id="adsr-wrapper">
+          <div id="adsr-container">
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="panel" class="sideControls metal" ></div>
-  </div>
-</body>
+  </body>
 </html>
