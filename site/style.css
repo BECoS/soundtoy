@@ -71,7 +71,7 @@ figure:hover {
 }
 
 .inactive {
-  //background-color: #444;
+  color: rgba(0,0,0,0);
 }
 
 .inactive:hover {
@@ -80,6 +80,7 @@ figure:hover {
 
 .active {
   background-color: #9f9fff;
+  color: rgba(0,0,0,255);
 }
 
 
