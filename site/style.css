@@ -3,22 +3,25 @@
   cursor: default;
   padding: 0;
   margin: 0;
+  z-index: 1;
+  overflow: hidden;
 }
 
 body {
   background-color: #777791;
-  z-index: 1;
 }
 
 .instrument {
   padding-left: 10px;
   font-family: monospace;
-  color: #073642;
+  text-align: center;
 }
 
-#centerpiece {
-  width: 100%;
-  height: 100%;
+h1.instrument {
+  border-style: solid;
+  background-color: #100000;
+  position: relative;
+  width: 90%;
 }
 
 #bar {
@@ -34,36 +37,37 @@ body {
 
 #grid {
   z-index: -1;
+  overflow: hidden;
+  position: absolute;
+}
+
+#centerpiece {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
 }
 
 .tContainer {
-  width: 100%;
-  text-align: center;
+  white-space: nowrap;
+}
+
+.playing {
+  -webkit-transition: 200ms;
+  background-color: #000000;
 }
 
 figure {
   display: inline-block;
   width: 40px;
-  height: 40px;
-  font-size: 20px;
+  height: 20px;
   margin: 0 auto;
   border: 1px solid #000;
   border-color: white;
   color: rgba(0, 0, 0, 0);
+  overflow: hidden;
   /*-webkit-perspective-origin: center;
   -webkit-transform-style: preserve-3d;*/
-}
-
-#squareBase figure {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  text-align: center;
-  font-weight: bold;
-  line-height: 50px;
-  font-size: 16px;
-  //-webkit-transition: 150ms;
-  //-webkit-backface-visibility: hidden;
 }
 
 figure:hover {
@@ -114,20 +118,24 @@ figure:hover {
 }
 
 #panel {
-  overflow: hidden;
-  color: #00f5f0;
+  overflow-x: hidden;
+  background-color: #00f5f0;
   width: 225px; 
-  color: #000000;
+  color: #fff; 
+  text-shadow: 1px 1px 1px #000; 
+  position: absolute;
+  top: 40px;
+  bottom: 0px;
+  height: 800px;
 }
 
 #selector {
   color: #00f5f0;
-  width: 10%;
-  padding: 0;
-  width: 50px;
-  display: table-cell;
-  border: 0;
-  margin: 0;
+  position: absolute;
+  width: 100%;
+  height: 30px;
+  bottom: 0;
+  z-index: 1;
 }
 
 #container { 
@@ -174,17 +182,18 @@ figure:hover {
   left: 5%;
 }
 
+#adsr-container canvas {
+  -webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+}
+
 .squaredOne {
   width: 28px;
   height: 28px;
   background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
   margin: 0 auto 0 auto;
   /*right: 550px;
   top: -75px;*/
   -webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  -moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
   position: relative;
 }
 
