@@ -6,11 +6,21 @@
      |_______/     \______/   \______/  |__| \__| |_______/     |__|      \______/      |__|     
 
 * * *
-Excellent audiovisual experience.
+Make music in your browser!
 
 Site at index.html
+
 Jasmine spec runner at specs.html
 
 `npm install`
-`./deploy.sh`
 
+`node app.js` to launch
+
+`./launcher.sh` to launch and re-browserify each time you change a file in lib
+
+* WebAudio for the sound 
+* Browserify to bundle
+* JQuery to manipulate the DOM
+* KineticJS for drawing to the canvas
+* Node.js for serving it up
+* Jasmine for testing
