@@ -4,24 +4,27 @@
     <meta charset="utf-8">
     <title>SndToy</title>
     <link rel="stylesheet" type="text/css" href="style.css"></link>
-    <script type="text/javascript" src="bundle.js"></script>
-    <script type="text/javascript" 
-      src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script>
+      try {
+        if (navigator.appVersion.match(/webkit/i) === null)
+          throw new Error("Not a WebKit browser");
+      } catch (e) {
+        alert("This won't work unless you use Chrome or Safari \u2639");
+      }
+    </script>
+    <script src="bundle.js"></script>
   </head>
   <body>
-    <!--<div id="container">-->
-      <div id="selector" class="metal" >
-      </div>
-      <div id="centerpiece">
-        <div id="bar" class="metal">
-          <img id="logo" src="img/logo.png">
-        </div>
-        <div id="grid"></div>
-      </div>
-      <div id="panel" class="sideControls metal" >
-        <div id="adsr-container">
-        </div>
-      </div>
-    <!--</div>-->
-  </body>
+    <div id="selector" class="metal"></div>
+    <div id="bar" class="metal">
+      <img id="logo" src="img/logo.png">
+    </div>
+    <div id="centerpiece">
+      <div id="grid"></div>
+    </div>
+  </div>
+  <div id="panel" class="sideControls metal" >
+    <div id="adsr-container"></div>
+  </div>
+</body>
 </html>
