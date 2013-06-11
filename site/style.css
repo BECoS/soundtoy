@@ -41,8 +41,9 @@ h1.instrument {
 
 #grid {
   z-index: -1;
-  overflow: hidden;
   position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 #centerpiece {
@@ -64,15 +65,13 @@ h1.instrument {
 figure {
   display: inline-block;
   width: 40px;
-  height: 20px;
-  margin: 0 auto;
-  border: 1px solid #000;
-  border-color: white;
-  color: rgba(0, 0, 0, 0);
+  height: 40px;
+  margin: 0 0;
+  padding: 0 0;
+  border: 1px solid #fff;
   overflow: hidden;
   font-family: HeavyData;
-  /*-webkit-perspective-origin: center;
-  -webkit-transform-style: preserve-3d;*/
+  vertical-align: text-top;
 }
 
 figure:hover {

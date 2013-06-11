@@ -13,7 +13,8 @@ var mimeTypes = {
   "png"   :   "image/png",
   "js"    :   "text/javascript",
   "svg"   :   "image/svg+xml",
-  "css"   :   "text/css"
+  "css"   :   "text/css",
+  "ttf"   :   "font/opentype",
 };
 
 function bundle(res) {
