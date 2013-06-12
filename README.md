@@ -16,7 +16,7 @@ Jasmine spec runner at specs.html
 
 `node app.js` to launch
 
-`./launcher.sh` to launch and re-browserify each time you change a file in lib
+`./build.sh` to launch and re-browserify each time you change a file in lib
 
 * WebAudio for the sound 
 * Browserify to bundle

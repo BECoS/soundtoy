@@ -9,7 +9,7 @@ node_modules/*
 node_modules/ 
 
 npm-debug.log
-site/bundle.js
-site/specBundle.js
+www/bundle.js
+www/specBundle.js
 tags
 .ctags

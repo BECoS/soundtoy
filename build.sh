@@ -3,12 +3,12 @@
 trap cleanUp SIGINT
 
 port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
-scriptdir=lib
+scriptdir=src
 scripts=$scriptdir/*.js
 specdir=specs
 specs=$specdir/*.spec.js
 bundle=bundle.js
-site=site
+site=www
 specBundle=specBundle.js
 
 bold=$(tput bold)
@@ -30,7 +30,7 @@ function packageJS {
   browserifyCmd="./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle"
   echo -e "\n${white}Browserify packaging elapsed time:"
   time -p $browserifyCmd
-  #./node_modules/browserify/bin/cmd.js -r ./node_modules/jquery-browserify/lib/jquery.js -o $site/common.js
+  #./node_modules/browserify/bin/cmd.js -r ./node_modules/jquery-browserify/src/jquery.js -o $site/common.js
   #./node_modules/browserify/bin/cmd.js --fast -x $site/common.js $specs -o $site/$specBundle
   #./node_modules/browserify/bin/cmd.js --fast -x $site/common.js $scripts -o $site/$bundle
   echo "${reset}"

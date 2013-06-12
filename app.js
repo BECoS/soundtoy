@@ -18,7 +18,7 @@ var mimeTypes = {
 };
 
 function bundle(res) {
-  fs.readdir('./lib', function (err, files) {
+  fs.readdir('./src', function (err, files) {
     var b = browserify(files);
     b.bundle({ insertGlobals : true }, serveBundle);
   });
@@ -38,9 +38,9 @@ function serveBundle() {
 http.createServer(function(req, res) {
   var uri = url.parse(req.url).pathname;
   if (uri === '/') uri = '/index.html';
-  if (uri === '/specs') uri = '/specs.html';
+  if (uri === '/test') uri = '/specs.html';
   //if (uri === '/site/bundle.js') return bundle(res);
-  var filename = path.join(path.join(process.cwd(), 'site'), uri);
+  var filename = path.join(path.join(process.cwd(), 'www'), uri);
   fs.exists(filename, function(exists) {
     if (!exists) {
       console.log("Requested: " + uri + " does not exist at " + filename);
