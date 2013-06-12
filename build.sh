@@ -2,7 +2,35 @@
  
 trap cleanUp SIGINT
 
+while getopts ":w" opt; do
+  case $opt in
+    #c)
+    #  echo "Minifying css"
+    #  ;;
+    #m) 
+    #  echo "Minifying js"  
+    #  ;;
+    #s)
+    #  echo "Skipping JSHint"
+    #  ;;
+    w)
+      echo "Watching for changes to rebrowserify" 
+      watch=true
+      ;;
+    \?)
+      echo "Error: unrecognized flag -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
 port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
+
+BROWSERIFY=./node_modules/browserify/bin/cmd.js
+JSHINT=./node_modules/jshint/bin/hint 
+NODE=node
+
+jshintconf=./jshint_config.json
 scriptdir=src
 scripts=$scriptdir/*.js
 specdir=specs
@@ -27,7 +55,7 @@ function cleanUp {
 }
 
 function packageJS {
-  browserifyCmd="./node_modules/browserify/bin/cmd.js $scripts -o $site/$bundle"
+  $BROWSERIFY $scripts -o $site/$bundle
   echo -e "\n${white}Browserify packaging elapsed time:"
   time -p $browserifyCmd
   #./node_modules/browserify/bin/cmd.js -r ./node_modules/jquery-browserify/src/jquery.js -o $site/common.js
@@ -36,13 +64,12 @@ function packageJS {
   echo "${reset}"
 }
 
-## Begin Script ##
 cd dirname $0
 rm -f $site/$bundle
 rm -f $site/$specBundle
 
 echo -e "\n${yellow}Checking style...${reset}"
-./node_modules/jshint/bin/hint --config ./jshint_config.json --show-non-errors $scripts
+$JSHINT --config $jshintconf --show-non-errors $scripts
 if [[ $? -ne 0 ]]; then
   echo -e "\n${boldred}Failed jshint$reset"
   exit 1
@@ -51,6 +78,10 @@ else
 fi
 
 packageJS
+
+if [[ "$watch" != "true" ]]; then
+  exit 0
+fi
 
 netstat -anp tcp 2>/dev/null | awk '$6 == "LISTEN"' | grep -o $port &> /dev/null
 
