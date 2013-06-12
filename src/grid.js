@@ -56,6 +56,28 @@ function getGridCenterpoint() {
   return { x: gridCenterX, y: gridCenterY };
 }
 
+function getViewportCenterpoint() {
+  var viewWidth = $(document).width();
+  var viewHeight = $(document).height();
+  var viewCenterX = viewWidth / 2; 
+  var viewCenterY = viewHeight / 2;
+  return { x: viewCenterX, y: viewCenterY };
+}
+
+function centerGrid() {
+  var gridWidth = $('#grid').width();
+  var gridHeight = $('#grid').height();
+  var viewWidth = $('#centerpiece').width();
+  var viewHeight = $('#centerpiece').height();
+  $('#grid').offset({ 
+    left: (viewWidth - gridWidth) / 2,
+    top: (viewHeight - gridHeight) / 2,
+  });
+}
+window.dbg = {};
+window.dbg.getViewportCenterpoint = getViewportCenterpoint;
+window.dbg.getGridCenterpoint = getGridCenterpoint;
+
 function initGridZoom() {
   var zoomLevel = 16;
   var shrinkSize = 2;
@@ -82,9 +104,9 @@ function initGridZoom() {
       $('.tContainer').height($('figure').height() + shrinkSize);
       
       // When zooming out return the grid to center 
-      $('#grid').offset( { left: currentPos.left + shrinkSize } );
 
       $('figure').css('font-size', zoomLevel-- );
+      centerGrid();
     } else {
       if (zoomLevel === 32) return;
       $('figure').width($('figure').width() + shrinkSize )
@@ -95,8 +117,9 @@ function initGridZoom() {
 
       $('figure').css('font-size', zoomLevel++ );
       
-      var spanLeft = gridCenterPoint.x - mousePoint.x;
-      $('#grid').offset( { left: currentPos.left + spanLeft / zoomLevel  } );
+      //var spanLeft = gridCenterPoint.x - mousePoint.x;
+      //var spanTop = gridCenterPoint.y - mousePoint.y;
+      centerGrid();
     }
   };
   
