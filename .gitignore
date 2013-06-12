@@ -2,6 +2,7 @@
 **.swp
 
 report
+doc
 
 node_modules/*
 !node_modules/kinetic/
