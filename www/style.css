@@ -60,7 +60,12 @@ h1.instrument {
 
 .playing {
   -webkit-transition: 200ms;
-  background-color: #000000;
+  background-color: #00f;
+}
+
+.playing.active {
+  -webkit-transform: scale(2, 4);
+  -webkit-transform: rotate(45deg);
 }
 
 figure {
