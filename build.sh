@@ -27,7 +27,7 @@ done
 port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
 
 BROWSERIFY=./node_modules/browserify/bin/cmd.js
-JSHINT=./node_modules/jshint/bin/hint 
+JSHINT=./node_modules/jshint/bin/jshint 
 NODE=node
 
 jshintconf=./jshint_config.json

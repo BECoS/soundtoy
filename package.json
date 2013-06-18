@@ -10,7 +10,7 @@
   "scripts": {
     "test": "test.js"
   },
-  "dependencies": { "three" : "*", 
+  "dependencies": { "browserify" : "*", 
                     "jquery-browserify" : "*",
                     "browser-build" : "*"
                   },
