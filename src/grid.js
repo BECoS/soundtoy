@@ -1,7 +1,5 @@
 var gmodel = require('./gridModel.js');
   
-require('./Util.js');
-
 function initView () {
   var totalVoices = gmodel.numVoices();
   var length = 16;
@@ -27,23 +25,6 @@ function computeFigureSize() {
   var containHeight = $('#grid').height();
   return [containWidth / 16 - 2, containHeight / 16 - 2];
 }
-
-$( function () {
-  initAudio();
-  initView();
-  $('figure').click( function () {
-    $(this).addClass('clicked');
-    var row = $(this).attr('row');
-    var col = $(this).attr('col');
-    var freshState = gmodel.getState(row, col) === 1 ? 0 : 1;
-    gmodel.updateState(row, col, freshState);
-    setTimeout(function (square) {
-      $('.clicked').removeClass('clicked');
-      $(square).toggleClass('active');
-    }, 100, this);
-  });
-  initGridZoom();
-});
 
 function cullColumns() {
   var boundary = computeFigureSize();
@@ -114,6 +95,5 @@ function initGridZoom() {
   });
 }
 
-function initAudio() {
-  gmodel.initialize();
-}
+exports.initView = initView;
+exports.initGridZoom = initGridZoom;

@@ -2,7 +2,7 @@
 
 var model = require('./soundModel.js');
 
-function initialize(rows, columns) {
+function initialize() {
 //TODO: Seperate this module's sequence from the soundModel's
   console.log("gridModel initialized");
   model.initialize();
