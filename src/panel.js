@@ -82,19 +82,9 @@ $(function() {
           image: images[11],
           draggable: true,
           dragBoundFunc: function(pos) {
-            var newX;
-            if (pos.x <= 99) {
-              newX = 99;
-            }
-            else if (pos.x >= 239) {
-              newX = 239;
-            }
-            else {
-              newX = pos.x;
-            }
             return {
-              x: newX,
-              y: this.getAbsolutePosition().y
+              x: pos.x,
+          y: this.getAbsolutePosition().y
             };
           }
       });
@@ -107,9 +97,7 @@ $(function() {
       ctrlLayer.add(tempoDown);
       ctrlLayer.add(gainDial);
       ctrlLayer.draw();
-      stage.add(vuLayer);
-      stage.add(gainLayer);
-      stage.add(ctrlLayer);      
+      stage.add(ctrlLayer);
 
       var playActive = playInactive.clone({image: images[1]});
       var stopActive = stopInactive.clone({image: images[3]});
@@ -126,7 +114,6 @@ $(function() {
         ctrlLayer.add(playActive);
         ctrlLayer.draw();
         smodel.start();
-        //mySpectrum = setInterval( function() {drawSpectrum(vuLayer); }, 30);
       });
 
       playActive.on('mousedown', function(event) {
@@ -134,13 +121,11 @@ $(function() {
         ctrlLayer.add(playInactive);
         ctrlLayer.draw();
         smodel.stop();
-        //clearInterval(mySpectrum);
       });   
 
       stopInactive.on('mousedown', function(event) {
         ctrlLayer.clear();
         ctrlLayer.add(stopActive);
-        smodel.stop();
         ctrlLayer.draw();
       });
 
@@ -187,32 +172,29 @@ $(function() {
         ctrlLayer.draw();
       });
 
-      drawGainContainer(gainLayer);
+      drawGainContainer(ctrlLayer);
 
     }); 
 
   //ADSR CODE
-  var adsrStage = new Kinetic.Stage({
+  adsrStage = new Kinetic.Stage({
     container: 'adsr-container',
-    width: 200,
-    height: 180
+            width: 200,
+            height: 200,
   });
 
   var lineLayer = new Kinetic.Layer();
   var centerLayer = new Kinetic.Layer();
+  var barLayer = new Kinetic.Layer();
   var graphLayer = new Kinetic.Layer();
 
-  var cellLayer = new Kinetic.Layer();
-  var fillLayer = new Kinetic.Layer();
-  var isDown = false;
-
   // build ATK
-  var atkLine = new Kinetic.Line({
+  var stem = new Kinetic.Line({
     strokeWidth: 3,
       stroke: 'green',
       points: [{
         x: 0,
-        y: adsrStage.getHeight() * (3/4)
+      y: adsrStage.getHeight() / 2
       }, {
         x: adsrStage.getWidth() / 4,
       y: 0
@@ -220,97 +202,99 @@ $(function() {
   });
 
   // build DCY
-  var dcyLine = new Kinetic.Line({
+  var stem2 = new Kinetic.Line({
     strokeWidth: 3,
       stroke: 'orange',
       points: [{
         x: adsrStage.getWidth() / 4,
-        y: 0
+      y: 0
       }, {
         x: adsrStage.getWidth() / 2,
-        y: adsrStage.getHeight() * (3 / 4) - 50
+      y: adsrStage.getHeight() / 2 - 50
       }],
   });
 
   // build STN
-  var stnLine = new Kinetic.Line({
+  var stem3 = new Kinetic.Line({
     strokeWidth: 3,
       stroke: 'lightblue',
       points: [{
         x: adsrStage.getWidth() / 2,
-        y: adsrStage.getHeight() * (3 / 4) - 50
+      y: adsrStage.getHeight() / 2 - 50
       }, {
-        x: adsrStage.getWidth() * (3 / 4),
-        y: adsrStage.getHeight() * (3 / 4) - 50
+        x: adsrStage.getWidth() * (3/4),
+      y: adsrStage.getHeight() / 2 - 50
       }],
   });
 
   // build RLS
-  var rlsLine = new Kinetic.Line({
+  var stem4 = new Kinetic.Line({
     strokeWidth: 3,
       stroke: 'pink',
       points: [{
-        x: adsrStage.getWidth() * (3 / 4),
-        y: adsrStage.getHeight() * (3 / 4) - 50
+        x: adsrStage.getWidth() * (3/4),
+      y: adsrStage.getHeight() / 2 - 50
       }, {
         x: adsrStage.getWidth(),
-        y: adsrStage.getHeight() * (3 / 4)
+      y: adsrStage.getHeight() / 2
       }],
   });
 
-  var atkDragger = new Kinetic.Circle({
-    x: (atkLine.attrs.points[0].x + atkLine.attrs.points[1].x) / 2,
-      y: (atkLine.attrs.points[0].y + atkLine.attrs.points[1].y) / 2,
+  // build draggable (some) connectors
+
+  var c6 = new Kinetic.Circle({
+    x: (stem.attrs.points[0].x + stem.attrs.points[1].x) / 2,
+      y: (stem.attrs.points[0].y + stem.attrs.points[1].y) / 2,
       radius: 6,
       fill: 'orange',
       draggable: true,
       dragBoundFunc: function(pos) {
-        var m = slope(atkLine.attrs.points[0].x, atkLine.attrs.points[1].x, atkLine.attrs.points[0].y, atkLine.attrs.points[1].y);
+        var m = slope(stem.attrs.points[0].x, stem.attrs.points[1].x, stem.attrs.points[0].y, stem.attrs.points[1].y);
         var newX;
-        if (pos.x > atkLine.attrs.points[1].x) {
-          newX = atkLine.attrs.points[1].x;
+        if (pos.x > stem.attrs.points[1].x) {
+          newX = stem.attrs.points[1].x;
         }
-        else if (pos.x < atkLine.attrs.points[0].x) {
-          newX = atkLine.attrs.points[0].x;
+        else if (pos.x < stem.attrs.points[0].x) {
+          newX = stem.attrs.points[0].x;
         }
         else {
           newX = pos.x;
         }
   return {
     x: newX,
-    y: (newX * m) + yIntercept(atkDragger.getX(), atkDragger.getY(), m)
+      y: (newX * m) + yIntercept(c6.getX(), c6.getY(), m)
   };
       }
   });
 
-  var dcyDragger = new Kinetic.Circle({
-    x: (dcyLine.attrs.points[0].x + dcyLine.attrs.points[1].x) / 2,
-      y: (dcyLine.attrs.points[0].y + dcyLine.attrs.points[1].y) / 2,
+  var c7 = new Kinetic.Circle({
+    x: (stem2.attrs.points[0].x + stem2.attrs.points[1].x) / 2,
+      y: (stem2.attrs.points[0].y + stem2.attrs.points[1].y) / 2,
       radius: 6,
       fill: 'black',
       draggable: true,
       dragBoundFunc: function(pos) {
-        var m = slope(dcyLine.attrs.points[0].x, dcyLine.attrs.points[1].x, dcyLine.attrs.points[0].y, dcyLine.attrs.points[1].y);
+        var m = slope(stem2.attrs.points[0].x, stem2.attrs.points[1].x, stem2.attrs.points[0].y, stem2.attrs.points[1].y);
         var newX;
-        if (pos.x > dcyLine.attrs.points[1].x) {
-          newX = dcyLine.attrs.points[1].x;
+        if (pos.x > stem2.attrs.points[1].x) {
+          newX = stem2.attrs.points[1].x;
         }
-        else if (pos.x < dcyLine.attrs.points[0].x) {
-          newX = dcyLine.attrs.points[0].x;
+        else if (pos.x < stem2.attrs.points[0].x) {
+          newX = stem2.attrs.points[0].x;
         }
         else {
           newX = pos.x;
         }
   return {
     x: newX,
-      y: (newX * m) + yIntercept(dcyDragger.getX(), dcyDragger.getY(), m)
+      y: (newX * m) + yIntercept(c7.getX(), c7.getY(), m)
   };
       }
   });
 
-  var stnDragger = new Kinetic.Circle({
-    x: (stnLine.attrs.points[0].x + stnLine.attrs.points[1].x) / 2,
-      y: (stnLine.attrs.points[0].y + stnLine.attrs.points[1].y) / 2,
+  var c8 = new Kinetic.Circle({
+    x: (stem3.attrs.points[0].x + stem3.attrs.points[1].x) / 2,
+      y: (stem3.attrs.points[0].y + stem3.attrs.points[1].y) / 2,
       radius: 6,
       fill: 'black',
       draggable: true,
@@ -319,8 +303,8 @@ $(function() {
         if (pos.y < 0) {
           newY = 0;
         }
-        else if (pos.y > adsrStage.getHeight() * (3 / 4)) {
-          newY = adsrStage.getHeight() * (3 / 4);
+        else if (pos.y > adsrStage.getHeight() / 2) {
+          newY = adsrStage.getHeight() / 2;
         }
         else {
           newY = pos.y;
@@ -332,327 +316,162 @@ $(function() {
       }
   });
 
-  var rlsDragger = new Kinetic.Circle({
-    x: (rlsLine.attrs.points[0].x + rlsLine.attrs.points[1].x) / 2,
-      y: (rlsLine.attrs.points[0].y + rlsLine.attrs.points[1].y) / 2,
+  var c9 = new Kinetic.Circle({
+    x: (stem4.attrs.points[0].x + stem4.attrs.points[1].x) / 2,
+      y: (stem4.attrs.points[0].y + stem4.attrs.points[1].y) / 2,
       radius: 6,
       fill: 'black',
       draggable: true,
       dragBoundFunc: function(pos) {
-        var m = slope(rlsLine.attrs.points[0].x, rlsLine.attrs.points[1].x, rlsLine.attrs.points[0].y, rlsLine.attrs.points[1].y);
+        var m = slope(stem4.attrs.points[0].x, stem4.attrs.points[1].x, stem4.attrs.points[0].y, stem4.attrs.points[1].y);
         var newX;
-        if (pos.x > rlsLine.attrs.points[1].x) {
-          newX = rlsLine.attrs.points[1].x;
+        if (pos.x > stem4.attrs.points[1].x) {
+          newX = stem4.attrs.points[1].x;
         }
-        else if (pos.x < rlsLine.attrs.points[0].x) {
-          newX = rlsLine.attrs.points[0].x;
+        else if (pos.x < stem4.attrs.points[0].x) {
+          newX = stem4.attrs.points[0].x;
         }
         else {
           newX = pos.x;
         }
   return {
     x: newX,
-      y: (newX * m) + yIntercept(rlsDragger.getX(), rlsDragger.getY(), m)
+      y: (newX * m) + yIntercept(c9.getX(), c9.getY(), m)
   };
       }
   });
 
-  var atkCell = new Kinetic.Shape({
-    drawFunc: function(canvas) {
-      var context = canvas.getContext();
-      var x = 5;
-      var y = adsrStage.getHeight() - 25;
-      var width = 40;
-      var height = 20;
-      var radius = 10;
-
-      context.beginPath();
-
-      // draw top and top right corner
-      context.moveTo(x+radius,y);
-      context.arcTo(x+width,y,x+width,y+radius,radius);
-
-      // draw right side and bottom right corner
-      context.arcTo(x+width,y+height,x+width-radius,y+height,radius); 
-
-      // draw bottom and bottom left corner
-      context.arcTo(x,y+height,x,y+height-radius,radius);
-
-      // draw left and top left corner
-      context.arcTo(x,y,x+radius,y,radius);
-
-      context.moveTo(x+radius,y);
-      context.lineTo(x+radius, y + height);
-
-      context.moveTo(x+radius+10, y);
-      context.lineTo(x+radius+10, y + height);
-
-      context.moveTo(x+radius+20, y);
-      context.lineTo(x+radius+20, y + height);	
-
-      context.closePath();
-      canvas.fillStroke(this);
-    },
-      stroke: 'black',
-      strokeWidth: 1.5
-  });
-
-  var dcyCell = atkCell.clone({x: 50});
-  var stnCell = dcyCell.clone({x: 100});
-  var rlsCell = stnCell.clone({x: 150});
-
-  var atkFill = new Kinetic.Rect({
+  var atkBar = new Kinetic.Rect({
     x: 5,
-    y: adsrStage.getHeight() - 25,
-    width: 0,
-    height: 20,
-    fillLinearGradientStartPoint: [35, 0],
-    fillLinearGradientEndPoint: [35, 15],
-    fillLinearGradientColorStops: [0, '#39e639', 1, '#00cc00']
+      y: (adsrStage.getHeight() / 2) + 10,
+      width: adsrStage.getWidth()/4, 
+      height: 25,
+      fillLinearGradientStartPoint: [0, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientEndPoint: [50, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientColorStops: [0, 'red', 1, 'white'],
+      stroke: 'black',
+      strokeWidth: 1
   });
 
-  var dcyFill = atkFill.clone({x: 55});
-  var stnFill = dcyFill.clone({x: 105});
-  var rlsFill = stnFill.clone({x: 155});
-  atkFill.setId('atkFill');
-  dcyFill.setId('dcyFill');
-  stnFill.setId('stnFill');
-  rlsFill.setId('rlsFill');
-
-  atkCell.on('mousedown', function() {
-    isDown = true;
-    fillLayer.drawScene();
+  var dcyBar = new Kinetic.Rect({
+    x: (adsrStage.getWidth()/4) + 1,
+      y: (adsrStage.getHeight() / 2) + 10,
+      width: adsrStage.getWidth()/4,
+      height: 25,
+      fillLinearGradientStartPoint: [0, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientEndPoint: [50, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientColorStops: [0, 'red', 1, 'white'],       
+      stroke: 'black',
+      strokeWidth: 1
   });
 
-  atkCell.on('mouseover', function() {
-    this.setShadowEnabled(true);
-    this.setShadowColor('#70ed3b');
-    this.setShadowBlur(5);
-    this.setShadowOffset(0);
-    this.setShadowOpacity(1);
-    this.getLayer().draw();
+  var stnBar = new Kinetic.Rect({
+    x: 2*(adsrStage.getWidth()/4) + 1,
+      y: (adsrStage.getHeight() / 2) + 10,
+      width: adsrStage.getWidth()/4,
+      height: 25,
+      fillLinearGradientStartPoint: [0, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientEndPoint: [50, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientColorStops: [0, 'red', 1, 'white'],        
+      stroke: 'black',
+      strokeWidth: 1
   });
 
-  atkCell.on('mouseout', function() {
-    isDown = false;
-    this.setShadowEnabled(false);
-    this.getLayer().draw();
-  });				
-
-  atkCell.on('mousemove', function() {
-    if (isDown) {
-      var mouseXY = adsrStage.getMousePosition();
-      var canvasX = mouseXY.x;
-      var atkFill = fillLayer.get('#atkFill')[0];
-      var canvas = atkCell.getLayer().getCanvas();
-      var context = canvas.getContext();
-      atkFill.setWidth(canvasX-atkFill.getX());
-      fillLayer.draw();
-    }					
+  var rlsBar = new Kinetic.Rect({
+    x: 3*(adsrStage.getWidth()/4) + 1,
+      y: (adsrStage.getHeight() / 2) + 10,
+      width: adsrStage.getWidth()/4,
+      height: 25,
+      fillLinearGradientStartPoint: [0, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientEndPoint: [50, (adsrStage.getHeight() / 2) + 10],
+      fillLinearGradientColorStops: [0, 'red', 1, 'white'],        
+      stroke: 'black',
+      strokeWidth: 1
   });
 
-  atkCell.on('mouseup', function() {
-    isDown = false;
-  });
+  barLayer.add(atkBar);
+  barLayer.add(dcyBar);
+  barLayer.add(stnBar);
+  barLayer.add(rlsBar);
 
-  dcyCell.on('mousedown', function() {
-    isDown = true;
-    fillLayer.drawScene();
-  });
-
-  dcyCell.on('mouseover', function() {
-    this.setShadowEnabled(true);
-    this.setShadowColor('#70ed3b');
-    this.setShadowBlur(5);
-    this.setShadowOffset(0);
-    this.setShadowOpacity(1);
-    this.getLayer().draw();
-  });
-
-  dcyCell.on('mouseout', function() {
-    isDown = false;
-    this.setShadowEnabled(false);
-    this.getLayer().draw();
-  });				
-
-  dcyCell.on('mousemove', function() {
-    if (isDown) {
-
-      var mouseXY = adsrStage.getMousePosition();
-      var canvasX = mouseXY.x;
-
-      var dcyFill = fillLayer.get('#dcyFill')[0];
-      var canvas = this.getLayer().getCanvas();
-      var context = canvas.getContext();
-      dcyFill.setWidth(canvasX-dcyFill.getX());
-      fillLayer.draw();
-    }					
-  });
-
-  dcyCell.on('mouseup', function() {
-    isDown = false;
-  });				
-
-  stnCell.on('mousedown', function() {
-    isDown = true;
-    fillLayer.drawScene();
-  });
-
-  stnCell.on('mouseover', function() {
-    this.setShadowEnabled(true);
-    this.setShadowColor('#70ed3b');
-    this.setShadowBlur(5);
-    this.setShadowOffset(0);
-    this.setShadowOpacity(1);
-    this.getLayer().draw();
-  });
-
-  stnCell.on('mouseout', function() {
-    isDown = false;
-    this.setShadowEnabled(false);
-    this.getLayer().draw();
-  });				
-
-  stnCell.on('mousemove', function() {
-    if (isDown) {
-      var mouseXY = adsrStage.getMousePosition();
-      var canvasX = mouseXY.x;
-
-      var stnFill = fillLayer.get('#stnFill')[0];
-      var canvas = this.getLayer().getCanvas();
-      var context = canvas.getContext();
-      stnFill.setWidth(canvasX-stnFill.getX());
-      fillLayer.draw();
-    }					
-  });
-
-  stnCell.on('mouseup', function() {
-    isDown = false;
-  });	
-
-  rlsCell.on('mousedown', function() {
-    isDown = true;
-    fillLayer.drawScene();
-  });
-
-  rlsCell.on('mouseover', function() {
-    this.setShadowEnabled(true);
-    this.setShadowColor('#70ed3b');
-    this.setShadowBlur(5);
-    this.setShadowOffset(0);
-    this.setShadowOpacity(1);
-    this.getLayer().draw();
-  });
-
-  rlsCell.on('mouseout', function() {
-    isDown = false;
-    this.setShadowEnabled(false);
-    this.getLayer().draw();
-  });				
-
-  rlsCell.on('mousemove', function() {
-    if (isDown) {
-      var mouseXY = adsrStage.getMousePosition();
-      var canvasX = mouseXY.x;
-      var rlsFill = fillLayer.get('#rlsFill')[0];
-      var canvas = this.getLayer().getCanvas();
-      var context = canvas.getContext();
-      rlsFill.setWidth(canvasX-rlsFill.getX());
-      fillLayer.draw();
-    }					
-  });
-
-  rlsCell.on('mouseup', function() {
-    isDown = false;
-  });	
-
-  cellLayer.add(atkCell);
-  cellLayer.add(dcyCell);
-  cellLayer.add(stnCell);
-  cellLayer.add(rlsCell);				
-  fillLayer.add(atkFill);
-  fillLayer.add(dcyFill);
-  fillLayer.add(stnFill);
-  fillLayer.add(rlsFill);
-
-  centerLayer.add(atkDragger);
-  centerLayer.add(dcyDragger);
-  centerLayer.add(stnDragger);
-  centerLayer.add(rlsDragger);
+  centerLayer.add(c6);
+  centerLayer.add(c7);
+  centerLayer.add(c8);
+  centerLayer.add(c9);
 
   adsrStage.add(graphLayer);
   adsrStage.add(lineLayer);
+  adsrStage.add(barLayer);
   adsrStage.add(centerLayer);
-  adsrStage.add(fillLayer);
-  adsrStage.add(cellLayer);
 
-  atkDragger.on('dragstart', (function () {
-    atkDragger.getLayer().on('draw', function () { 
-      drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
-      smodel.attack( ( 100 - atkDragger.getY() ) / 100);
+
+  c6.on('dragstart', (function () {
+    c6.getLayer().on('draw', function () { 
+      drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9);
+      smodel.attack( ( 100 - c6.getY() ) / 100);
     });
   }));
 
-  dcyDragger.on('dragstart', (function () {
-    dcyDragger.getLayer().on('draw', function () {
-      drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
-      smodel.decay( ( 100 - dcyDragger.getY() ) / 100);
+  c7.on('dragstart', (function () {
+    c7.getLayer().on('draw', function () {
+      drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9);
+      smodel.decay( ( 100 - c7.getY() ) / 100);
     });
   }));
 
-  stnDragger.on('dragstart', (function () {
-    stnDragger.getLayer().on('draw', function () {
-      smodel.sustain( ( 100 - stnDragger.getY() ) / 100);
-      stnLine.attrs.points[0].y = stnDragger.getY();
-      stnLine.attrs.points[1].y = stnDragger.getY();
-      dcyLine.attrs.points[1].y = stnDragger.getY();
-      rlsLine.attrs.points[0].y = stnDragger.getY();
+  c8.on('dragstart', (function () {
+    c8.getLayer().on('draw', function () {
+      smodel.sustain( ( 100 - c8.getY() ) / 100);
+      stem3.attrs.points[0].y = c8.getY();
+      stem3.attrs.points[1].y = c8.getY();
+      stem2.attrs.points[1].y = c8.getY();
+      stem4.attrs.points[0].y = c8.getY();
 
-      var dcySlope = slope(dcyLine.attrs.points[0].x, dcyLine.attrs.points[1].x, dcyLine.attrs.points[0].y, dcyLine.attrs.points[1].y);
-      dcyDragger.setY((dcySlope * dcyDragger.getX()) + yIntercept(dcyLine.attrs.points[1].x, atkLine.attrs.points[1].y, dcySlope));
-      dcyDragger.dragBoundFunc = function(pos) {
+      var dcySlope = slope(stem2.attrs.points[0].x, stem2.attrs.points[1].x, stem2.attrs.points[0].y, stem2.attrs.points[1].y);
+      c7.setY((dcySlope * c7.getX()) + yIntercept(stem2.attrs.points[1].x, stem.attrs.points[1].y, dcySlope));
+      c7.dragBoundFunc = function(pos) {
         var newX;
-        if (pos.x > dcyLine.attrs.points[1].x) {
-          newX = dcyLine.attrs.points[1].x;
+        if (pos.x > stem2.attrs.points[1].x) {
+          newX = stem2.attrs.points[1].x;
         }
-        else if (pos.x < dcyLine.attrs.points[0].x) {
-          newX = dcyLine.attrs.points[0].x;
+        else if (pos.x < stem2.attrs.points[0].x) {
+          newX = stem2.attrs.points[0].x;
         }
         else {
           newX = pos.x;
         }
     return {
       x: newX,
-        y: (newX * dcySlope) + yIntercept(dcyDragger.getX(), dcyDragger.getY(), dcySlope)
+        y: (newX * dcySlope) + yIntercept(c7.getX(), c7.getY(), dcySlope)
     };
       };
 
-      var rlsSlope = slope(rlsLine.attrs.points[0].x, rlsLine.attrs.points[1].x, rlsLine.attrs.points[0].y, rlsLine.attrs.points[1].y);
-      rlsDragger.setY((rlsSlope * rlsDragger.getX()) + yIntercept(rlsLine.attrs.points[1].x, stnLine.attrs.points[1].y, rlsSlope));
-      rlsDragger.dragBoundFunc = function(pos) {
+      var rlsSlope = slope(stem4.attrs.points[0].x, stem4.attrs.points[1].x, stem4.attrs.points[0].y, stem4.attrs.points[1].y);
+      c9.setY((rlsSlope * c9.getX()) + yIntercept(stem4.attrs.points[1].x, stem3.attrs.points[1].y, rlsSlope));
+      c9.dragBoundFunc = function(pos) {
         var newX;
-        if (pos.x > rlsLine.attrs.points[1].x) {
-          newX = rlsLine.attrs.points[1].x;
+        if (pos.x > stem4.attrs.points[1].x) {
+          newX = stem4.attrs.points[1].x;
         }
-        else if (pos.x < rlsLine.attrs.points[0].x) {
-          newX = rlsLine.attrs.points[0].x;
+        else if (pos.x < stem4.attrs.points[0].x) {
+          newX = stem4.attrs.points[0].x;
         }
         else {
           newX = pos.x;
         }
         return {
           x: newX,
-            y: (newX * rlsSlope) + yIntercept(rlsDragger.getX(), rlsDragger.getY(), rlsSlope)
+            y: (newX * rlsSlope) + yIntercept(c9.getX(), c9.getY(), rlsSlope)
         };
       };
-      drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
+      drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9);
     });
   }));
 
-  rlsDragger.on('dragstart', (function () {
-    rlsDragger.getLayer().on('draw', function () {
-      drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
-      smodel.release( ( 100 - rlsDragger.getY() ) / 100);
+  c9.on('dragstart', (function () {
+    c9.getLayer().on('draw', function () {
+      drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9);
+      smodel.release( ( 100 - c9.getY() ) / 100);
     });
   }));
 
@@ -660,55 +479,47 @@ $(function() {
 
   drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9);
   centerLayer.draw();
+  barLayer.draw();
   drawBackground(graphLayer, 11, 11, 10, "#ccc");  
-  clipper(fillLayer); 
 
-  $('#adsr-container').before('<h1 class="instrument">Additive &#43;</h1>');
   $('#adsr-container').append('<!-- Squared ONE --><div class="squaredOne">' + 
       '<input type="checkbox" value="None" id="squaredOne" name="check">' + 
       '</input><label for="squaredOne"></label></div>');
-
+  
   $('#squaredOne').change(function() {
-    invert(centerLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, rlsDragger);
-    drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
+    invert(centerLayer, stem, stem2, stem3, stem4, c6, c7, c9);
+    drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9);
   });
 
 });//end doc ready
 
-function drawGainContainer(gainLayer) {
-  var ctx = gainLayer.getCanvas().getContext();
+function drawGainContainer(kineticLayer) {
+  var ctx = kineticLayer.getCanvas().getContext();
   var bar_width = 10;
   var width = 150;
   var height = $('#bar').height() * 0.9;
 
   for (var i = 0; i < 2; i++) {
-    for (var j = 0; j < width / 10; j++) {
+    for (var j= 0; j < width / 10; j++) {
       ctx.strokeStyle = 'black';
-      ctx.strokeRect(100 + (j * 10), (bar_width * i) + 2.5, bar_width, bar_width); //x,y,xwidth,yheight
+      ctx.strokeRect(100 + (j* 10), (bar_width * i) + 2.5, bar_width, bar_width); //x,y,xwidth,yheight
+      //console.log("the " + j + " value: " + (200 - (j*10)) + ", " + (bar_width*i) + ", " + (height/10) + ", " + (bar_width));
     }
   }
 }
 
-function drawSpectrum(vuLayer) {
-  var ctx = vuLayer.getCanvas().getContext();
-  var width = 150;//vuLayer.getCanvas().width;
-  var height = $('#bar').height * 0.9;//vuLayer.getCanvas().height;
+function drawSpectrum(kineticLayer) {
+  var ctx = kineticLayer.getCanvas().getContext();
+  var width = kineticLayer.getCanvas().width;
+  var height = kineticLayer.getCanvas().height;
   var bar_width = 10;
 
-  ctx.clearRect(0, 0, 500, 500);
+  ctx.clearRect(0, 0, width, height);
   var freqByteData = new Uint8Array(myAudioAnalyser.frequencyBinCount);
   myAudioAnalyser.getByteFrequencyData(freqByteData);
   var barCount = Math.round(width / bar_width);
   var averageVolume = getAverageVolume(freqByteData, barCount);
-  var correctedVolume;
-  if (averageVolume - 60 < 0) {
-    correctedVolume = 0;
-  }
-  else {
-    correctedVolume = averageVolume - 95;
-  }
-  console.log(averageVolume);
-  var grd = ctx.createLinearGradient(100, 2.5, 250, 2.5);
+  var grd = ctx.createLinearGradient(0, 2.5, height, 0);
 
   //lime
   grd.addColorStop(0, '#00ff00');
@@ -721,7 +532,7 @@ function drawSpectrum(vuLayer) {
 
   for (var i = 0; i < 2; i++) {
     ctx.fillStyle = grd;
-    ctx.fillRect(100, (bar_width * i) + 2.5, correctedVolume, bar_width);//ctx.fillRect(150, (bar_width * i) + 2.5, averageVolume - 60, bar_width);
+    ctx.fillRect(0, (bar_width * 2) + 2.5, averageVolume - 60, bar_width - 2);
   }
 }
 
@@ -738,7 +549,7 @@ function getAverageVolume(freqByteData, barCount) {
 }
 
 //ADSR CODE
-function drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger) {
+function drawCurves(lineLayer, stem, stem2, stem3, stem4, c6, c7, c8, c9) {
   var canvas = lineLayer.getCanvas();
   var context = canvas.getContext();
 
@@ -746,29 +557,29 @@ function drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, d
 
   // draw quad
   context.beginPath();
-  context.moveTo(atkLine.attrs.points[0].x, atkLine.attrs.points[0].y);
-  context.quadraticCurveTo(atkDragger.getX(), atkDragger.getY(), atkLine.attrs.points[1].x, atkLine.attrs.points[1].y);
+  context.moveTo(stem.attrs.points[0].x, stem.attrs.points[0].y);
+  context.quadraticCurveTo(c6.getX(), c6.getY(), stem.attrs.points[1].x, stem.attrs.points[1].y);
   context.strokeStyle = 'blue';
   context.lineWidth = 2;
   context.stroke();
 
   context.beginPath();
-  context.moveTo(dcyLine.attrs.points[0].x, dcyLine.attrs.points[0].y);
-  context.quadraticCurveTo(dcyDragger.getX(), dcyDragger.getY(), dcyLine.attrs.points[1].x, dcyLine.attrs.points[1].y);
+  context.moveTo(stem2.attrs.points[0].x, stem2.attrs.points[0].y);
+  context.quadraticCurveTo(c7.getX(), c7.getY(), stem2.attrs.points[1].x, stem2.attrs.points[1].y);
   context.strokeStyle = 'blue';
   context.lineWidth = 2;
   context.stroke();
 
   context.beginPath();
-  context.moveTo(stnLine.attrs.points[0].x, stnLine.attrs.points[0].y);
-  context.lineTo(stnLine.attrs.points[1].x, stnLine.attrs.points[1].y);
+  context.moveTo(stem3.attrs.points[0].x, stem3.attrs.points[0].y);
+  context.lineTo(stem3.attrs.points[1].x, stem3.attrs.points[1].y);
   context.strokeStyle = 'blue';
   context.lineWidth = 2;
   context.stroke();
 
   context.beginPath();
-  context.moveTo(rlsLine.attrs.points[0].x, rlsLine.attrs.points[0].y);
-  context.quadraticCurveTo(rlsDragger.getX(), rlsDragger.getY(), rlsLine.attrs.points[1].x, rlsLine.attrs.points[1].y);
+  context.moveTo(stem4.attrs.points[0].x, stem4.attrs.points[0].y);
+  context.quadraticCurveTo(c9.getX(), c9.getY(), stem4.attrs.points[1].x, stem4.attrs.points[1].y);
   context.strokeStyle = 'blue';
   context.lineWidth = 2;
   context.stroke();
@@ -779,7 +590,7 @@ function drawBackground(graphLayer, xcount, ycount, width, color) {
   var context = canvas.getContext();
 
   canvas.width = 200;//xcount * width + 1;
-  canvas.height = 150;//ycount * width + 1;
+  canvas.height = 200;//ycount * width + 1;
 
   // Create gradients
   var grad = context.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -805,74 +616,76 @@ function drawBackground(graphLayer, xcount, ycount, width, color) {
   context.stroke();
 }   
 
-function invert(centerLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, rlsDragger) {
+function invert(centerLayer, stem, stem2, stem3, stem4, c6, c7, c9) {
   //storecoordinate
-  var oldY = atkLine.attrs.points[0].y;
+  var oldY = stem.attrs.points[0].y;
 
-  //set the line coordinates to match
-  atkLine.attrs.points[0].y = atkLine.attrs.points[1].y;
-  atkLine.attrs.points[1].y = oldY;
+  //set the stems coordinates to match
+  stem.attrs.points[0].y = stem.attrs.points[1].y;
+  stem.attrs.points[1].y = oldY;
 
-  dcyLine.attrs.points[0].y = oldY;
+  stem2.attrs.points[0].y = oldY;
 
-  rlsLine.attrs.points[1].y = atkLine.attrs.points[0].y;
+  stem4.attrs.points[1].y = stem.attrs.points[0].y;
 
-  var atkSlope = slope(atkLine.attrs.points[0].x, atkLine.attrs.points[1].x, atkLine.attrs.points[0].y, atkLine.attrs.points[1].y);
-  atkDragger.setY((atkSlope * atkDragger.getX()) + yIntercept(atkLine.attrs.points[1].x, atkLine.attrs.points[0].y, atkSlope));
-  atkDragger.dragBoundFunc = function(pos) {
+  var atkSlope = slope(stem.attrs.points[0].x, stem.attrs.points[1].x, stem.attrs.points[0].y, stem.attrs.points[1].y);
+  c6.setY((atkSlope * c6.getX()) + yIntercept(stem.attrs.points[1].x, stem.attrs.points[0].y, atkSlope));
+  c6.dragBoundFunc = function(pos) {
     var newX;
-    if (pos.x > atkLine.attrs.points[1].x) {
-      newX = atkLine.attrs.points[1].x;
+    if (pos.x > stem.attrs.points[1].x) {
+      newX = stem.attrs.points[1].x;
     }
-    else if (pos.x < atkLine.attrs.points[0].x) {
-      newX = atkLine.attrs.points[0].x;
+    else if (pos.x < stem.attrs.points[0].x) {
+      newX = stem.attrs.points[0].x;
     }
     else {
       newX = pos.x;
     }
     return {
       x: newX,
-        y: (newX * atkSlope) + yIntercept(atkDragger.getX(), atkDragger.getY(), atkSlope)
+        y: (newX * atkSlope) + yIntercept(c6.getX(), c6.getY(), atkSlope)
     };
   };
 
-  var dcySlope = slope(dcyLine.attrs.points[0].x, dcyLine.attrs.points[1].x, dcyLine.attrs.points[0].y, dcyLine.attrs.points[1].y);
-  dcyDragger.setY((dcySlope * dcyDragger.getX()) + yIntercept(dcyLine.attrs.points[1].x, atkLine.attrs.points[1].y, dcySlope));
-  dcyDragger.dragBoundFunc = function(pos) {
+  var dcySlope = slope(stem2.attrs.points[0].x, stem2.attrs.points[1].x, stem2.attrs.points[0].y, stem2.attrs.points[1].y);
+  c7.setY((dcySlope * c7.getX()) + yIntercept(stem2.attrs.points[1].x, stem.attrs.points[1].y, dcySlope));
+  c7.dragBoundFunc = function(pos) {
     var newX;
-    if (pos.x > dcyLine.attrs.points[1].x) {
-      newX = dcyLine.attrs.points[1].x;
+    if (pos.x > stem2.attrs.points[1].x) {
+      newX = stem2.attrs.points[1].x;
     }
-    else if (pos.x < dcyLine.attrs.points[0].x) {
-      newX = dcyLine.attrs.points[0].x;
+    else if (pos.x < stem2.attrs.points[0].x) {
+      newX = stem2.attrs.points[0].x;
     }
     else {
       newX = pos.x;
     }
     return {
       x: newX,
-        y: (newX * dcySlope) + yIntercept(dcyDragger.getX(), dcyDragger.getY(), dcySlope)
+        y: (newX * dcySlope) + yIntercept(c7.getX(), c7.getY(), dcySlope)
     };
   };
 
-  var rlsSlope = slope(rlsLine.attrs.points[0].x, rlsLine.attrs.points[1].x, rlsLine.attrs.points[0].y, rlsLine.attrs.points[1].y);
-  rlsDragger.setY((rlsSlope * rlsDragger.getX()) + yIntercept(rlsLine.attrs.points[1].x, stnLine.attrs.points[1].y, rlsSlope));
-  rlsDragger.dragBoundFunc = function(pos) {
+  var rlsSlope = slope(stem4.attrs.points[0].x, stem4.attrs.points[1].x, stem4.attrs.points[0].y, stem4.attrs.points[1].y);
+  c9.setY((rlsSlope * c9.getX()) + yIntercept(stem4.attrs.points[1].x, stem3.attrs.points[1].y, rlsSlope));
+  c9.dragBoundFunc = function(pos) {
     var newX;
-    if (pos.x > rlsLine.attrs.points[1].x) {
-      newX = rlsLine.attrs.points[1].x;
+    if (pos.x > stem4.attrs.points[1].x) {
+      newX = stem4.attrs.points[1].x;
     }
-    else if (pos.x < rlsLine.attrs.points[0].x) {
-      newX = rlsLine.attrs.points[0].x;
+    else if (pos.x < stem4.attrs.points[0].x) {
+      newX = stem4.attrs.points[0].x;
     }
     else {
       newX = pos.x;
     }
     return {
       x: newX,
-        y: (newX * rlsSlope) + yIntercept(rlsDragger.getX(), rlsDragger.getY(), rlsSlope)
+        y: (newX * rlsSlope) + yIntercept(c9.getX(), c9.getY(), rlsSlope)
     };
   };       
+
+  //drawCurves();
   centerLayer.draw();
 }
 
@@ -882,43 +695,7 @@ function yIntercept(x, y, m) {
 }
 
 function slope(x1, x2, y1, y2) {
-  var m = -1 * ((y2 - y1) / (x2 - x1));
+  var m = -1 * ((y2 - y1)/(x2 - x1));
   return m;
 } 
 
-function clipper(layer) {
-  var x;
-  var y = 155;
-  var width = 41;
-  var height = 20;
-  var radius = 10.5;				
-
-  var canvas = layer.getCanvas();
-  var context = canvas.getContext();		
-  // make a circular clipping region
-  context.beginPath();
-
-  // draw top and top right corner
-  for (i = 0; i < 4; i++) {
-    if (i < 1) {
-      x  = 5;
-    }
-    else {
-      x = 5 + (50 * i);
-    }
-      context.moveTo(x+radius,y);
-    context.arcTo(x+width,y,x+width,y+radius,radius);
-
-    // draw right side and bottom right corner
-    context.arcTo(x+width,y+height,x+width-radius,y+height,radius); 
-
-    // draw bottom and bottom left corner
-    context.arcTo(x,y+height,x,y+height-radius,radius);
-
-    // draw left and top left corner
-    context.arcTo(x,y,x+radius,y,radius);
-  }
-
-  context.closePath();
-  context.clip();			
-}
