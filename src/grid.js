@@ -1,4 +1,6 @@
 var gmodel = require('./gridModel.js');
+  
+require('./Util.js');
 
 function initView () {
   var totalVoices = gmodel.numVoices();
