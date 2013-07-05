@@ -230,14 +230,8 @@ figure:hover {
   display: inline-block;
 
   -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  -moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
 
   background: -webkit-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -moz-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -o-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -ms-linear-gradient(top, #222 0%, #45484d 100%);
-  background: linear-gradient(top, #222 0%, #45484d 100%);
 }
 
 .squaredOne label:after {
@@ -250,17 +244,10 @@ figure:hover {
   background: #00bf00;
 
   background: -webkit-linear-gradient(top, #00bf00 0%, #009400 100%);
-  background: -moz-linear-gradient(top, #00bf00 0%, #009400 100%);
-  background: -o-linear-gradient(top, #00bf00 0%, #009400 100%);
-  background: -ms-linear-gradient(top, #00bf00 0%, #009400 100%);
-  background: linear-gradient(top, #00bf00 0%, #009400 100%);
 
-  top: 2px;
   left: 2px;
 
   -webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  -moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
 }
 
 .squaredOne label:hover::after {
@@ -320,15 +307,8 @@ figure:hover {
   top: 2px;
 
   -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  -moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
 
   background: -webkit-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -moz-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -o-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -ms-linear-gradient(top, #222 0%, #45484d 100%);
-  background: linear-gradient(top, #222 0%, #45484d 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#222', endColorstr='#45484d',GradientType=0 );
 }
 
 .roundedOne label:after {

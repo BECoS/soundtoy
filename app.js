@@ -1,11 +1,11 @@
-// Basic Static File Server From:
-// Originally from http://stackoverflow.com/questions/7268033/basic-static-file-server-in-nodejs
+// Basic Static File Server 
+// Based off of:
+// http://stackoverflow.com/questions/7268033/basic-static-file-server-in-nodejs
 
 var http = require('http'),
     url = require('url'),
     path = require('path'),
-    fs = require('fs'),
-    browserify = require('browserify');
+    fs = require('fs');
 
 var mimeTypes = {
   "html"  :   "text/html",
@@ -16,17 +16,6 @@ var mimeTypes = {
   "css"   :   "text/css",
   "ttf"   :   "font/opentype",
 };
-
-function bundle(res) {
-  fs.readdir('./src', function (err, files) {
-    var b = browserify(files);
-    b.bundle({ insertGlobals : true }, serveBundle);
-  });
-}
-
-function serveFile(file) {
-
-}
 
 function serveBundle() {
   var mimeType = mimeTypes[path.extname(filename).split(".")[1]];
