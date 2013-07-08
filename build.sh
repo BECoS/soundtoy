@@ -2,7 +2,7 @@
  
 trap cleanUp SIGINT
 
-while getopts ":w" opt; do
+while getopts ":wh" opt; do
   case $opt in
     #c)
     #  echo "Minifying css"
@@ -13,6 +13,12 @@ while getopts ":w" opt; do
     #s)
     #  echo "Skipping JSHint"
     #  ;;
+    h) 
+      echo -e "SoundToy build script\n-h\tPrints this message"
+      echo -e "-w\tWatches for changed files in the src directory and rebrowserifies"
+      echo -e "\twhen they do"
+      exit 1
+      ;;
     w)
       echo "Watching for changes to rebrowserify" 
       watch=true
@@ -27,7 +33,7 @@ done
 port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
 
 BROWSERIFY=./node_modules/browserify/bin/cmd.js
-JSHINT=./node_modules/jshint/bin/hint 
+JSHINT=./node_modules/jshint/bin/jshint 
 NODE=node
 
 jshintconf=./jshint_config.json
