@@ -20,20 +20,13 @@ function addWindowBar() {
       $('.currentTray .minimize').removeClass('hidden');
     }
   });
-  $('#panel').draggable().draggable('disable');  
-  $('.panelWinBar').mousedown( function (e) {
-    $('#panel').draggable('enable');  
-  });
-  $('.panelWinBar').mouseup( function (e) {
-    $('#panel').draggable('disable');  
-  });
 }
 
 function addCurrentTray() {
   $('#selector').append('<div class="currentTray"></div>');
 }
 
-$(function() {
+function init() {
   myAudioAnalyser.smoothingTimeconstant = 0.85;
   myAudioAnalyser.connect(myAudioContext.destination);
   addCurrentTray();
@@ -55,8 +48,8 @@ $(function() {
     "img/tempoToggleOnDown.svg", "img/gainDial.png"], function(images) {
       var playInactive = new Kinetic.Image({
         x: 0,
-        y: 0,
-        height: $('#bar').height() * 0.7,
+        y: 2,
+        height: $('#bar').height() * 0.6,
         image: images[0]
       });
       playInactive.setWidth(playInactive.getHeight());
@@ -126,7 +119,7 @@ $(function() {
         ctrlLayer.add(playActive);
         ctrlLayer.draw();
         smodel.start();
-        //mySpectrum = setInterval( function() {drawSpectrum(vuLayer); }, 30);
+        mySpectrum = setInterval( function() {drawSpectrum(vuLayer); }, 30);
       });
 
       playActive.on('mousedown', function(event) {
@@ -187,7 +180,7 @@ $(function() {
         ctrlLayer.draw();
       });
 
-      drawGainContainer(gainLayer);
+      //drawGainContainer(gainLayer);
 
     }); 
 
@@ -673,7 +666,7 @@ $(function() {
     drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
   });
 
-});//end doc ready
+}
 
 function drawGainContainer(gainLayer) {
   var ctx = gainLayer.getCanvas().getContext();
@@ -684,7 +677,7 @@ function drawGainContainer(gainLayer) {
   for (var i = 0; i < 2; i++) {
     for (var j = 0; j < width / 10; j++) {
       ctx.strokeStyle = 'black';
-      ctx.strokeRect(100 + (j * 10), (bar_width * i) + 2.5, bar_width, bar_width); //x,y,xwidth,yheight
+      ctx.strokeRect(100 + (j * 10), (bar_width * i) + 5, bar_width, bar_width); //x,y,xwidth,yheight
     }
   }
 }
@@ -718,11 +711,11 @@ function drawSpectrum(vuLayer) {
   grd.addColorStop(0.75, '#ffa500');
   //red
   grd.addColorStop(1, '#ff0000');
-
-  for (var i = 0; i < 2; i++) {
-    ctx.fillStyle = grd;
-    ctx.fillRect(100, (bar_width * i) + 2.5, correctedVolume, bar_width);//ctx.fillRect(150, (bar_width * i) + 2.5, averageVolume - 60, bar_width);
-  }
+  
+  //for (var i = 0; i < 2; i++) {
+  //  ctx.fillStyle = grd;
+  //  ctx.fillRect(100, (bar_width * i) + 2.5, correctedVolume, bar_width);//ctx.fillRect(150, (bar_width * i) + 2.5, averageVolume - 60, bar_width);
+  //}
 }
 
 function getAverageVolume(freqByteData, barCount) {
@@ -922,3 +915,5 @@ function clipper(layer) {
   context.closePath();
   context.clip();			
 }
+
+exports.init = init;
