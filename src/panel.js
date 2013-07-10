@@ -5,20 +5,27 @@ require('../node_modules/imgpreload/imgpreload.js').imgpreload;
 var myAudioContext = new webkitAudioContext();
 var myAudioAnalyser = myAudioContext.createAnalyser();
 
-var minimized = false;
 function addWindowBar() {
-  $('#adsr-container').before('<div class="panelWinBar">' +
-    '<p class="instrTitle">' +
-    'Additive</p><p class="minimize">&#8632;</p></div>');
-  $('.currentTray').append('<span class="minimize hidden">' +
-      '&#8632;</span>');
-  $('.minimize').click( function (e) {
-    $('#panel').toggle('drop up');   
-    if (false === (minimized = !minimized)) {
-      $('.currentTray .minimize').addClass('hidden');
+
+  $('#adsr-container').prepend(
+    $('<div>').addClass('panelBar').append(
+      $('<p>').addClass('instrTitle').text('Additive'),
+      $('<p>').addClass('minimize').html('&#8632;')));
+
+  $('.currentTray').append( 
+    $('<p>').addClass('minimize hidden instrTitle').html('Additive &#8632;')
+  );
+
+  $('.minimize').on( 'click', function (e) {
+
+    $('.currentTray .minimize').toggleClass('hidden');
+
+    if ( $('.currentTray .minimize').hasClass('hidden') ) {
+      $('#panel').animate( { top: '40px' }, 600 );   
     } else {
-      $('.currentTray .minimize').removeClass('hidden');
+      $('#panel').animate( { top: $(document).height() }, 600 );   
     }
+
   });
 }
 

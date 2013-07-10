@@ -387,7 +387,7 @@ input[type=checkbox] {
 }  
 /********/
 
-.panelWinBar {
+.panelBar {
   height: 20px;
   display: inline-block;
   width: 100%;
@@ -430,6 +430,10 @@ input[type=checkbox] {
 .currentTray {
   margin: 8px 8px 8px 8px;
   -webkit-border-radius: 5px 5px 5px 5px;
+}
+
+p.minimize.instrTitle {
+  width: auto;
 }
 
 .hidden {
