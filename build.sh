@@ -30,7 +30,6 @@ while getopts ":wh" opt; do
   esac
 done
 
-port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
 
 BROWSERIFY=./node_modules/browserify/bin/cmd.js
 JSHINT=./node_modules/jshint/bin/jshint 
@@ -70,7 +69,9 @@ function packageJS {
   echo "${reset}"
 }
 
-cd dirname $0
+cd $(dirname $0)
+port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
+
 rm -f $site/$bundle
 rm -f $site/$specBundle
 
