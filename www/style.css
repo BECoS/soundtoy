@@ -191,10 +191,6 @@ figure:hover {
   padding: 0;
 }
 
-.jasmine_reporter {
-  padding-top: 900px;
-}
-
 .metal {
   background-color: hsl(0,0%,90%);
   -webkit-box-shadow: inset hsla(0,0%,15%,  1) 0px  0px 0px 2px,  /* border */
@@ -364,10 +360,6 @@ figure:hover {
   opacity: 1;
 }
 
-input[type=checkbox] {
-  visibility: hidden;
-}
-
 .item {
   width: 80%;
   height: 6%;
@@ -437,5 +429,10 @@ p.minimize.instrTitle {
 }
 
 .hidden {
-  display: none;
+  visibility: hidden;
 }
+
+.hidden * {
+  visibility: hidden;
+}
+
