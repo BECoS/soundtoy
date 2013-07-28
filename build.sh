@@ -38,7 +38,7 @@ NODE=node
 jshintconf=./jshint_config.json
 scriptdir=src
 scripts=$scriptdir/*.js
-specdir=specs
+specdir=test
 specs=$specdir/*.spec.js
 bundle=bundle.js
 site=www
@@ -61,6 +61,7 @@ function cleanUp {
 
 function packageJS {
   $BROWSERIFY $scripts -o $site/$bundle
+  $BROWSERIFY $specs -o $site/$specBundle
   echo -e "\n${white}Browserify packaging elapsed time:"
   time -p $browserifyCmd
   #./node_modules/browserify/bin/cmd.js -r ./node_modules/jquery-browserify/src/jquery.js -o $site/common.js

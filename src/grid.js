@@ -10,25 +10,33 @@ function init() {
   for (var voice = 0; voice < totalVoices; voice++) {
     var row = $('<section>').addClass('rowContainer');
 
+    joinCounter = 0; //used for creating a multinote
     for (var cube = 0; cube < length; cube++) {
       var fig = $('<figure sequence="0">');
       var activeStatus = gmodel.getState(voice, cube);
 
-
-      if (activeStatus > 1) {
-        joinCounter = activeStatus;
-        fig.attr('sequence', activeStatus);
-        fig.addClass('active joined');
-        fig.hover(hoverFunc, hoverFunc);
-        fig.on("click", seqClickFunc);
-      } else if (activeStatus == 1) {
-        fig.addClass('active');
-        fig.on("click", normalClickFunc);
-      } else if (--joinCounter > 0) {
+      //Continues the multinote
+      if (joinCounter > 1) {
+        joinCounter--;
         fig.addClass('joined');
         fig.attr('sequence', joinCounter);
         fig.hover(hoverFunc, hoverFunc);
         fig.on("click", seqClickFunc);
+      
+      //Starts the multinote
+      } else if (activeStatus > 1) {
+        joinCounter = activeStatus;
+        fig.attr('sequence', activeStatus);
+        fig.addClass('active joined');
+        fig.hover(hoverFunc, hoverFunc);
+        //fig.on("click", seqClickFunc);
+
+      //Single note
+      } else if (activeStatus == 1) {
+        fig.addClass('active');
+        fig.on("click", normalClickFunc);
+
+      //No note
       } else {
         fig.on("click", normalClickFunc);
       }
@@ -76,7 +84,6 @@ function initGridZoom() {
 
       $('.rowContainer').height($('figure').height() + shrinkSize);
 
-
       $('figure').css('font-size', zoomLevel++ );
     }
   };
@@ -93,10 +100,10 @@ function initGridZoom() {
       secondSquare.row = $('figure:hover').attr('row');
       secondSquare.col = $('figure:hover').attr('col');
       if (firstSquare.row == secondSquare.row) {
-        var travel = secondSquare.col - firstSquare.col + 1;
+        var travel = secondSquare.col - firstSquare.col;
         console.log('Piece is ' + travel + ' long');
         gmodel.updateState(firstSquare.row, firstSquare.col, travel);
-        init();
+        buildSequence(firstSquare.$, travel);
       }
 
       if (event.button == 1) {
@@ -146,11 +153,12 @@ function grabSequenceStart($seqElement) {
 }
 
 function doToSequence($piece, func) {
-  do {
+   while ( parseInt($piece.attr('sequence'), 10) === 
+     parseInt($piece.next().attr('sequence'), 10) - 1 ) {
+
     func.apply($piece); 
     $piece = $piece.next();
-  } while ( parseInt($piece.attr('sequence'), 10) > parseInt($piece.next().attr('sequence'), 10) ||
-      $piece.attr('sequence') == "1" );
+  }
 }
 
 function hoverFunc() {
@@ -167,9 +175,10 @@ function seqClickFunc() {
     this.removeClass('active joined slaveHover');
     this.off('click mouseenter mouseleave');
     this.attr('sequence', '0'); 
-    this.on('click', normalClickFunc);
+    //this.on('click', normalClickFunc);
   };
-  doToSequence($piece, removeSeq);
+  removeSeq.apply($piece);
+  //doToSequence($piece, removeSeq);
 }
 
 function normalClickFunc() {
@@ -180,24 +189,26 @@ function normalClickFunc() {
 
   var freshState = gmodel.getState(row, col) === 1 ? 0 : 1;
 
-  // When a square is a piece of a note clicking on it updates
-  // the state for only the first note in the sequence
-  var updateAsActive = false;
-  if ( parseInt($(this).attr('sequence'), 10) === 0 ) {
-    gmodel.updateState(row, col, freshState);
-    updateAsActive = true;
-  }
+  gmodel.updateState(row, col, freshState);
 
   setTimeout(function (square) {
     $('.clicked').removeClass('clicked');
-
-    if (updateAsActive) {
-      $(square).toggleClass('active');
-    } else {
-      //$(square).toggleClass('joined');
-    }
+    $(square).toggleClass('active');
 
   }, 450, this);
+}
+
+function buildSequence($start, travel) {
+  $start.addClass('active joined');
+  $start.attr('sequence', travel);
+
+  var $cur = $start;
+  do {
+    $cur = $cur.next();
+    $cur.addClass('joined');
+    $cur.attr('sequence', travel);
+  } while (--travel > 0);
+
 }
 
 exports.init = init;

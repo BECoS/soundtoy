@@ -1,4 +1,6 @@
 window.$ = window.jQuery = require('jquery-browserify');
+window._ = require('underscore');
+
 require('../node_modules/jquery-ui/jquery-ui.js').jqueryui();
 
 function isArrayLike(obj) {
@@ -23,5 +25,17 @@ function prettyArray(obj) {
 }
 
 window.Util = {
-  dbg : {}
+  dbg : {},
+  attach : function (func) {
+    this.func = func;
+  }
 };
+
+
+exports.existy = function (thing) { 
+  return thing != null; 
+} 
+
+exports.truthy = function (thing) { 
+  return thing !== false && exports.existy(thing); 
+} 
