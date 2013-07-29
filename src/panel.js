@@ -271,10 +271,10 @@ function init() {
 
       hiZero.on('mousemove', function(event) {
         if (mouseStillDown) {
-          if (yPos > event.pageY) {
+          if (yPos > event.pageY && Math.round(hiDial.getRotationDeg()) > -120) {
             hiDial.rotateDeg(-10);
           }
-          else if (yPos < event.pageY) {
+          else if (yPos < event.pageY && Math.round(hiDial.getRotationDeg()) < 120) {
             hiDial.rotateDeg(10);
           }
           ctrlLayer.draw();
@@ -293,10 +293,10 @@ function init() {
 
       midZero.on('mousemove', function(event) {
         if (mouseStillDown) {
-          if (yPos > event.pageY) {
+          if (yPos > event.pageY && Math.round(midDial.getRotationDeg()) > -120) {
             midDial.rotateDeg(-10);
           }
-          else if (yPos < event.pageY) {
+          else if (yPos < event.pageY && Math.round(midDial.getRotationDeg()) < 120) {
             midDial.rotateDeg(10);
           }
           ctrlLayer.draw();
@@ -315,10 +315,10 @@ function init() {
 
       loZero.on('mousemove', function(event) {
         if (mouseStillDown) {
-          if (yPos > event.pageY) {
+          if (yPos > event.pageY && Math.round(loDial.getRotationDeg()) > -120) {
             loDial.rotateDeg(-10);
           }
-          else if (yPos < event.pageY) {
+          else if (yPos < event.pageY && Math.round(loDial.getRotationDeg()) < 120) {
             loDial.rotateDeg(10);
           }
           ctrlLayer.draw();
