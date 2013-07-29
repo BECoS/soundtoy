@@ -12,7 +12,7 @@
   },
   "dependencies": { "browserify" : "*", 
                     "jquery-browserify" : "*",
-                    "browser-build" : "*"
+                    "underscore" : "*"
                   },
   "devDependencies": { "jshint" : "*",
                        "jasmine-node" : "*"

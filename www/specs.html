@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SoundToy&#9836;</title>
+  <title>Testing ToneBlaster</title>
 
   <!-- SpecRunner files -->
   <link rel="stylesheet" type="text/css" href="style.css">
@@ -15,37 +15,6 @@
   <!-- include spec files here... -->
   <script type="text/javascript" src="specBundle.js"></script>
 
-  <script type="text/javascript">
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
-
-      var reporter = new jasmine.TrivialReporter();
-
-      jasmineEnv.addReporter(reporter);
-
-      jasmineEnv.specFilter = function(spec) {
-        return reporter.specFilter(spec);
-      };
-
-      var currentWindowOnload = window.onload;
-
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
-
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-    })();
-  </script>
 </head>
-<body>
-  <div id="grid"></div>
-  <div id="panel">
-  </div>
-</body>
+<body></body>
 </html>

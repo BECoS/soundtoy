@@ -2,7 +2,7 @@
  
 trap cleanUp SIGINT
 
-while getopts ":w" opt; do
+while getopts ":wh" opt; do
   case $opt in
     #c)
     #  echo "Minifying css"
@@ -13,6 +13,12 @@ while getopts ":w" opt; do
     #s)
     #  echo "Skipping JSHint"
     #  ;;
+    h) 
+      echo -e "SoundToy build script\n-h\tPrints this message"
+      echo -e "-w\tWatches for changed files in the src directory and rebrowserifies"
+      echo -e "\twhen they do"
+      exit 1
+      ;;
     w)
       echo "Watching for changes to rebrowserify" 
       watch=true
@@ -24,7 +30,6 @@ while getopts ":w" opt; do
   esac
 done
 
-port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
 
 BROWSERIFY=./node_modules/browserify/bin/cmd.js
 JSHINT=./node_modules/jshint/bin/hint 
@@ -33,7 +38,7 @@ NODE=node
 jshintconf=./jshint_config.json
 scriptdir=src
 scripts=$scriptdir/*.js
-specdir=specs
+specdir=test
 specs=$specdir/*.spec.js
 bundle=bundle.js
 site=www
@@ -56,6 +61,7 @@ function cleanUp {
 
 function packageJS {
   $BROWSERIFY $scripts -o $site/$bundle
+  $BROWSERIFY $specs -o $site/$specBundle
   echo -e "\n${white}Browserify packaging elapsed time:"
   time -p $browserifyCmd
   #./node_modules/browserify/bin/cmd.js -r ./node_modules/jquery-browserify/src/jquery.js -o $site/common.js
@@ -64,7 +70,9 @@ function packageJS {
   echo "${reset}"
 }
 
-cd dirname $0
+cd $(dirname $0)
+port=$(egrep -o 'listen\([0-9]+\)' app.js | egrep -o '[0-9]+')
+
 rm -f $site/$bundle
 rm -f $site/$specBundle
 
@@ -94,13 +102,16 @@ else
 
   shouldExit=0
   stamps=$(echo $(stat -c %Y $scripts) | md5sum | awk '{ print $1 }')
+  specStamps=$(echo $(stat -c %Y $specs) | md5sum | awk '{ print $1 }')
 
   while [[ "$shouldExit" -ne 1 ]]
   do
     freshStamps=$(echo $(stat -c %Y $scripts) | md5sum | awk '{ print $1 }')
-    if [[ $freshStamps != $stamps ]]; then
+    freshSpecStamps=$(echo $(stat -c %Y $specs) | md5sum | awk '{ print $1 }')
+    if [[ $freshStamps != $stamps || $freshSpecStamps != $specStamps ]]; then
       echo "${green}Change detected. Repackaging${reset}"
       stamps=$freshStamps
+      specStamps=$freshSpecStamps
       packageJS
     fi
     sleep 1

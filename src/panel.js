@@ -11,25 +11,26 @@ $('body').append("<div id='loadfont'>.</div>");
 $('#loadfont').remove();
 
 function addWindowBar() {
-  $('#adsr-container').before('<div class="panelWinBar">' +
-      '<p class="instrTitle">' +
-      'Additive</p><p class="minimize">&#8632;</p></div>');
-  $('.currentTray').append('<span class="minimize hidden">' +
-      '&#8632;</span>');
-  $('.minimize').click( function (e) {
-    $('#panel').toggle('drop up');   
-    if (false === (minimized = !minimized)) {
-      $('.currentTray .minimize').addClass('hidden');
+
+  $('#adsr-container').prepend(
+    $('<div>').addClass('panelBar').append(
+      $('<p>').addClass('instrTitle').text('Additive'),
+      $('<p>').addClass('minimize').html('&#8632;')));
+
+  $('.currentTray').append( 
+    $('<p>').addClass('minimize hidden instrTitle').html('Additive &#8632;')
+  );
+
+  $('.minimize').on( 'click', function (e) {
+
+    $('.currentTray .minimize').toggleClass('hidden');
+
+    if ( $('.currentTray .minimize').hasClass('hidden') ) {
+      $('#panel').animate( { top: '40px' }, 600 );   
     } else {
-      $('.currentTray .minimize').removeClass('hidden');
+      $('#panel').animate( { top: $(document).height() }, 600 );   
     }
-  });
-  $('#panel').draggable().draggable('disable');  
-  $('.panelWinBar').mousedown( function (e) {
-    $('#panel').draggable('enable');
-  });
-  $('.panelWinBar').mouseup( function (e) {
-    $('#panel').draggable('disable');  
+
   });
 }
 
@@ -37,16 +38,15 @@ function addCurrentTray() {
   $('#selector').append('<div class="currentTray"></div>');
 }
 
-$(function() {
-  smodel.audioAnalyser.smoothingTimeconstant = 0.85;//myAudioAnalyser.smoothingTimeconstant = 0.85;
-  //myAudioAnalyser.connect(myAudioContext.destination);
+function init() {
+  smodel.audioAnalyser.smoothingTimeconstant = 0.85;
   addCurrentTray();
   addWindowBar();
   var Kinetic = require('../node_modules/kinetic/kinetic.js').Kinetic;
   var stage = new Kinetic.Stage({
     container: 'bar',
-      width: $('#bar').width() * 0.9,
-      height: $('#bar').height() * 0.9, 
+    width: $('#bar').width() * 0.9,
+    height: $('#bar').height() * 0.9, 
   });
 
   var ctrlLayer = new Kinetic.Layer();
@@ -101,10 +101,10 @@ $(function() {
             else {
               newX = pos.x;
             }
-      return {
-        x: newX,
-          y: this.getAbsolutePosition().y
-      };
+            return {
+              x: newX,
+              y: this.getAbsolutePosition().y
+            };
           }
       });
 
@@ -177,7 +177,7 @@ $(function() {
       ctrlLayer.draw();
       stage.add(vuLayer);
       stage.add(gainLayer);
-      stage.add(ctrlLayer);      
+      stage.add(ctrlLayer);
 
       playInactive.createImageHitRegion(function() {
         playInactive.getLayer().drawHit();
@@ -280,8 +280,8 @@ $(function() {
   //ADSR CODE
   var adsrStage = new Kinetic.Stage({
     container: 'adsr-container',
-      width: 200,
-      height: 180
+    width: 200,
+    height: 180
   });
 
   var lineLayer = new Kinetic.Layer();
@@ -298,10 +298,10 @@ $(function() {
       stroke: 'green',
       points: [{
         x: 0,
-      y: adsrStage.getHeight() * (8 / 9) - 10
+        y: adsrStage.getHeight() * (8 / 9) - 10
       }, {
         x: adsrStage.getWidth() / 4,
-      y: 0
+        y: 0
       }],
   });
 
@@ -311,10 +311,10 @@ $(function() {
       stroke: 'orange',
       points: [{
         x: adsrStage.getWidth() / 4,
-      y: 0
+        y: 0
       }, {
         x: adsrStage.getWidth() / 2,
-      y: adsrStage.getHeight() * (3 / 4) - 50
+        y: adsrStage.getHeight() * (3 / 4) - 50
       }],
   });
 
@@ -324,10 +324,10 @@ $(function() {
       stroke: 'lightblue',
       points: [{
         x: adsrStage.getWidth() / 2,
-      y: adsrStage.getHeight() * (3 / 4) - 50
+        y: adsrStage.getHeight() * (3 / 4) - 50
       }, {
         x: adsrStage.getWidth() * (3 / 4),
-      y: adsrStage.getHeight() * (3 / 4) - 50
+        y: adsrStage.getHeight() * (3 / 4) - 50
       }],
   });
 
@@ -337,10 +337,10 @@ $(function() {
       stroke: 'pink',
       points: [{
         x: adsrStage.getWidth() * (3 / 4),
-      y: adsrStage.getHeight() * (3 / 4) - 50
+        y: adsrStage.getHeight() * (3 / 4) - 50
       }, {
         x: adsrStage.getWidth(),
-      y: adsrStage.getHeight()  * (8 / 9) - 10
+        y: adsrStage.getHeight()  * (8 / 9) - 10
       }],
   });
 
@@ -364,7 +364,7 @@ $(function() {
         }
   return {
     x: newX,
-      y: (newX * m) + yIntercept(atkDragger.getX(), atkDragger.getY(), m)
+    y: (newX * m) + yIntercept(atkDragger.getX(), atkDragger.getY(), m)
   };
       }
   });
@@ -432,7 +432,6 @@ $(function() {
       fill: 'black',
       draggable: true,
       dragBoundFunc: function(pos) {
-        console.log("rlsx " + pos.x);
         var m = slope(rlsLine.attrs.points[0].x, rlsLine.attrs.points[1].x, rlsLine.attrs.points[0].y, rlsLine.attrs.points[1].y);
         var newX;
         if (pos.x > rlsLine.attrs.points[1].x) {
@@ -506,16 +505,14 @@ $(function() {
     canvas.fillStroke(this);
     },*/
     x: 5,
-      y: adsrStage.getHeight() - 25,
-      width: 40,
-      height: 20,
-      stroke: 'black'
-        //strokeWidth: 1
+    y: adsrStage.getHeight() - 25,
+    width: 40,
+    height: 20,
+    stroke: 'black'
   });
 
   var dcyCell = atkCell.clone({x: 55});
   var stnCell = dcyCell.clone({x: 105});
-
 
   var imgObj = new Image();
   imgObj.onload = function() {
@@ -576,12 +573,12 @@ $(function() {
 
   var atkFill = new Kinetic.Rect({
     x: 5,
-      y: adsrStage.getHeight() - 25,
-      width: 40,
-      height: 20,
-      fillLinearGradientStartPoint: [35, 0],
-      fillLinearGradientEndPoint: [35, 15],
-      fillLinearGradientColorStops: [0, '#39e639', 1, '#00cc00']
+    y: adsrStage.getHeight() - 25,
+    width: 40,
+    height: 20,
+    fillLinearGradientStartPoint: [35, 0],
+    fillLinearGradientEndPoint: [35, 15],
+    fillLinearGradientColorStops: [0, '#39e639', 1, '#00cc00']
   });
 
   var dcyFill = atkFill.clone({x: 55});
@@ -818,7 +815,6 @@ $(function() {
   fillLayer.add(dcyFill);
   fillLayer.add(stnFill);
 
-
   centerLayer.add(atkDragger2);
   centerLayer.add(atkDragger);
   centerLayer.add(dcyDragger);
@@ -828,13 +824,11 @@ $(function() {
   centerLayer.add(dcyLimit);
   centerLayer.add(stnLimit);
 
-  //adsrStage.add(cellLayer);
   adsrStage.add(graphLayer);
   adsrStage.add(lineLayer);
   adsrStage.add(centerLayer);
   adsrStage.add(fillLayer);
   invertFill.setZIndex(10);
-  //adsrStage.add(cellLayer);
 
   atkDragger.on('dragstart', (function (event) {
     atkDragger.getLayer().on('draw', function () {
@@ -943,7 +937,7 @@ $(function() {
     drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
   });
 
-});//end doc ready
+}
 
 function drawGainContainer(gainLayer) {
   var ctx = gainLayer.getCanvas().getContext();
@@ -977,7 +971,6 @@ function drawSpectrum(vuLayer) {
   else {
     correctedVolume = averageVolume - 95;
   }
-  //console.log(averageVolume);
   var grd = ctx.createLinearGradient(100, 2.5, 250, 2.5);
 
   //lime
@@ -1151,7 +1144,6 @@ function invert(centerLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcy
   centerLayer.draw();
 }
 
-
 function yIntercept(x, y, m) {
   var yInt = y - (m * x);
   return yInt;
@@ -1284,3 +1276,5 @@ function solveEquations(equation1, equation2, equation3, x) {
 
   return ((Math.pow(x, 2) * a) + Math.abs((x * b)) + c - 25);
 }
+
+exports.init = init;

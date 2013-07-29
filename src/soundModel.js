@@ -39,7 +39,7 @@ function initialize() {
   ];
   synths.reverse();
   sequence = [
-  /*C3*/ [ 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,],
+  /*C3*/ [ 2, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
   /*D3*/ [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,],
   /*E4*/ [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,],
   /*F3*/ [ 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,],
@@ -56,6 +56,8 @@ function initialize() {
   /*C5*/ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,],
   /*B5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
   ];
+  Util.dbg.sequence = sequence;
+
   totalBeats = sequence[0].length;
   exports.gainNode.connect(exports.audioAnalyser);
   exports.audioAnalyser.connect(context.destination);
