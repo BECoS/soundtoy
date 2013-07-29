@@ -16,7 +16,7 @@ function AdditiveSynth(wavetype, context, tuner, note) {
   this.buildPartials(440, wavetype, 8);
   this.oscs = [];
   this.gain = context.createGainNode();
-  this.gain.connect(smodel.gainNode);
+  this.gain.connect(smodel.loShelf);
   this.gain.gain.value = 0;
   this.context = context;
   this.envelope = new Float32Array();

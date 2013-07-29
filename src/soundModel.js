@@ -19,6 +19,17 @@ var context = new webkitAudioContext();
 function initialize() {
   exports.gainNode = context.createGainNode();
   exports.audioAnalyser = context.createAnalyser();
+
+  exports.hiShelf = context.createBiquadFilter();
+  exports.hiShelf.type = 4;
+  exports.hiShelf.frequency = 880;
+  exports.hiShelf.gain.value = 0;
+
+  exports.loShelf = context.createBiquadFilter();
+  exports.loShelf.type = 3;
+  exports.loShelf.frequency = 440;
+  exports.loShelf.gain.value = 0;
+
   synths = [
     new AdditiveSynth(2, context, tuner, "C3"),
     new AdditiveSynth(2, context, tuner, "D3"),
@@ -59,6 +70,8 @@ function initialize() {
   Util.dbg.sequence = sequence;
 
   totalBeats = sequence[0].length;
+  exports.loShelf.connect(exports.hiShelf);
+  exports.hiShelf.connect(exports.gainNode);
   exports.gainNode.connect(exports.audioAnalyser);
   exports.audioAnalyser.connect(context.destination);
   console.log("soundModel initialized");

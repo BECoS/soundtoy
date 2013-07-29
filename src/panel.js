@@ -278,6 +278,7 @@ function init() {
             hiDial.rotateDeg(10);
           }
           ctrlLayer.draw();
+          smodel.hiShelf.gain.value = convertScale(Math.round(hiDial.getRotationDeg()), -120, 120, -10, 10);
           yPos = event.pageY;
         }
       });
@@ -322,6 +323,7 @@ function init() {
             loDial.rotateDeg(10);
           }
           ctrlLayer.draw();
+          smodel.loShelf.gain.value = convertScale(Math.round(loDial.getRotationDeg()), -120, 120, -10, 10);
           yPos = event.pageY;
         }
       });
