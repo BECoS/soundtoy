@@ -12,12 +12,13 @@ var beat = 0;
 var timePerBeat = 0.5;
 var startTime = 0;
 var totalBeats;
-
 var handle;
 var context = new webkitAudioContext();
+//var audioAnalyser = context.createAnalyser();
 
 function initialize() {
-
+  exports.gainNode = context.createGainNode();
+  exports.audioAnalyser = context.createAnalyser();
   synths = [
     new AdditiveSynth(2, context, tuner, "C3"),
     new AdditiveSynth(2, context, tuner, "D3"),
@@ -56,6 +57,8 @@ function initialize() {
   /*B5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
   ];
   totalBeats = sequence[0].length;
+  exports.gainNode.connect(exports.audioAnalyser);
+  exports.audioAnalyser.connect(context.destination);
   console.log("soundModel initialized");
 }
 
