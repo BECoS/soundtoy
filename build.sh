@@ -102,13 +102,16 @@ else
 
   shouldExit=0
   stamps=$(echo $(stat -c %Y $scripts) | md5sum | awk '{ print $1 }')
+  specStamps=$(echo $(stat -c %Y $specs) | md5sum | awk '{ print $1 }')
 
   while [[ "$shouldExit" -ne 1 ]]
   do
     freshStamps=$(echo $(stat -c %Y $scripts) | md5sum | awk '{ print $1 }')
-    if [[ $freshStamps != $stamps ]]; then
+    freshSpecStamps=$(echo $(stat -c %Y $specs) | md5sum | awk '{ print $1 }')
+    if [[ $freshStamps != $stamps || $freshSpecStamps != $specStamps ]]; then
       echo "${green}Change detected. Repackaging${reset}"
       stamps=$freshStamps
+      specStamps=$freshSpecStamps
       packageJS
     fi
     sleep 1
