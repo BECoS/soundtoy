@@ -57,6 +57,7 @@ function init() {
     "img/stopOn.svg", "img/recordOff.svg", "img/recordOn.svg", "img/tempo.svg",
     "img/tempoToggleOff.svg", "img/tempoToggleDown.svg", "img/tempoToggleOn.svg",
     "img/tempoToggleOnDown.svg", "img/gainDial.png", "img/base.svg", "img/dial.svg", "img/zero.svg"], function(images) {
+      var yPos;
       var playInactive = new Kinetic.Image({
         x: 0,
         y: 0,
@@ -87,7 +88,7 @@ function init() {
       var tempoDown = tempoUp.clone({y: tempoUp.getHeight() + 1, image: images[8]});
 
       var gainDial = new Kinetic.Image({
-        x: 99,
+        x: 239,
           image: images[11],
           draggable: true,
           dragBoundFunc: function(pos) {
@@ -121,14 +122,12 @@ function init() {
       var hiDial  = hiBase.clone({x: 300 + hiBase.getWidth() / 2, y: hiBase.getWidth() / 2, image: images[13], rotationDeg: 0, offset: [hiBase.getWidth() / 2, hiBase.getWidth() / 2]});
 
       var midBase = hiBase.clone({x: hiBase.getX() + hiBase.getWidth() + 20});
-      var midZero = hiZero.clone({x: hiBase.getX() + hiBase.getWidth() + 20});
-      var midDial = hiDial.clone({x: hiBase.getX() + hiBase.getWidth() + 20 + hiBase.getWidth() / 2});
+      var midZero = hiZero.clone({x: hiZero.getX() + hiZero.getWidth() + 20});
+      var midDial = hiDial.clone({x: hiDial.getX() + hiDial.getWidth() + 20});
 
-      /*ctrlContext = ctrlLayer.getCanvas().getContext();
-        ctrlContext.font = '25pt Keania One';
-        ctrlContext.fillStyle = 'white';
-        ctrlContext.fillText('120', tempo.getX(), tempo.getY()); */     
-
+      var loBase = midBase.clone({x: midBase.getX() + midBase.getWidth() + 20});
+      var loZero = midZero.clone({x: midZero.getX() + midZero.getWidth() + 20});
+      var loDial = midDial.clone({x: midDial.getX() + midDial.getWidth() + 20});
 
       var bpm = new Kinetic.Text({
         x: tempo.getX() + (tempo.getWidth() / 2),
@@ -173,8 +172,11 @@ function init() {
       ctrlLayer.add(midBase);
       ctrlLayer.add(midDial);
       ctrlLayer.add(midZero);
-
+      ctrlLayer.add(loBase);
+      ctrlLayer.add(loDial);
+      ctrlLayer.add(loZero);
       ctrlLayer.draw();
+
       stage.add(vuLayer);
       stage.add(gainLayer);
       stage.add(ctrlLayer);
@@ -188,12 +190,6 @@ function init() {
         playActive.setVisible(true);
         smodel.start();
         mySpectrum = setInterval( function() {drawSpectrum(vuLayer); }, 30);
-        ctrlLayer.draw();
-      });
-
-      hiZero.on('mouseover', function(event) {
-        console.log("eh");
-        hiDial.rotateDeg(-30);
         ctrlLayer.draw();
       });
 
@@ -267,6 +263,72 @@ function init() {
           smodel.gainNode.gain.value = convertScale(gainDial.getX(), 99, 239, 0, 1);
         });
       }));
+      
+      hiZero.on('mousedown', function(event) {
+        yPos = event.pageY;
+        mouseStillDown = true;
+      });
+
+      hiZero.on('mousemove', function(event) {
+        if (mouseStillDown) {
+          if (yPos > event.pageY) {
+            hiDial.rotateDeg(-10);
+          }
+          else if (yPos < event.pageY) {
+            hiDial.rotateDeg(10);
+          }
+          ctrlLayer.draw();
+          yPos = event.pageY;
+        }
+      });
+
+      hiZero.on('mouseup mouseout', function(event) {
+        mouseStillDown = false;
+      });
+
+      midZero.on('mousedown', function(event) {
+        yPos = event.pageY;
+        mouseStillDown = true;
+      });
+
+      midZero.on('mousemove', function(event) {
+        if (mouseStillDown) {
+          if (yPos > event.pageY) {
+            midDial.rotateDeg(-10);
+          }
+          else if (yPos < event.pageY) {
+            midDial.rotateDeg(10);
+          }
+          ctrlLayer.draw();
+          yPos = event.pageY;
+        }
+      });
+
+      midZero.on('mouseup mouseout', function(event) {
+        mouseStillDown = false;
+      });
+
+      loZero.on('mousedown', function(event) {
+        yPos = event.pageY;
+        mouseStillDown = true;
+      });
+
+      loZero.on('mousemove', function(event) {
+        if (mouseStillDown) {
+          if (yPos > event.pageY) {
+            loDial.rotateDeg(-10);
+          }
+          else if (yPos < event.pageY) {
+            loDial.rotateDeg(10);
+          }
+          ctrlLayer.draw();
+          yPos = event.pageY;
+        }
+      });
+
+      loZero.on('mouseup mouseout', function(event) {
+        mouseStillDown = false;
+      });
 
       drawGainContainer(gainLayer);
 
@@ -274,7 +336,6 @@ function init() {
         bpm.setText(parseInt(bpm.getText(), 10) + amount);
         bpm.getLayer().draw();
       }
-
     });
 
   //ADSR CODE

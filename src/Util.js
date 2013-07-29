@@ -34,8 +34,8 @@ window.Util = {
 
 exports.existy = function (thing) { 
   return thing != null; 
-} 
+}; 
 
 exports.truthy = function (thing) { 
   return thing !== false && exports.existy(thing); 
-} 
+} ;
