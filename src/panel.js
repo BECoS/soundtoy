@@ -532,41 +532,6 @@ function init() {
   var stnLimit = atkLimit.clone({points: [{x: stnLine.attrs.points[1].x, y: 0}, {x: stnLine.attrs.points[1].x, y: adsrStage.getHeight() * (8 / 9) - 10}]});
 
   var atkCell = new Kinetic.Rect({
-    /*drawFunc: function(canvas) {
-      var context = canvas.getContext();
-      var x = 5;
-      var y = adsrStage.getHeight() - 25;
-      var width = 40;
-      var height = 20;
-      var radius = 10;
-
-      context.beginPath();
-
-    // draw top and top right corner
-    context.moveTo(x+radius,y);
-    context.arcTo(x+width,y,x+width,y+radius,radius);
-
-    // draw right side and bottom right corner
-    context.arcTo(x+width,y+height,x+width-radius,y+height,radius); 
-
-    // draw bottom and bottom left corner
-    context.arcTo(x,y+height,x,y+height-radius,radius);
-
-    // draw left and top left corner
-    context.arcTo(x,y,x+radius,y,radius);
-
-    context.moveTo(x+radius,y);
-    context.lineTo(x+radius, y + height);
-
-    context.moveTo(x+radius+10, y);
-    context.lineTo(x+radius+10, y + height);
-
-    context.moveTo(x+radius+20, y);
-    context.lineTo(x+radius+20, y + height);	
-
-    context.closePath();
-    canvas.fillStroke(this);
-    },*/
     x: 5,
     y: adsrStage.getHeight() - 25,
     width: 40,
@@ -615,9 +580,7 @@ function init() {
         invertFill.setFillLinearGradientColorStops([0, 'gray', 1, 'black']);
         invert(centerLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, rlsDragger);
         drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
-
         off = true;
-
       }
     invertFill.getLayer().draw();
     });
@@ -707,11 +670,7 @@ function init() {
     dcyLine.attrs.points[0].x = atkLimit.attrs.points[1].x;
 
     var atkSlope = slope(atkLine.attrs.points[0].x, atkLine.attrs.points[1].x, atkLine.attrs.points[0].y, atkLine.attrs.points[1].y);
-
-    //var dcySlope = slope(dcyLine.attrs.points[0].x, dcyLine.attrs.points[1].x, dcyLine.attrs.points[0].y, dcyLine.attrs.points[1].y);
     var atkYInt = yIntercept(atkLine.attrs.points[1].x, atkLine.attrs.points[0].y, atkSlope);
-    //var dcyX = xValue(dcyDragger.getY(), dcySlope, dcyYInt);
-
     var atkX = xValue(atkDragger.getY(), atkSlope, atkYInt);
     if (!isNaN(atkX)) {
       atkDragger.setX(atkX);
@@ -760,7 +719,6 @@ function init() {
   });				
 
   function dcyMovement() {
-
     var mouseXY = adsrStage.getMousePosition();
     var canvasX = mouseXY.x;
     var dcyFill = fillLayer.get('#dcyFill')[0];
@@ -832,7 +790,6 @@ function init() {
   });	
 
   function stnMovement() {
-
     var mouseXY = adsrStage.getMousePosition();
     var canvasX = mouseXY.x;
 
@@ -988,18 +945,8 @@ function init() {
   drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
   centerLayer.draw();
   drawBackground(graphLayer, 11, 11, 10, "#ccc", adsrStage.getHeight() * (8 / 9) - 10);
-  //clipper(fillLayer); 
 
   $('#adsr-container').before('<h1 class="instrument">Additive &#43;</h1>');
-  $('#adsr-container').append('<!-- Squared ONE --><div class="squaredOne">' + 
-      '<input type="checkbox" value="None" id="squaredOne" name="check">' + 
-      '</input><label for="squaredOne"></label></div>');
-
-  $('#squaredOne').change(function() {
-    invert(centerLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, rlsDragger);
-    drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger);
-  });
-
 }
 
 function drawGainContainer(gainLayer) {
@@ -1047,7 +994,7 @@ function drawSpectrum(vuLayer) {
 
   for (var i = 0; i < 2; i++) {
     ctx.fillStyle = grd;
-    ctx.fillRect(100, (bar_width * i) + 2.5, correctedVolume, bar_width);//ctx.fillRect(150, (bar_width * i) + 2.5, averageVolume - 60, bar_width);
+    ctx.fillRect(100, (bar_width * i) + 2.5, correctedVolume, bar_width);
   }
 }
 
@@ -1068,7 +1015,6 @@ function getAverageVolume(freqByteData, barCount) {
   return average;
 }
 
-//ADSR CODE
 function drawCurves(lineLayer, atkLine, dcyLine, stnLine, rlsLine, atkDragger, dcyDragger, stnDragger, rlsDragger) {
   var canvas = lineLayer.getCanvas();
   var context = canvas.getContext();
@@ -1221,43 +1167,6 @@ function slope(x1, x2, y1, y2) {
   var m = -1 * ((y2 - y1) / (x2 - x1));
   return m;
 } 
-
-function clipper(layer) {
-  var x;
-  var y = 155;
-  var width = 41;
-  var height = 20;
-  var radius = 10.5;				
-
-  var canvas = layer.getCanvas();
-  var context = canvas.getContext();		
-  // make a circular clipping region
-  context.beginPath();
-
-  // draw top and top right corner
-  for (i = 0; i < 4; i++) {
-    if (i < 1) {
-      x  = 5;
-    }
-    else {
-      x = 5 + (50 * i);
-    }
-    context.moveTo(x+radius,y);
-    context.arcTo(x+width,y,x+width,y+radius,radius);
-
-    // draw right side and bottom right corner
-    context.arcTo(x+width,y+height,x+width-radius,y+height,radius); 
-
-    // draw bottom and bottom left corner
-    context.arcTo(x,y+height,x,y+height-radius,radius);
-
-    // draw left and top left corner
-    context.arcTo(x,y,x+radius,y,radius);
-  }
-
-  context.closePath();
-  context.clip();			
-}
 
 function convertScale(oldValue, oldMin, oldMax, newMin, newMax) {
   var oldRange = oldMax - oldMin;
