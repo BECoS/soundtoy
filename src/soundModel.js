@@ -19,6 +19,7 @@ var context = new webkitAudioContext();
 function initialize() {
   exports.gainNode = context.createGainNode();
   exports.audioAnalyser = context.createAnalyser();
+  exports.compressor = context.createDynamicsCompressor();
 
   exports.hiShelf = context.createBiquadFilter();
   exports.hiShelf.type = 4;
@@ -70,6 +71,7 @@ function initialize() {
   Util.dbg.sequence = sequence;
 
   totalBeats = sequence[0].length;
+  exports.compressor.connect(exports.loShelf);
   exports.loShelf.connect(exports.hiShelf);
   exports.hiShelf.connect(exports.gainNode);
   exports.gainNode.connect(exports.audioAnalyser);
