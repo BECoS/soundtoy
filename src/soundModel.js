@@ -26,6 +26,12 @@ function initialize() {
   exports.hiShelf.frequency = 880;
   exports.hiShelf.gain.value = 0;
 
+  exports.midShelf = context.createBiquadFilter();
+  exports.midShelf.type = 5;
+  exports.midShelf.frequency = 660;
+  exports.midShelf.gain.value = 0;
+  exports.midShelf.Q.Value = 10;
+
   exports.loShelf = context.createBiquadFilter();
   exports.loShelf.type = 3;
   exports.loShelf.frequency = 440;
@@ -72,7 +78,8 @@ function initialize() {
 
   totalBeats = sequence[0].length;
   exports.compressor.connect(exports.loShelf);
-  exports.loShelf.connect(exports.hiShelf);
+  exports.loShelf.connect(exports.midShelf);
+  exports.midShelf.connect(exports.hiShelf);
   exports.hiShelf.connect(exports.gainNode);
   exports.gainNode.connect(exports.audioAnalyser);
   exports.audioAnalyser.connect(context.destination);

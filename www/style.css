@@ -206,9 +206,9 @@ figure:hover {
   inset hsla(0,0%,100%,.7) 0  2px 1px 7px,  /* top HL */
 
   hsla(0,0%, 0%,.15) 0 -5px 6px 4px;  /* outer SD */
-  /*hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
+  hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
 
- /* -webkit-transition: color .2s;*/
+  -webkit-transition: color .2s;
 
   border-radius: .01em;
   background-image:   -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0)   6%, hsla(0,0%,100%, .1) 7.5%),          
@@ -233,6 +233,9 @@ figure:hover {
   inset hsla(0,0%,100%,.7) 0  1px 0.5px 3.5px,  /* top HL */
   
   hsla(0,0%, 0%,.15) 0 -2.5px 3px 2px;  /* outer SD */
+  hsla(0,0%,100%,.5) 0  2.5px 3px 2px #7a7a7a;  /* outer HL */  
+
+  -webkit-transition: color .2s;  
 }
 
 /****Checkbox ADSR Styling****/

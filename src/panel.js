@@ -59,7 +59,12 @@ function init() {
         x: 0,
         y: 0,
         height: $('#bar').height() * 0.7,
-        image: images[0]
+        image: images[0],
+        stroke: 'black',
+        shadowColor: 'black',
+        shadowBlur: 2,
+        shadowOffset: 1,
+        shadowOpacity: 0.8
       });
       playInactive.setWidth(playInactive.getHeight());
 
@@ -71,18 +76,30 @@ function init() {
         x: stage.getWidth() - 175,
         y: 0,
         height: $('#bar').height() * 0.7,
-        image: images[6]
+        image: images[6],
+        stroke: 'black',
+        shadowColor: 'black',
+        shadowBlur: 2,
+        shadowOffset: 1,
+        shadowOpacity: 0.7
+        
       });
 
       var tempoUp = new Kinetic.Image({
-        x: tempo.getX() + tempo.getWidth() + 2,
+        x: tempo.getX() + tempo.getWidth() + 10,
         y: 0,
         height: $('#bar').height() * 0.34,
         width: $('#bar').height() * 0.6,
-        image: images[7]
+        image: images[7],
+        stroke: 'black',
+        strokeWidth: 0.5,
+        shadowColor: 'black',
+        shadowBlur: 2,
+        shadowOffset: 1,
+        shadowOpacity: 0.8
       });
 
-      var tempoDown = tempoUp.clone({y: tempoUp.getHeight() + 1, image: images[8]});
+      var tempoDown = tempoUp.clone({y: tempoUp.getHeight() + 2, image: images[8]});
 
       var gainDial = new Kinetic.Image({
         x: 239,
@@ -112,11 +129,15 @@ function init() {
         image: images[12],
         height: $('#bar').height() * 0.7,
         width: $('#bar').height() * 0.7
+        /*shadowColor: 'blue',
+        shadowBlur: 2,
+        shadowOffset: 1,
+        shadowOpacity: 0.7*/
       });
 
-      var hiZero = hiBase.clone({image: images[14]});
+      var hiZero = hiBase.clone({image: images[14], shadowEnabled: false});
 
-      var hiDial  = hiBase.clone({x: 300 + hiBase.getWidth() / 2, y: hiBase.getWidth() / 2, image: images[13], rotationDeg: 0, offset: [hiBase.getWidth() / 2, hiBase.getWidth() / 2]});
+      var hiDial  = hiBase.clone({x: 300 + hiBase.getWidth() / 2, y: hiBase.getWidth() / 2, image: images[13], rotationDeg: 0, offset: [hiBase.getWidth() / 2, hiBase.getWidth() / 2], shadowEnabled: false});
 
       var midBase = hiBase.clone({x: hiBase.getX() + hiBase.getWidth() + 20});
       var midZero = hiZero.clone({x: hiZero.getX() + hiZero.getWidth() + 20});
@@ -298,6 +319,7 @@ function init() {
             midDial.rotateDeg(10);
           }
           ctrlLayer.draw();
+          smodel.midShelf.gain.value = convertScale(Math.round(midDial.getRotationDeg()), -120, 120, -10, 10);
           yPos = event.pageY;
         }
       });
