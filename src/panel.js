@@ -707,7 +707,7 @@ function drawSpectrum(vuLayer) {
   else {
     correctedVolume = averageVolume - 95;
   }
-  console.log(averageVolume);
+  //console.log(averageVolume);
   var grd = ctx.createLinearGradient(100, 2.5, 250, 2.5);
 
   //lime

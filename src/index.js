@@ -7,6 +7,8 @@ var grid = require('./grid.js'),
 
 /* Entry point to the app */
 $( function () {
+   
+  smodel.init();
 
   // Add the persistent DOM elements, hiding them if using Jasmine
   elements = [
@@ -22,7 +24,8 @@ $( function () {
       $('<div>').attr('id', 'adsr-container'))
   ];
 
-  if ( $('script[src="jasmine.js"]').length > 0 ) {
+  if ( $('title').text().match(/^spec/i) ) {
+    smodel.clear();
     setupJasmine();
     var $hiddenContainer = $('<div>').addClass('hidden');
     $('body').append($hiddenContainer);
@@ -30,9 +33,6 @@ $( function () {
   } else {
     $('body').append(elements);
   }
-
-  gmodel.init();
-  grid.init();
   
   // Stops the right-click menu from working
   window.oncontextmenu = function(event) {
@@ -42,8 +42,10 @@ $( function () {
   
   // Attach important functions to the global Util.dbg for debugging or info
   window.Util.dbg.clear = smodel.clear; 
-  window.Util.dbg.initView = grid.init; 
+  window.Util.dbg.initGrid = grid.init; 
 
+  gmodel.init();
+  grid.init();
   panel.init();
 });
 

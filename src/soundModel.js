@@ -1,8 +1,9 @@
 //var context = new webkitAudioContext();
 //
 
-var Tune = require('./Tuner.js');
-var AdditiveSynth = require('./AdditiveSynth.js').AdditiveSynth;
+var Tune = require('./Tuner.js'),
+    AdditiveSynth = require('./AdditiveSynth.js').AdditiveSynth;
+
 var tuner = new Tune.Tuner(); // = new Tuner();
 var synths = [];
 var sequence = [];
@@ -16,7 +17,7 @@ var totalBeats;
 var handle;
 var context = new webkitAudioContext();
 
-function initialize() {
+function init() {
 
   synths = [
     new AdditiveSynth(2, context, tuner, "C3"),
@@ -36,7 +37,9 @@ function initialize() {
     new AdditiveSynth(2, context, tuner, "C5"),
     new AdditiveSynth(2, context, tuner, "D5"),
   ];
+
   synths.reverse();
+
   sequence = [
   /*C3*/ [ 2, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
   /*D3*/ [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,],
@@ -59,6 +62,14 @@ function initialize() {
 
   totalBeats = sequence[0].length;
   console.log("soundModel initialized");
+}
+
+function clear() {
+  for (var i = 0; i < sequence.length; i++) {
+    for (var j = 0; j < sequence[i].length; j++) {
+      sequence[i][j] = 0;
+    }
+  }
 }
 
 function attack(atk) {
@@ -160,7 +171,7 @@ function numNotes() {
   return sequence[0].length;
 }
 
-exports.initialize = initialize;
+exports.init = init;
 exports.start = start;
 exports.stop = stop;
 exports.updateState = updateState;
@@ -175,3 +186,5 @@ exports.attack = attack;
 exports.decay = decay;
 exports.sustain = sustain;
 exports.release = release;
+exports.clear = clear;
+

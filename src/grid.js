@@ -1,5 +1,7 @@
+exports.TRANSITION_TIME = 450;
+
 var gmodel = require('./gridModel.js');
-  
+
 function init() {
   $('#grid').children().remove();
   $('figure').off('click mouseenter mouseleave');
@@ -21,7 +23,8 @@ function init() {
         fig.addClass('joined');
         fig.attr('sequence', joinCounter);
         fig.hover(hoverFunc, hoverFunc);
-        fig.on("click", seqClickFunc);
+        //fig.on("click", seqClickFunc);
+        fig.on("click", normalClickFunc);
       
       //Starts the multinote
       } else if (activeStatus > 1) {
@@ -30,6 +33,7 @@ function init() {
         fig.addClass('active joined');
         fig.hover(hoverFunc, hoverFunc);
         //fig.on("click", seqClickFunc);
+        fig.on("click", normalClickFunc);
 
       //Single note
       } else if (activeStatus == 1) {
@@ -88,28 +92,28 @@ function initGridZoom() {
     }
   };
   
+  $('figure').on( 'mouseenter mouseleave', function () {
+    $(this).toggleClass('hovering');
+  });
 
-  $('figure').mousedown( function (event) {
+  $('figure').on( 'mousedown', function (event) {
     var firstSquare = {};
-    firstSquare.$ = $('figure:hover');
+    firstSquare.$ = $('figure.hovering');
     firstSquare.row = firstSquare.$.attr('row');
     firstSquare.col = firstSquare.$.attr('col');
 
-    $(document).mouseup( function (event) {
+    $(document).on( 'mouseup', function (event) {
       var secondSquare = {};
-      secondSquare.row = $('figure:hover').attr('row');
-      secondSquare.col = $('figure:hover').attr('col');
-      if (firstSquare.row == secondSquare.row) {
-        var travel = secondSquare.col - firstSquare.col;
-        console.log('Piece is ' + travel + ' long');
+      secondSquare.row = $('figure.hovering').attr('row');
+      secondSquare.col = $('figure.hovering').attr('col');
+      if (firstSquare.col != secondSquare.col && firstSquare.row == secondSquare.row) {
+        var travel = secondSquare.col - firstSquare.col + 1;
         gmodel.updateState(firstSquare.row, firstSquare.col, travel);
         buildSequence(firstSquare.$, travel);
       }
 
       if (event.button == 1) {
         $('#centerpiece').unbind("mousemove");
-      } else if (event.button == 1) {
-        console.log("Left at " + $(':hover').attr('row') + $(':hover').attr('col'));
       }
     });
 
@@ -177,8 +181,8 @@ function seqClickFunc() {
     this.attr('sequence', '0'); 
     //this.on('click', normalClickFunc);
   };
-  removeSeq.apply($piece);
-  //doToSequence($piece, removeSeq);
+  //removeSeq.apply($piece);
+  doToSequence($piece, removeSeq);
 }
 
 function normalClickFunc() {
@@ -194,8 +198,13 @@ function normalClickFunc() {
   setTimeout(function (square) {
     $('.clicked').removeClass('clicked');
     $(square).toggleClass('active');
+    if ( $(square).seq() > 0 ) {
+      $(square).clearSeq();
+    } else {
+      $(square).attr('sequence', '1');
+    }
 
-  }, 450, this);
+  }, exports.TRANSITION_TIME, this);
 }
 
 function buildSequence($start, travel) {
@@ -203,11 +212,11 @@ function buildSequence($start, travel) {
   $start.attr('sequence', travel);
 
   var $cur = $start;
-  do {
+  while (--travel > 0) {
     $cur = $cur.next();
     $cur.addClass('joined');
     $cur.attr('sequence', travel);
-  } while (--travel > 0);
+  }
 
 }
 
