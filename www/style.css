@@ -1,9 +1,13 @@
-@import url(http://fonts.googleapis.com/css?family=Keania+One);
 
 @font-face {
   font-family: HeavyData;
   src: url(/fnt/heavy_data.ttf);
 }
+
+@font-face {
+  font-family: 'Keania One';
+  src: url(/fnt/KeaniaOne-Regular.ttf);
+  }
 
 * {
   -webkit-user-select: none;
@@ -19,10 +23,6 @@ body {
   background-image: url(/img/background.jpg);
   background-position: 0 0;
   background-size: auto auto;
-  font-family: 'Keania One', cursive;
-}
-
-canvas {
   font-family: 'Keania One', cursive;
 }
 
@@ -219,6 +219,11 @@ figure:hover {
   hsl(0,0%,90%) 47%, 
   hsl(0,0%,78%) 53%,
   hsl(0,0%,70%)100%);   
+}
+
+.woodgrain {
+  background-image: url(/img/woodGrain.jpg);
+  background-repeat: repeat;
 }
 
 /****Checkbox ADSR Styling****/

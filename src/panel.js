@@ -7,9 +7,6 @@ var mySpectrum;
 var minimized = false;
 var mouseStillDown;
 
-$('body').append("<div id='loadfont'>.</div>");
-$('#loadfont').remove();
-
 function addWindowBar() {
 
   $('#adsr-container').prepend(
