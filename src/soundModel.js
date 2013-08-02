@@ -18,6 +18,25 @@ var handle;
 var context = new webkitAudioContext();
 
 function init() {
+  exports.gainNode = context.createGainNode();
+  exports.audioAnalyser = context.createAnalyser();
+  exports.compressor = context.createDynamicsCompressor();
+
+  exports.hiShelf = context.createBiquadFilter();
+  exports.hiShelf.type = 4;
+  exports.hiShelf.frequency = 880;
+  exports.hiShelf.gain.value = 0;
+
+  exports.midShelf = context.createBiquadFilter();
+  exports.midShelf.type = 5;
+  exports.midShelf.frequency = 660;
+  exports.midShelf.gain.value = 0;
+  exports.midShelf.Q.Value = 10;
+
+  exports.loShelf = context.createBiquadFilter();
+  exports.loShelf.type = 3;
+  exports.loShelf.frequency = 440;
+  exports.loShelf.gain.value = 0;
 
   synths = [
     new AdditiveSynth(2, context, tuner, "C3"),
@@ -37,9 +56,7 @@ function init() {
     new AdditiveSynth(2, context, tuner, "C5"),
     new AdditiveSynth(2, context, tuner, "D5"),
   ];
-
   synths.reverse();
-
   sequence = [
   /*C3*/ [ 2, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
   /*D3*/ [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,],
@@ -61,6 +78,12 @@ function init() {
   Util.dbg.sequence = sequence;
 
   totalBeats = sequence[0].length;
+  exports.compressor.connect(exports.loShelf);
+  exports.loShelf.connect(exports.midShelf);
+  exports.midShelf.connect(exports.hiShelf);
+  exports.hiShelf.connect(exports.gainNode);
+  exports.gainNode.connect(exports.audioAnalyser);
+  exports.audioAnalyser.connect(context.destination);
   console.log("soundModel initialized");
 }
 

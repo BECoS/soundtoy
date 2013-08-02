@@ -1,9 +1,12 @@
+//var smodel = require('./soundModel.js');
+
 AdditiveSynth.SINE = 0;
 AdditiveSynth.SQUARE = 1;
 AdditiveSynth.SAW = 2;
 AdditiveSynth.TRIANGLE = 3;
 
 function AdditiveSynth(wavetype, context, tuner, note) {
+  var smodel = require('./soundModel.js');
   if (typeof note !== "undefined" && note !== null) {
     this.lastNote = note;  
   } else {
@@ -12,8 +15,8 @@ function AdditiveSynth(wavetype, context, tuner, note) {
   this.tuner = tuner;
   this.buildPartials(440, wavetype, 8);
   this.oscs = [];
-  this.gain = context.createGainNode(); 
-  this.gain.connect(context.destination);
+  this.gain = context.createGainNode();
+  this.gain.connect(smodel.compressor);
   this.gain.gain.value = 0;
   this.context = context;
   this.envelope = new Float32Array();
@@ -28,8 +31,7 @@ function AdditiveSynth(wavetype, context, tuner, note) {
     osc.frequency.value = this.partials[i].freq;
     osc.gain = context.createGain();
     osc.gain.gain.value = this.partials[i].gain;
-    osc.connect(osc.gain);
-    osc.gain.connect(this.gain);
+    osc.connect(osc.gain); osc.gain.connect(this.gain);
     osc.noteOn(0);
     this.oscs.push(osc);
   }
