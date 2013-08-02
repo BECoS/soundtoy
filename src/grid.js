@@ -4,7 +4,7 @@ var gmodel = require('./gridModel.js');
 
 function init() {
   $('#grid').children().remove();
-  $('figure').off('click mouseenter mouseleave');
+  $('rect').off('click mouseenter mouseleave');
   var totalVoices = gmodel.numVoices(),
     length = 16,
     joinCounter = 0;
@@ -14,7 +14,7 @@ function init() {
 
     joinCounter = 0; //used for creating a multinote
     for (var cube = 0; cube < length; cube++) {
-      var fig = $('<figure sequence="0">');
+      var fig = $('<rect sequence="0">');
       var activeStatus = gmodel.getState(voice, cube);
 
       //Continues the multinote
@@ -75,37 +75,37 @@ function initGridZoom() {
     var gridCenterPoint = $('#grid');
     if (event.wheelDeltaY < 0) {
       if (zoomLevel === 0) return;
-      $('figure').width($('figure').width() - shrinkSize )
-        .height($('figure').height() - shrinkSize);
+      $('rect').width($('rect').width() - shrinkSize )
+        .height($('rect').height() - shrinkSize);
        
-      $('.rowContainer').height($('figure').height() + shrinkSize);
+      $('.rowContainer').height($('rect').height() + shrinkSize);
 
-      $('figure').css('font-size', zoomLevel-- );
+      $('rect').css('font-size', zoomLevel-- );
     } else {
       if (zoomLevel === 32) return;
-      $('figure').width($('figure').width() + shrinkSize )
-        .height($('figure').height() + shrinkSize );
+      $('rect').width($('rect').width() + shrinkSize )
+        .height($('rect').height() + shrinkSize );
 
-      $('.rowContainer').height($('figure').height() + shrinkSize);
+      $('.rowContainer').height($('rect').height() + shrinkSize);
 
-      $('figure').css('font-size', zoomLevel++ );
+      $('rect').css('font-size', zoomLevel++ );
     }
   };
   
-  $('figure').on( 'mouseenter mouseleave', function () {
+  $('rect').on( 'mouseenter mouseleave', function () {
     $(this).toggleClass('hovering');
   });
 
-  $('figure').on( 'mousedown', function (event) {
+  $('rect').on( 'mousedown', function (event) {
     var firstSquare = {};
-    firstSquare.$ = $('figure.hovering');
+    firstSquare.$ = $('rect.hovering');
     firstSquare.row = firstSquare.$.attr('row');
     firstSquare.col = firstSquare.$.attr('col');
 
     $(document).on( 'mouseup', function (event) {
       var secondSquare = {};
-      secondSquare.row = $('figure.hovering').attr('row');
-      secondSquare.col = $('figure.hovering').attr('col');
+      secondSquare.row = $('rect.hovering').attr('row');
+      secondSquare.col = $('rect.hovering').attr('col');
       if (firstSquare.col != secondSquare.col && firstSquare.row == secondSquare.row) {
         var travel = secondSquare.col - firstSquare.col + 1;
         gmodel.updateState(firstSquare.row, firstSquare.col, travel);

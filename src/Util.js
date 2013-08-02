@@ -68,7 +68,7 @@ window.Util = {
   gmodel : require('./gridModel.js'),
   grid : require('./grid.js'),
   figure : function (x, y) {
-    return $('figure[col="' + x + '"][row="' + y + '"]');  
+    return $('rect[col="' + x + '"][row="' + y + '"]');  
   }
 };
 
