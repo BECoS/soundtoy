@@ -972,7 +972,6 @@ function init() {
   centerLayer.draw();
   drawBackground(graphLayer, 11, 11, 10, "#ccc", adsrStage.getHeight() * (8 / 9) - 10);
 
-  $('#adsr-container').before('<h1 class="instrument">Additive &#43;</h1>');
 }
 
 function drawGainContainer(gainLayer) {

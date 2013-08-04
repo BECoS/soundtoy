@@ -12,11 +12,11 @@ var beat = 0;
 var timePerBeat = 0.5 / 4;
 var startTime = 0;
 var totalBeats;
+
 var handle;
 var context = new webkitAudioContext();
-//var audioAnalyser = context.createAnalyser();
 
-function initialize() {
+function init() {
   exports.gainNode = context.createGainNode();
   exports.audioAnalyser = context.createAnalyser();
   exports.compressor = context.createDynamicsCompressor();
@@ -84,6 +84,14 @@ function initialize() {
   exports.gainNode.connect(exports.audioAnalyser);
   exports.audioAnalyser.connect(context.destination);
   console.log("soundModel initialized");
+}
+
+function clear() {
+  for (var i = 0; i < sequence.length; i++) {
+    for (var j = 0; j < sequence[i].length; j++) {
+      sequence[i][j] = 0;
+    }
+  }
 }
 
 function attack(atk) {
@@ -189,7 +197,7 @@ function setTimePerBeat(tempo) {
   timePerBeat = (60 / tempo) / 4;
 }
 
-exports.initialize = initialize;
+exports.init= init;
 exports.start = start;
 exports.stop = stop;
 exports.updateState = updateState;
@@ -205,3 +213,5 @@ exports.decay = decay;
 exports.sustain = sustain;
 exports.release = release;
 exports.setTimePerBeat = setTimePerBeat;
+exports.clear = clear;
+
