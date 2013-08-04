@@ -9,7 +9,7 @@ var sequence = [];
 
 //TODO: Get this stuff from the metronome
 var beat = 0;
-var timePerBeat = 0.5;
+var timePerBeat = 0.5 / 4;
 var startTime = 0;
 var totalBeats;
 var handle;
@@ -28,13 +28,13 @@ function initialize() {
 
   exports.midShelf = context.createBiquadFilter();
   exports.midShelf.type = 5;
-  exports.midShelf.frequency = 660;
+  exports.midShelf.frequency = 440;
   exports.midShelf.gain.value = 0;
   exports.midShelf.Q.Value = 10;
 
   exports.loShelf = context.createBiquadFilter();
   exports.loShelf.type = 3;
-  exports.loShelf.frequency = 440;
+  exports.loShelf.frequency = 220;
   exports.loShelf.gain.value = 0;
 
   synths = [
@@ -121,7 +121,7 @@ function isPlaying() {
 function beatMarkTimeout(selector) {
   setTimeout(function() {
     selector.removeClass('playing');
-  }, 200);
+  }, 100);
 }
 
 function start() {
@@ -135,8 +135,8 @@ function start() {
       for (var i = 0; i < sequence.length; i++) {
         if (sequence[i][beat] === 1) {
           synths[i].keyDown(nextBeatTime);
-          $('.col' + beat).addClass('playing');
-          beatMarkTimeout($('.col' + beat));
+          $('[col="' + beat + '"]').addClass('playing');
+          beatMarkTimeout($('[col="' + beat + '"]'));
         } else {
           synths[i].keyUp();
         }
@@ -185,6 +185,10 @@ function numNotes() {
   return sequence[0].length;
 }
 
+function setTimePerBeat(tempo) {
+  timePerBeat = (60 / tempo) / 4;
+}
+
 exports.initialize = initialize;
 exports.start = start;
 exports.stop = stop;
@@ -200,3 +204,4 @@ exports.attack = attack;
 exports.decay = decay;
 exports.sustain = sustain;
 exports.release = release;
+exports.setTimePerBeat = setTimePerBeat;
