@@ -10,6 +10,7 @@ var sequence = [];
 
 //TODO: Get this stuff from the metronome
 var beat = 0;
+var timePerBeat = 0.5 / 4;
 var startTime = 0;
 var totalBeats;
 
@@ -28,13 +29,13 @@ function init() {
 
   exports.midShelf = context.createBiquadFilter();
   exports.midShelf.type = 5;
-  exports.midShelf.frequency = 660;
+  exports.midShelf.frequency = 440;
   exports.midShelf.gain.value = 0;
   exports.midShelf.Q.Value = 10;
 
   exports.loShelf = context.createBiquadFilter();
   exports.loShelf.type = 3;
-  exports.loShelf.frequency = 440;
+  exports.loShelf.frequency = 220;
   exports.loShelf.gain.value = 0;
 
   synths = [
@@ -74,8 +75,6 @@ function init() {
   /*C5*/ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,],
   /*D5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
   ];
-  Util.dbg.synths = synths;
-  Util.dbg.sequence = sequence;
 
   totalBeats = sequence[0].length;
   exports.compressor.connect(exports.loShelf);
@@ -140,6 +139,7 @@ function start() {
     var timePerBeat = 0.5;
     if (delta >= timePerBeat) { 
       startTime = time;
+      var nextBeatTime = Math.ceil(time) + timePerBeat;
       beat %= totalBeats;
       for (var i = 0; i < sequence.length; i++) {
         var beatLength = sequence[i][beat];
@@ -147,12 +147,8 @@ function start() {
         if ( beatLength >= 1) {
           var nextBeatTime = 0;
           synths[i].keyDown(0);
-          //synths[i].keyDown(0);
           
           var synth = synths[i];
-          //setTimeout( function() { 
-          //  synth.keyUp(0); 
-          //}, beatLength * timePerBeat * 1000);
 
           synths[i].keyUp(beatLength);
         }
@@ -206,7 +202,11 @@ function numNotes() {
   return sequence[0].length;
 }
 
-exports.init = init;
+function setTimePerBeat(tempo) {
+  timePerBeat = (60 / tempo) / 4;
+}
+
+exports.init= init;
 exports.start = start;
 exports.stop = stop;
 exports.updateState = updateState;

@@ -1,6 +1,7 @@
 var smodel = require('./soundModel.js');
 var imgpreload = 
 require('../node_modules/imgpreload/imgpreload.js').imgpreload;
+//var metronome = require('./metronome.js');
 
 var mySpectrum;
 
@@ -255,6 +256,11 @@ function init() {
           updateTempo(1);}, 100);
       });
 
+      tempoUpActive.on('mousedown', function(event) {
+        mouseStillDown = setInterval(function() {
+          updateTempo(1);}, 100);
+      });
+
       tempoUpActive.on('mouseup mouseout', function(event) {
         tempoUpActive.setVisible(false);
         tempoUp.setVisible(true);
@@ -355,6 +361,7 @@ function init() {
 
       function updateTempo(amount) {
         bpm.setText(parseInt(bpm.getText(), 10) + amount);
+        smodel.setTimePerBeat(parseInt(bpm.getText(), 10));
         bpm.getLayer().draw();
       }
     });
