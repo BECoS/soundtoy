@@ -91,10 +91,10 @@ rect {
   text-indent: -9999px;
 }
 
+.almostJoined,
+.hovering,
 rect:hover {
   color: black;
-  text-align: middle;
-  -webkit-perspective: -200px;
   cursor: pointer;
   z-index: 2;
   text-indent: 0;
@@ -122,10 +122,6 @@ rect:hover {
 .joined:hover, 
 .active:hover {
   background-color: #f9f9f9;
-}
-
-[sequence="1"] {
-  border-right: 1px solid #f9f9f9; 
 }
 
 .active.slaveHover:hover {
@@ -206,9 +202,7 @@ rect:hover {
   inset hsla(0,0%,100%,.7) 0  2px 1px 7px,  /* top HL */
 
   hsla(0,0%, 0%,.15) 0 -5px 6px 4px;  /* outer SD */
-  hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
-
-  -webkit-transition: color .2s;
+  /*hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
 
   border-radius: .01em;
   background-image:   -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0)   6%, hsla(0,0%,100%, .1) 7.5%),          
@@ -233,7 +227,7 @@ rect:hover {
   inset hsla(0,0%,100%,.7) 0  1px 0.5px 3.5px,  /* top HL */
   
   hsla(0,0%, 0%,.15) 0 -2.5px 3px 2px;  /* outer SD */
-  hsla(0,0%,100%,.5) 0  2.5px 3px 2px #7a7a7a;  /* outer HL */  
+  /*hsla(0,0%,100%,.5) 0  2.5px 3px 2px #7a7a7a;  /* outer HL */  
 
   -webkit-transition: color .2s;  
 }
@@ -248,7 +242,6 @@ rect:hover {
 
 #adsr-container * {
   -webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  overflow: default;
 }
 
 /****************************/

@@ -5,8 +5,10 @@ window._ = require('underscore');
 
   $.fn.seq = function (num) {
     if ( !exports.existy(num) ) {
-      return parseInt(this.attr('sequence'), 10);
+      num = parseInt(this.attr('sequence'), 10);
+      return num;
     }
+
     return this.attr('sequence', num);
   };
 
@@ -18,22 +20,22 @@ window._ = require('underscore');
     return this.attr('col');
   };
     
-  $.fn.clearSeq = function () {
-    var startingObj = this;
-    var removeClicked = function (cur) {
-      cur.removeClass('clicked');
-    };
+  //$.fn.clearSeq = function () {
+  //  var startingObj = this;
+  //  var removeClicked = function (cur) {
+  //    cur.removeClass('clicked');
+  //  };
 
-    for ( var cur = this; cur.seq() < cur.prev().seq(); cur = cur.prev() ) {}
+  //  for ( var cur = this; cur.seq() < cur.prev().seq(); cur = cur.prev() ) {}
 
-    for ( ; cur.seq() > cur.next().seq(); cur = cur.next() ) {
-      cur.seq(0);
-      cur.addClass('clicked');
-      setTimeout( removeClicked, 450, cur);
-      cur.removeClass('joined active');
-    }
-    return startingObj;
-  };
+  //  for ( ; cur.seq() > cur.next().seq(); cur = cur.next() ) {
+  //    cur.seq(0);
+  //    cur.addClass('clicked');
+  //    setTimeout( removeClicked, 450, cur);
+  //    cur.removeClass('joined active');
+  //  }
+  //  return startingObj;
+  //};
 
 })(jQuery);
 
@@ -72,10 +74,10 @@ window.Util = {
   }
 };
 
-exports.existy = function (thing) { 
+window.existy = exports.existy = function (thing) { 
   return thing != null; 
 };
 
-exports.truthy = function (thing) { 
+window.truthy = exports.truthy = function (thing) { 
   return thing !== false && exports.existy(thing); 
 };

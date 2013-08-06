@@ -1,5 +1,3 @@
-//var smodel = require('./soundModel.js');
-
 AdditiveSynth.SINE = 0;
 AdditiveSynth.SQUARE = 1;
 AdditiveSynth.SAW = 2;
@@ -60,14 +58,19 @@ AdditiveSynth.prototype.buildPartials = function (fundamental, type, num) {
   return this;
 };
 
-AdditiveSynth.prototype.keyUp = function () {
-  this.gain.gain.cancelScheduledValues(0);
+AdditiveSynth.prototype.keyUp = function (time) {
+  if (!existy(time)) {
+    time = 0;
+  }
+  var currentTime = this.context.currentTime;
   if (this.envelopeOn) {
-    var currentTime = this.context.currentTime;
-    this.gain.gain.linearRampToValueAtTime(0, currentTime + this.release);
+    //this.gain.gain.cancelScheduledValues(0);
+    this.gain.gain.linearRampToValueAtTime(0, time + currentTime + this.release);
     return this;
   } 
-  this.gain.gain.value = 0;
+  //this.gain.gain.cancelScheduledValues(0);
+  this.gain.gain.setValueAtTime(0, time + currentTime);
+  //this.gain.gain.value = 0;
   return this;
 };
 
@@ -85,7 +88,6 @@ AdditiveSynth.prototype.keyDown = function (time, note) {
   this.gain.gain.value = 0;
   var freq = this.tuner.classic2Freq(note);
   var currentTime = this.context.currentTime;
-  time += currentTime;
   if (shouldChangeFreq) {
     this.oscs.forEach(function(e, i) {
       e.frequency.value = freq * (i + 1);
@@ -93,10 +95,9 @@ AdditiveSynth.prototype.keyDown = function (time, note) {
   }
   if (this.envelopeOn) {
     this.gain.gain.cancelScheduledValues(0);
-    this.gain.gain.setValueAtTime(1, 0);
-    this.gain.gain.linearRampToValueAtTime(1, currentTime + this.attack);
+    this.gain.gain.linearRampToValueAtTime(1, currentTime + this.attack + time);
     this.gain.gain.linearRampToValueAtTime(this.sustain, 
-      currentTime + this.decay);
+      currentTime + this.decay + time);
     //this.gain.gain.curve
   } else {
     this.gain.gain.cancelScheduledValues(0);

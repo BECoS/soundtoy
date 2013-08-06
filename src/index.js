@@ -24,8 +24,9 @@ $( function () {
       $('<div>').attr('id', 'adsr-container'))
   ];
 
+  smodel.clear();
+
   if ( $('title').text().match(/^spec/i) ) {
-    smodel.clear();
     setupJasmine();
     var $hiddenContainer = $('<div>').addClass('hidden');
     $('body').append($hiddenContainer);

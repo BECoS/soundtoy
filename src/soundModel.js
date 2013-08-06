@@ -10,7 +10,6 @@ var sequence = [];
 
 //TODO: Get this stuff from the metronome
 var beat = 0;
-var timePerBeat = 0.5;
 var startTime = 0;
 var totalBeats;
 
@@ -73,8 +72,9 @@ function init() {
   /*A4*/ [ 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,],
   /*B4*/ [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,],
   /*C5*/ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,],
-  /*B5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
+  /*D5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
   ];
+  Util.dbg.synths = synths;
   Util.dbg.sequence = sequence;
 
   totalBeats = sequence[0].length;
@@ -137,17 +137,29 @@ function start() {
   handle = setInterval(function () {
     var time = context.currentTime;
     var delta = time - startTime;
+    var timePerBeat = 0.5;
     if (delta >= timePerBeat) { 
       startTime = time;
-      var nextBeatTime = Math.ceil(time) + timePerBeat;
       beat %= totalBeats;
       for (var i = 0; i < sequence.length; i++) {
-        if (sequence[i][beat] === 1) {
-          synths[i].keyDown(nextBeatTime);
-          $('.col' + beat).addClass('playing');
-          beatMarkTimeout($('.col' + beat));
-        } else {
-          synths[i].keyUp();
+        var beatLength = sequence[i][beat];
+
+        if ( beatLength >= 1) {
+          var nextBeatTime = 0;
+          synths[i].keyDown(0);
+          //synths[i].keyDown(0);
+          
+          var synth = synths[i];
+          //setTimeout( function() { 
+          //  synth.keyUp(0); 
+          //}, beatLength * timePerBeat * 1000);
+
+          synths[i].keyUp(beatLength);
+        }
+
+        if (i == beat) {
+          $('[col="' + beat + '"]').addClass('playing');
+          beatMarkTimeout($('[col="' + beat + '"]'));
         }
       } 
       beat++;
