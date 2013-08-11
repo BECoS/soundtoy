@@ -10,7 +10,7 @@ node_modules/*
 node_modules/ 
 
 npm-debug.log
-www/bundle.js
+www/Toneblaster.js
 www/specBundle.js
 tags
 .ctags
