@@ -1,24 +1,21 @@
 {
-  "author": ["noel ramirez", "alex holt"],
-  "name": "soundtoy",
-  "description": "Clean and Pure",
-  "version": "0.0.0",
+  "author": ["Noel Ramirez", "Alex Holt"],
+  "name": "Toneblaster",
+  "description": "Music Workstation",
+  "version": "0.0.1",
   "repository": {
-    "url": ""
+    "url": "https://github.com/AlexHolt/toneblaster"
   },
-  "main": "app.js",
-  "scripts": {
-    "test": "test.js"
+  "dependencies": { 
+    "jquery-browserify" : "*",
+    "underscore": "*"
   },
-  "dependencies": { "browserify" : "*", 
-                    "jquery-browserify" : "*",
-                    "underscore" : "*"
-                  },
-  "devDependencies": { "jshint" : "*",
-                       "jasmine-node" : "*"
-                     },
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
+  "devDependencies": { 
+    "browserify": "*", 
+    "jasmine-node": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-browserify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-concat": "*"
   }
 }
