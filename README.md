@@ -1,4 +1,4 @@
-ToneBlaster
+Toneblaster
 ===========
 * * *
 Make music in your browser!
@@ -13,9 +13,6 @@ Jasmine spec runner at specs.html
 
 `./build.sh -w` to launch and re-browserify each time you change a file in lib
 
-* WebAudio for the sound 
-* Browserify to bundle
-* JQuery to manipulate the DOM
-* KineticJS for drawing to the canvas
-* Node.js for serving it up
-* Jasmine for testing
+Toneblaster uses the WebAudio API to provide sound synthesis and sequencing. The sequencer grid is meant
+to be more intuitive than the traditional piano roll.
+
