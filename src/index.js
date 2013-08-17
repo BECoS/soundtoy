@@ -45,9 +45,10 @@ $( function () {
   window.Util.dbg.clear = smodel.clear; 
   window.Util.dbg.initGrid = grid.init; 
 
+  panel.init();
   gmodel.init();
   grid.init();
-  panel.init();
+  smodel.scale();
 });
 
 function setupJasmine() {

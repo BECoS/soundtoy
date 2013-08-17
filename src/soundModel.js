@@ -2,23 +2,19 @@
 //
 
 var Tune = require('./Tuner.js'),
-    AdditiveSynth = require('./AdditiveSynth.js').AdditiveSynth;
+    AdditiveSynth = require('./AdditiveSynth.js'),
+    Track = require('./Track.js');
 
-var tuner = new Tune.Tuner(); // = new Tuner();
-var synths = [];
-var sequence = [];
-
-//TODO: Get this stuff from the metronome
 var beat = 0;
 var timePerBeat = 0.5 / 4;
 var startTime = 0;
-var totalBeats;
-
-var handle;
-var context = new webkitAudioContext();
+var totalBeats, handle, track, context;
 
 function init() {
+  context = Util.context;
   exports.gainNode = context.createGainNode();
+  exports.gainNode.gain.value = 0.2;
+
   exports.audioAnalyser = context.createAnalyser();
   exports.compressor = context.createDynamicsCompressor();
 
@@ -37,89 +33,67 @@ function init() {
   exports.loShelf.type = 3;
   exports.loShelf.frequency = 220;
   exports.loShelf.gain.value = 0;
-
-  synths = [
-    new AdditiveSynth(2, context, tuner, "C3"),
-    new AdditiveSynth(2, context, tuner, "D3"),
-    new AdditiveSynth(2, context, tuner, "E3"),
-    new AdditiveSynth(2, context, tuner, "F3"),
-    new AdditiveSynth(2, context, tuner, "G3"),
-    new AdditiveSynth(2, context, tuner, "A3"),
-    new AdditiveSynth(2, context, tuner, "B3"),
-    new AdditiveSynth(2, context, tuner, "C4"),
-    new AdditiveSynth(2, context, tuner, "D4"),
-    new AdditiveSynth(2, context, tuner, "E4"),
-    new AdditiveSynth(2, context, tuner, "F4"),
-    new AdditiveSynth(2, context, tuner, "G4"),
-    new AdditiveSynth(2, context, tuner, "A4"),
-    new AdditiveSynth(2, context, tuner, "B4"),
-    new AdditiveSynth(2, context, tuner, "C5"),
-    new AdditiveSynth(2, context, tuner, "D5"),
-  ];
-  synths.reverse();
-  sequence = [
-  /*C3*/ [ 2, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
-  /*D3*/ [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,],
-  /*E4*/ [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,],
-  /*F3*/ [ 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,],
-  /*G3*/ [ 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,],
-  /*A3*/ [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,],
-  /*B3*/ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,],
-  /*C4*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
-  /*D4*/ [ 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,],
-  /*E4*/ [ 0, 1, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,],
-  /*F4*/ [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,],
-  /*G4*/ [ 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,],
-  /*A4*/ [ 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,],
-  /*B4*/ [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,],
-  /*C5*/ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,],
-  /*D5*/ [ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,],
-  ];
-
-  totalBeats = sequence[0].length;
+    
   exports.compressor.connect(exports.loShelf);
   exports.loShelf.connect(exports.midShelf);
   exports.midShelf.connect(exports.hiShelf);
   exports.hiShelf.connect(exports.gainNode);
   exports.gainNode.connect(exports.audioAnalyser);
   exports.audioAnalyser.connect(context.destination);
-  console.log("soundModel initialized");
+
+  track = new Track(16, 32);
 }
 
+exports.extend = function() {
+  track.extend('right');
+};
+
+exports.scale = function() {
+  track.attachControls($('.currentTray'));
+};
+
+exports.length = function () {
+  return track.sequence.length;
+};
+
+exports.width = function () {
+  return track.sequence[0].length;
+};
+
 function clear() {
-  for (var i = 0; i < sequence.length; i++) {
-    for (var j = 0; j < sequence[i].length; j++) {
-      sequence[i][j] = 0;
+  for (var i = 0; i < track.sequence.length; i++) {
+    for (var j = 0; j < track.sequence[i].length; j++) {
+      track.sequence[i][j] = 0;
     }
   }
 }
 
 function attack(atk) {
-  synths.forEach( function(e, i, A) {
+  track.synths.forEach( function(e, i, A) {
     A[i].attack = atk; 
   });  
 }
 
 function decay(dcy) {
-  synths.forEach( function(e, i, A) {
+  track.synths.forEach( function(e, i, A) {
     A[i].decay = dcy; 
   });  
 }
 
 function sustain(sus) {
-  synths.forEach( function(e, i, A) {
+  track.synths.forEach( function(e, i, A) {
     A[i].sustain = sus; 
   });  
 }
 
 function release(rls) {
-  synths.forEach( function(e, i, A) {
+  track.synths.forEach( function(e, i, A) {
     A[i].release = rls; 
   });  
 }
 
 function getNoteFromInstr(instr) {
-  return synths[instr].lastNote;
+  return track.synths[instr].lastNote;
 }
 
 function isPlaying() {
@@ -129,34 +103,30 @@ function isPlaying() {
 function beatMarkTimeout(selector) {
   setTimeout(function() {
     selector.removeClass('playing');
-  }, 200);
+  }, timePerBeat * 1200);
 }
 
 function start() {
   handle = setInterval(function () {
     var time = context.currentTime;
     var delta = time - startTime;
-    var timePerBeat = 0.5;
     if (delta >= timePerBeat) { 
       startTime = time;
-      var nextBeatTime = Math.ceil(time) + timePerBeat;
-      beat %= totalBeats;
-      for (var i = 0; i < sequence.length; i++) {
-        var beatLength = sequence[i][beat];
+      var nextBeatTime = time + timePerBeat;
+      beat %= track.sequence[0].length;
+      for (var i = 0; i < track.synths.length; i++) {
+        var beatLength = track.sequence[i][beat];
 
         if ( beatLength >= 1) {
-          var nextBeatTime = 0;
-          synths[i].keyDown(0);
+          track.synths[i].keyDown(nextBeatTime);
           
-          var synth = synths[i];
+          var synth = track.synths[i];
 
-          synths[i].keyUp(beatLength);
+          track.synths[i].keyUp(beatLength * timePerBeat);
         }
 
-        if (i == beat) {
-          $('[col="' + beat + '"]').addClass('playing');
-          beatMarkTimeout($('[col="' + beat + '"]'));
-        }
+        $('[col="' + beat + '"]').addClass('playing');
+        beatMarkTimeout($('[col="' + beat + '"]'));
       } 
       beat++;
     }
@@ -167,12 +137,12 @@ function getActiveColumn() {
   return beat % totalBeats;
 }
 
-function getState(voice, note) {
+function getState(note, voice) {
   var state;
   try {
-   state = sequence[voice][note];
+   state = track.sequence[voice][note];
   } catch (e) {
-    console.log("No note at " + x + ", " + y);
+    console.log("No note at " + voice + ", " + note);
   }
   return state;
 }
@@ -180,14 +150,14 @@ function getState(voice, note) {
 function stop() {
   clearInterval(handle);
   handle = null;
-  for (var i = 0; i < synths.length; i++) {
-    synths[i].keyUp();
+  for (var i = 0; i < track.length; i++) {
+    track.synths[i].keyUp();
   }
 }
 
-function updateState(voice, note, state) {
-  sequence[voice][note] = state;
-  return sequence[voice][note];
+function updateState(note, voice, state) {
+  track.sequence[voice][note] = state;
+  return track.sequence[voice][note];
 }
 
 function getTime() {
@@ -195,11 +165,11 @@ function getTime() {
 }
 
 function numVoices() {
-  return sequence.length;
+  return track.length;
 }
 
 function numNotes() {
-  return sequence[0].length;
+  return track.length;
 }
 
 function setTimePerBeat(tempo) {
@@ -222,4 +192,3 @@ exports.decay = decay;
 exports.sustain = sustain;
 exports.release = release;
 exports.clear = clear;
-

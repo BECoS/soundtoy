@@ -1,22 +1,20 @@
 exports.TRANSITION_TIME = 450;
 
 var gmodel = require('./gridModel.js'),
-    Util = require('./Util.js');
+    Util = require('./Util.js'),
+    smodel = require('./soundModel.js');
 
-function init() {
+function rebuildGrid() {
   $('#grid').children().remove();
   $('rect').off('click mouseenter mouseleave');
-  var totalVoices = gmodel.numVoices(), 
-    length = 16;
+  var totalVoices = gmodel.numVoices();
 
-  for (var voice = 0; voice < totalVoices; voice++) {
+  for (var voice = 0; voice < smodel.length(); voice++) {
     var row = $('<section>').addClass('rowContainer');
 
-    for (var cube = 0; cube < length; cube++) {
+    for (var cube = 0; cube < smodel.width(); cube++) {
       var $square = $('<rect sequence>');
-      var activeStatus = gmodel.getState(voice, cube);
 
-      //$square.on("click", normalClickFunc);
       row.append($square.attr('col', cube).attr('row', voice)
         .text(gmodel.getNoteFromRow(voice)));
     }
@@ -25,31 +23,60 @@ function init() {
    
   }
 
-  var figureSize = computeFigureSize();
+}
+
+function init() {
+  rebuildGrid();
   initGridZoom();
+  $('head').append( 
+      $('<meta>')
+        .attr('property', 'zoomLevel')
+        .attr('content', '16'));
+}
+
+function refresh() {
+  rebuildGrid();
+  initGridZoom();
+  loadModel();
+}
+
+function property(name, value) {
+  if (Util.existy(value)) {
+    $('[property="' + name + '"]').attr('content', value);
+  }
+  return $('[property="' + name + '"]').attr('content');
+}
+
+function multinote($square, length) {
+  var col = $square.col();
+  $square
+    .attr('sequence', col)
+    .addClass('active joined');
+  do {
+    $square
+      .attr('sequence', col)
+      .addClass('joined');
+    $square = $square.next();
+  } while (--length > 0);
 }
 
 function loadModel() {
-  var joinCounter = 0;
-  //Continues the multinote
-  if (joinCounter > 1) {
-    joinCounter--;
-    fig.addClass('joined')
-      .attr('sequence', joinCounter)
-      .hover(hoverFunc, hoverFunc);
+  for (var row = 0; row < smodel.length(); row++) {
+    for (var col = 0; col < smodel.width(); col++) {
 
-    //Starts the multinote
-  } else if (activeStatus > 1) {
-    joinCounter = activeStatus;
-    fig.attr('sequence', activeStatus)
-      .addClass('active joined')
-      .hover(hoverFunc, hoverFunc);
+      var activeStatus = gmodel.getState(col, row);
+      var $square = exports.$grab(col, row);
 
-    //Single note
-  } else if (activeStatus == 1) {
-    fig.addClass('active');
+      if (activeStatus > 1) {
+        multinote($square, activeStatus);
 
+      } else if (activeStatus == 1) {
+        $square.addClass('active');
+      }
+
+    }
   }
+
 }
 
 function computeFigureSize() {
@@ -59,35 +86,38 @@ function computeFigureSize() {
 }
 
 function initGridZoom() {
-  var zoomLevel = 16;
   var shrinkSize = 2;
   var isZooming = false;
   var startingPoint = [ 0, 0 ];
-  document.onmousewheel = function (event) {
-    isZooming = true;
-    setTimeout( function () {
-      isZooming = false;
-    }, 500);
-    startingPoint = [ event.clientX, event.clientY ];
-    var gridCenterPoint = $('#grid');
-    if (event.wheelDeltaY < 0) {
-      if (zoomLevel === 0) return;
-      $('rect').width($('rect').width() - shrinkSize )
-        .height($('rect').height() - shrinkSize);
-       
-      $('.rowContainer').height($('rect').height() + shrinkSize);
 
-      $('rect').css('font-size', zoomLevel-- );
-    } else {
-      if (zoomLevel === 32) return;
-      $('rect').width($('rect').width() + shrinkSize )
-        .height($('rect').height() + shrinkSize );
+  $(document).off('mousewheel')
+    .on('mousewheel', function (event) {
+      var zoomLevel = property('zoomLevel');
+      isZooming = true;
+      setTimeout( function () {
+        isZooming = false;
+      }, 500);
+      startingPoint = [ event.clientX, event.clientY ];
+      var gridCenterPoint = $('#grid');
+      if (event.originalEvent.wheelDeltaY < 0) {
+        if (zoomLevel <= 0) return;
+        $('rect').width($('rect').width() - shrinkSize )
+          .height($('rect').height() - shrinkSize);
+         
+        $('.rowContainer').height($('rect').height() + shrinkSize);
 
-      $('.rowContainer').height($('rect').height() + shrinkSize);
+        $('rect').css('font-size', zoomLevel-- );
+      } else {
+        if (zoomLevel >= 64) return;
+        $('rect').width($('rect').width() + shrinkSize )
+          .height($('rect').height() + shrinkSize );
 
-      $('rect').css('font-size', zoomLevel++ );
-    }
-  };
+        $('.rowContainer').height($('rect').height() + shrinkSize);
+
+        $('rect').css('font-size', zoomLevel++ );
+      }
+      property('zoomLevel', zoomLevel);
+    });
   
   $('rect').on( 'mouseenter', function () {
     $(this).addClass('hovering');
@@ -129,7 +159,7 @@ function initGridZoom() {
           firstSquare.row == secondSquare.row &&
           !secondSquare.$.hasClass('active') ) {
         var travel = secondSquare.col - firstSquare.col + 1;
-        gmodel.updateState(firstSquare.row, firstSquare.col, travel);
+        gmodel.updateState(firstSquare.col, firstSquare.row, travel);
         buildSequence(firstSquare.$, travel);
       } else if (firstSquare.col == secondSquare.col && firstSquare.row == secondSquare.row) {
         normalClickFunc.apply(firstSquare.$);
@@ -169,15 +199,20 @@ function initGridZoom() {
   });
 }
 
+function updateState($square) {
+  var row = $square.row();
+  var col = $square.col();
+  if (!$square.hasClass('joined')) {
+    var freshState = gmodel.getState(col, row) == 1 ? 0 : 1;
+    gmodel.updateState(col, row, freshState);
+  } else {
+    gmodel.updateState($square.seq(), row, 0);
+  }
+}
+
 function normalClickFunc() {
-  //$(this).addClass('clicked');
-
-  var row = $(this).row();
-  var col = $(this).col();
-
-  var freshState = gmodel.getState(row, col) === 1 ? 0 : 1;
-  gmodel.updateState(row, col, freshState);
-  $(this).addClass('active clicked');
+  updateState($(this));
+  $(this).addClass('clicked');
 
   if ( !_.isNaN($(this).seq()) ) {
     var $multinote = $('[row="' + $(this).row() + '"][' + 'sequence="' + $(this).seq() + '"]'); 
@@ -185,9 +220,9 @@ function normalClickFunc() {
     $multinote.seq('');
     $multinote.removeClass('active joined');
   } else {
-    $(this).seq( $(this).col() );
+    $(this).seq( $(this).col() ).addClass('active');
   }
-
+  
   setTimeout(function ($square) {
     $('.clicked').removeClass('clicked');
   }, exports.TRANSITION_TIME, $(this));
@@ -211,5 +246,7 @@ exports.$grab = function(col, row) {
 };
 
 exports.init = init;
+exports.rebuildGrid = rebuildGrid;
 exports.initGridZoom = initGridZoom;
+exports.refresh = refresh;
 window.gridInit = init;
