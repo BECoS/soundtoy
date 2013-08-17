@@ -65,4 +65,13 @@ Tuner.prototype.classic2Freq = function (note) {
   return this.midi2Freq(this.classic2Midi(note));
 };
 
-exports.Tuner = Tuner;
+Tuner.prototype.iter = function (octave, note) {
+  octave = octave || 0; 
+  note = note || 0;
+  return function () {
+    return Object.keys(Tuner.letterNoteLookup)[note++ % 12] + 
+      Math.floor( (octave++) / 12);
+  };
+};
+
+module.exports = Tuner;
