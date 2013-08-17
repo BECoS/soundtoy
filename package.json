@@ -17,6 +17,10 @@
     "grunt-contrib-jshint": "*",
     "grunt-browserify": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-concat": "~0.3.0"
+    "grunt-contrib-concat": "*"
+  },
+  "scripts": {
+    "postinstall": "bower install; sh buildKinetic.sh; grunt",
+    "postupdate": "bower update; sh buildKinetic.sh"
   }
 }
