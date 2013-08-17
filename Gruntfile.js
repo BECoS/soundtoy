@@ -17,7 +17,8 @@ module.exports = function(grunt) {
       options: {
         esnext: true,
         eqnull: true,
-        funcscope: true
+        funcscope: true,
+        debug: true
       }
     },
 
