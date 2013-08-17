@@ -1,6 +1,6 @@
-var AdditiveSynth = require('./AdditiveSynth.js').AdditiveSynth;
-var Tuner = require('./Tuner.js').Tuner;
-var ScalePicker = require('./ScalePicker.js').ScalePicker;
+var AdditiveSynth = require('./AdditiveSynth.js'),
+    Tuner = require('./Tuner.js'),
+    ScalePicker = require('./ScalePicker.js');
 
 function Track (width, height, context) {
   this.timeSig = 4;
@@ -9,6 +9,7 @@ function Track (width, height, context) {
   var tuning = this.tuner.iter(10, 10);
   this.synths = [];
   this.sequence = [];
+
   var row = (function () {
     var row = [];
     var count = width;
@@ -23,11 +24,15 @@ function Track (width, height, context) {
     this.sequence[i] = row.slice(0);
   }
 
-
   this.length = this.sequence[0].length;
   this.width = this.sequence.length;
   this.scale = new ScalePicker('chromatic');
+  this.scale.attach($('.currentTray'));
 }
+
+Track.prototype.attachControls = function ($container) {
+  this.scale.attach($container);
+};
 
 Track.prototype.extend = function (direction) {
   switch (direction) {
@@ -46,4 +51,4 @@ Track.prototype.extend = function (direction) {
   }
 };
 
-exports.Track = Track;
+module.exports = Track;
