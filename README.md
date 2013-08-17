@@ -3,9 +3,9 @@ Toneblaster
 * * *
 Toneblaster is a website for making music.
 
-Building it requires node, npm, grunt, and bower to be installed and on your path. You can get bower
-and grunt from npm but remember to install them globally with -g, e.g., `npm install -g bower`. Toneblaster
-uses KineticJS which it fetches using bower. To build Kinetic requires gem and thor to be installed and on your path.
+Building it requires node, npm, grunt-cli, and bower to be installed and on your path. You can get bower
+and grunt-cli from npm but remember to install them globally with -g, e.g., `npm install -g bower`. Toneblaster
+uses KineticJS which it fetches using bower. To build Kinetic requires the thor, uglifier, json-pure gems to be installed.
 You can forgo this step by getting a prebuilt version of Kinetic and putting it at the location referenced in
 www/index.html.
 
