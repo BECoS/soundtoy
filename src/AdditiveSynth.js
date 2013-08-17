@@ -3,7 +3,7 @@ AdditiveSynth.SQUARE = 1;
 AdditiveSynth.SAW = 2;
 AdditiveSynth.TRIANGLE = 3;
 
-function AdditiveSynth(wavetype, context, tuner, note) {
+function AdditiveSynth (wavetype, context, tuner, note) {
   var smodel = require('./soundModel.js');
   if (typeof note !== "undefined" && note !== null) {
     this.lastNote = note;  
@@ -64,13 +64,10 @@ AdditiveSynth.prototype.keyUp = function (time) {
   }
   var currentTime = this.context.currentTime;
   if (this.envelopeOn) {
-    //this.gain.gain.cancelScheduledValues(0);
     this.gain.gain.linearRampToValueAtTime(0, time + currentTime + this.release);
     return this;
   } 
-  //this.gain.gain.cancelScheduledValues(0);
   this.gain.gain.setValueAtTime(0, time + currentTime);
-  //this.gain.gain.value = 0;
   return this;
 };
 
@@ -95,9 +92,9 @@ AdditiveSynth.prototype.keyDown = function (time, note) {
   }
   if (this.envelopeOn) {
     this.gain.gain.cancelScheduledValues(0);
-    this.gain.gain.linearRampToValueAtTime(1, currentTime + this.attack + time);
+    this.gain.gain.linearRampToValueAtTime(1, 0 + this.attack);
     this.gain.gain.linearRampToValueAtTime(this.sustain, 
-      currentTime + this.decay + time);
+      currentTime + this.decay);
     //this.gain.gain.curve
   } else {
     this.gain.gain.cancelScheduledValues(0);
@@ -113,4 +110,4 @@ AdditiveSynth.prototype.envelope = function (fn)  {
   });
 };
 
-exports.AdditiveSynth = AdditiveSynth;
+module.exports = AdditiveSynth;
