@@ -79,13 +79,13 @@ h1.instrument {
 rect {
   display: inline-block;
   width: 40px;
-  height: 40px;
+  height: 20px;
   margin: 0 0;
   padding: 0 0;
   border: 1px solid #fff;
   overflow: hidden;
-  font-family: HeavyData;
-  vertical-align: text-top;
+  /*font-family: HeavyData;
+  //vertical-align: middle;*/
   color: #000;
   text-indent: -9999px;
 }
@@ -93,7 +93,7 @@ rect {
 .almostJoined,
 .hovering,
 rect:hover {
-  color: black;
+  color: #ff0;
   cursor: pointer;
   z-index: 2;
   text-indent: 0;
@@ -196,22 +196,28 @@ rect:hover {
 .metal {
   background-color: hsl(0,0%,90%);
   -webkit-box-shadow: inset hsla(0,0%,15%,  1) 0px  0px 0px 2px,  /* border */
-  inset hsla(0,0%,15%, .8) 0 -1px 5px 4px,  /* soft SD */
-  inset hsla(0,0%,0%, .25) 0 -1px 0px 7px,  /* bottom SD */
-  inset hsla(0,0%,100%,.7) 0  2px 1px 7px,  /* top HL */
-
-  hsla(0,0%, 0%,.15) 0 -5px 6px 4px;  /* outer SD */
-  /*hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
+    inset hsla(0,0%,15%, .8) 0 -1px 5px 4px,  /* soft SD */
+    inset hsla(0,0%,0%, .25) 0 -1px 0px 7px,  /* bottom SD */
+    inset hsla(0,0%,100%,.7) 0  2px 1px 7px,  /* top HL */
+    hsla(0,0%, 0%,.15) 0 -5px 6px 4px;  /* outer SD */
+    /*hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
 
   border-radius: .01em;
-  background-image:   -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0)   6%, hsla(0,0%,100%, .1) 7.5%),          
-  -webkit-repeating-linear-gradient(left, hsla(0,0%,  0%,0) 0%, hsla(0,0%,  0%,0)   4%, hsla(0,0%,  0%,.03) 4.5%),          
-  -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.15) 2.2%),
 
-  -webkit-linear-gradient(-90deg, hsl(0,0%,78%)  0%, 
-  hsl(0,0%,90%) 47%, 
-  hsl(0,0%,78%) 53%,
-  hsl(0,0%,70%)100%);   
+  background-image:  
+    -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, 
+      hsla(0, 0%, 60%, 0) 6%, 
+      hsla(0, 0%, 80%, .1) 7.5%),          
+    -webkit-repeating-linear-gradient(left, hsla(0,0%,  0%,0) 0%, 
+      hsla(0, 0%, 20%,0)  4%, 
+      hsla(0, 0%, 20%,.03) 4.5%),          
+    -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, 
+      hsla(0, 0%, 80%,0) 1.2%, 
+      hsla(0, 0%, 80%,.15) 2.2%),
+    -webkit-linear-gradient(-90deg, hsl(0,0%,78%)  80%, 
+      hsl(0, 0%, 78%) 47%, 
+      hsl(0, 0%, 78%) 53%,
+      hsl(0, 0%, 0%) 100%);   
 }
 
 .woodgrain {
@@ -302,3 +308,9 @@ p.minimize.instrTitle {
   visibility: hidden;
 }
 
+.detachedMenu li,
+.detachedMenu {
+  position: absolute;
+  overflow: visible;
+  bottom: 80px;
+}
