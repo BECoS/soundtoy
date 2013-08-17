@@ -1,4 +1,6 @@
-var smodel = require('./soundModel.js');
+var smodel = require('./soundModel.js'),
+    grid = require('./grid.js');
+
 var imgpreload = 
 require('../node_modules/imgpreload/imgpreload.js').imgpreload;
 //var metronome = require('./metronome.js');
@@ -33,14 +35,22 @@ function addWindowBar() {
 }
 
 function addCurrentTray() {
-  $('#selector').append('<div class="currentTray"></div>');
+  $('#selector').append( 
+    $('<div class="currentTray">')
+      .append( 
+        $('<button>').button()
+          .text('Extend')
+          .on('click', function () {
+            smodel.extend('right');
+            grid.refresh();
+          }))
+  );
 }
 
 function init() {
   smodel.audioAnalyser.smoothingTimeconstant = 0.85;
   addCurrentTray();
   addWindowBar();
-  var Kinetic = require('../node_modules/kinetic/kinetic.js').Kinetic;
   var stage = new Kinetic.Stage({
     container: 'bar',
     width: $('#bar').width() * 0.9,
@@ -103,7 +113,7 @@ function init() {
       var tempoDown = tempoUp.clone({y: tempoUp.getHeight() + 2, image: images[8]});
 
       var gainDial = new Kinetic.Image({
-        x: 239,
+        x: smodel.gainNode.gain.value * (239 - 99) + 99,
           image: images[11],
           draggable: true,
           dragBoundFunc: function(pos) {
@@ -200,9 +210,9 @@ function init() {
       stage.add(gainLayer);
       stage.add(ctrlLayer);
 
-      playInactive.createImageHitRegion(function() {
-        playInactive.getLayer().drawHit();
-      });
+      //playInactive.createImageHitRegion(function() {
+      //  playInactive.getLayer().drawHit();
+      //});
 
       playInactive.on('mousedown', function(event) {
         playInactive.setVisible(false);
