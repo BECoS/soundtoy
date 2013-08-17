@@ -1,17 +1,26 @@
 Toneblaster
 ===========
 * * *
-Make music in your browser!
+Toneblaster is a website for making music.
 
-Site at index.html
+Building it requires node, npm, grunt, and bower to be installed and on your path. You can get bower
+and grunt from npm but remember to install them globally with -g, e.g., `npm install -g bower`. Toneblaster
+uses KineticJS which it fetches using bower. To build Kinetic requires gem and thor to be installed and on your path.
+You can forgo this step by getting a prebuilt version of Kinetic and putting it at the location referenced in
+www/index.html.
 
-Jasmine spec runner at specs.html
+Once the tools are setup:
 
 `npm install`
+`npm start`
 
-`node app.js` to launch
+During development use grunt to rebuild:
 
-`./build.sh -w` to launch and re-browserify each time you change a file in lib
+`grunt`
+
+Or grunt watch to rebuild whenever changes to the src files are made:
+
+`grunt watch`
 
 Toneblaster uses the WebAudio API to provide sound synthesis and sequencing. The sequencer grid is meant
 to be more intuitive than the traditional piano roll.
