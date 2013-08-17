@@ -1,0 +1,13 @@
+{
+  "author": [
+    "Noel Ramirez",
+    "Alex Holt"
+  ],
+  "name":  "Toneblaster",
+  "version": "0.0.1",
+  "dependencies": {
+    "underscore": "latest",
+    "jquery": "latest",
+    "kineticjs": "latest"
+  }
+}

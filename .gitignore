@@ -12,5 +12,6 @@ node_modules/
 npm-debug.log
 www/Toneblaster.js
 www/specBundle.js
+www/bower_components/
 tags
 .ctags
