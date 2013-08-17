@@ -1,6 +1,3 @@
-window.$ = window.jQuery = require('jquery-browserify');
-window._ = require('underscore');
-
 (function ($) {
 
   $.fn.seq = function (num) {
@@ -71,7 +68,8 @@ window.Util = {
   grid : require('./grid.js'),
   figure : function (x, y) {
     return $('rect[col="' + x + '"][row="' + y + '"]');  
-  }
+  },
+  context : new webkitAudioContext(),
 };
 
 window.existy = exports.existy = function (thing) { 
