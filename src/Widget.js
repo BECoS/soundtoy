@@ -1,14 +1,16 @@
-function Widget($element) {
-  this.$element = $element;
+function Widget() {
   Object.freeze(this);
 }
 
-Widget.prototype.attach = function ($container) {
-  this.$element.appendTo($container);
+Widget.prototype.attach = function () {
 };
 
-Widget.prototype.remove = function () {
-  this.$element.remove();
+Widget.prototype.hide = function () {
+  this.$element.hide();
+};
+
+Widget.prototype.show = function () {
+  this.$element.show();
 };
 
 module.exports = Widget;

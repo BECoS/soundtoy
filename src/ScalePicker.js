@@ -3,12 +3,11 @@ var Widget = require('./Widget.js');
 ScalePicker.prototype = Object.create(Widget.prototype);
 
 function ScalePicker(scale) {
-  var $element = $('<ul class="detachedMenu">').append(
+  this.$element = $('<ul class="detachedMenu">').append(
         $('<li>').text('chromatic'),
         $('<li>').text('diatonic'),
         $('<li>').text('lydian'));
  
-  Widget.call(this, $element);
  
   $('.currentTray').append( 
       $('<div>')
@@ -18,6 +17,8 @@ function ScalePicker(scale) {
           Widget.attach.call(this, $('body')); 
         })
   );
+
+  Widget.call(this);
 }
 
 

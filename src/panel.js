@@ -1,5 +1,6 @@
 var smodel = require('./soundModel.js'),
-    grid = require('./grid.js');
+    grid = require('./grid.js'),
+    Button = require('./Button.js');
 
 var imgpreload = 
 require('../node_modules/imgpreload/imgpreload.js').imgpreload;
@@ -60,6 +61,7 @@ function getImage(image, cb) {
 
 function playButton(images) {
   var ctrlLayer = new Kinetic.Layer();
+
   var stage = new Kinetic.Stage({
     container: 'bar',
     width: $('#bar').width() * 0.9,
@@ -106,14 +108,21 @@ function playButton(images) {
 }
 
 function init() {
-
-  getImage('img/playButtonOff.svg', function (off) {
-    var images = [off];
-    getImage('img/playButtonOn.svg', function (on) { 
-      images.push(on);
-      playButton(images); 
-    });
+  var playButton = new Button({
+    offImage: 'img/playButtonOff.svg',
+    offFunc: smodel.start,
+    onImage: 'img/playButtonOn.svg',
+    onFunc: smodel.stop,
+    $element: $('#bar'),
   });
+
+  //getImage('img/playButtonOff.svg', function (off) {
+  //  var images = [off];
+  //  getImage('img/playButtonOn.svg', function (on) { 
+  //    images.push(on);
+  //    playButton(images); 
+  //  });
+  //});
 
 }
 

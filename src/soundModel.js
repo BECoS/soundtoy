@@ -8,7 +8,7 @@ var Tune = require('./Tuner.js'),
 var beat = 0;
 var timePerBeat = 0.5 / 4;
 var startTime = 0;
-var totalBeats, handle, track, context;
+var totalBeats, track, context;
 
 function init() {
   context = Util.context;
@@ -97,7 +97,7 @@ function getNoteFromInstr(instr) {
 }
 
 function isPlaying() {
-  return (handle !== null);
+  return (window.handle !== null);
 }
 
 function beatMarkTimeout(selector) {
@@ -107,7 +107,7 @@ function beatMarkTimeout(selector) {
 }
 
 function start() {
-  handle = setInterval(function () {
+  return setInterval(function () {
     var time = context.currentTime;
     var delta = time - startTime;
     if (delta >= timePerBeat) { 
@@ -147,9 +147,8 @@ function getState(note, voice) {
   return state;
 }
 
-function stop() {
+function stop(handle) {
   clearInterval(handle);
-  handle = null;
   for (var i = 0; i < track.length; i++) {
     track.synths[i].keyUp();
   }
