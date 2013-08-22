@@ -1,5 +1,6 @@
 function Widget($element) {
   this.$element = $element;
+  Object.freeze(this);
 }
 
 Widget.prototype.attach = function ($container) {
@@ -7,7 +8,7 @@ Widget.prototype.attach = function ($container) {
 };
 
 Widget.prototype.remove = function () {
-    this.$element.remove();
+  this.$element.remove();
 };
 
 module.exports = Widget;

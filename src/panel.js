@@ -36,21 +36,94 @@ function addWindowBar() {
 
 function addCurrentTray() {
   $('#selector').append( 
-    $('<div class="currentTray">')
+      $('<div class="currentTray">')
       .append( 
         $('<button>').button()
-          .text('Extend')
-          .on('click', function () {
-            smodel.extend('right');
-            grid.refresh();
-          }))
-  );
+        .text('Extend')
+        .on('click', function () {
+          smodel.extend('right');
+          grid.refresh();
+        }))
+      );
+}
+
+function getImage(image, cb) {
+  var img = document.createElement('img'); 
+
+  img.onload = function () { cb(img); };
+  img.setAttribute('src', image);
+
+  if (img.complete) {
+    cb(img);
+  }
+}
+
+function playButton(images) {
+  var ctrlLayer = new Kinetic.Layer();
+  var stage = new Kinetic.Stage({
+    container: 'bar',
+    width: $('#bar').width() * 0.9,
+    height: $('#bar').height() * 0.9, 
+  });
+
+  var playInactive = new Kinetic.Image({
+    x: 0,
+    y: 0,
+    height: $('#bar').height() * 0.7,
+    width: $('#bar').height() * 0.7,
+    image: images[0],
+    stroke: 'black',
+    shadowColor: 'black',
+    shadowBlur: 2,
+    shadowOffset: 1,
+    shadowOpacity: 0.8
+  });
+
+  var playActive = playInactive.clone({
+    image: images[1],
+    visible: false
+  });
+
+  ctrlLayer.add(playInactive);
+  ctrlLayer.add(playActive);
+
+
+  playInactive.on('mousedown', function(event) {
+    playInactive.setVisible(false);
+    playActive.setVisible(true);
+    smodel.start();
+    ctrlLayer.draw();
+  });
+
+  playActive.on('mousedown', function(event) {
+    playActive.setVisible(false);
+    playInactive.setVisible(true);
+    smodel.stop();
+    ctrlLayer.draw();
+  });   
+
+  stage.add(ctrlLayer);
 }
 
 function init() {
+
+  getImage('img/playButtonOff.svg', function (off) {
+    var images = [off];
+    getImage('img/playButtonOn.svg', function (on) { 
+      images.push(on);
+      playButton(images); 
+    });
+  });
+
+}
+
+function _init() {
   smodel.audioAnalyser.smoothingTimeconstant = 0.85;
+
   addCurrentTray();
+
   addWindowBar();
+
   var stage = new Kinetic.Stage({
     container: 'bar',
     width: $('#bar').width() * 0.9,
@@ -64,24 +137,35 @@ function init() {
   imgpreload(["img/playButtonOff.svg", "img/playButtonOn.svg", "img/stopOff.svg", 
     "img/stopOn.svg", "img/recordOff.svg", "img/recordOn.svg", "img/tempo.svg",
     "img/tempoToggleOff.svg", "img/tempoToggleDown.svg", "img/tempoToggleOn.svg",
-    "img/tempoToggleOnDown.svg", "img/gainDial.png", "img/base.svg", "img/dial.svg", "img/zero.svg"], function(images) {
+    "img/tempoToggleOnDown.svg", "img/gainDial.png", "img/base.svg", "img/dial.svg", "img/zero.svg"], 
+    function(images) {
       var yPos;
       var playInactive = new Kinetic.Image({
         x: 0,
         y: 0,
         height: $('#bar').height() * 0.7,
-        image: images[0],
+        width: $('#bar').height() * 0.7,
+        image: $('<img>').attr('src', 'img/playButtonOff.svg').get(0),
         stroke: 'black',
         shadowColor: 'black',
         shadowBlur: 2,
         shadowOffset: 1,
         shadowOpacity: 0.8
       });
-      playInactive.setWidth(playInactive.getHeight());
+      
+      //playInactive.setWidth(playInactive.getHeight());
 
-      var stopInactive = playInactive.clone({x: playInactive.getWidth() + 5, image: images[2]});
+      var stopInactive = playInactive.clone({
+        x: playInactive.getWidth() + 5, 
+        image: $('<img>').attr('src', 'img/stopOff.svg').get(0)
+      });
 
-      var recordInactive = playInactive.clone({x: stopInactive.getX() * 2, image: images[4]});
+      window.stopInactive = stopInactive;
+
+      var recordInactive = playInactive.clone({
+        x: stopInactive.getX() * 2, 
+        image: $('<img>').attr('src', 'img/recordOff.svg').get(0)
+      });
 
       var tempo = new Kinetic.Image({
         x: stage.getWidth() - 175,
@@ -176,13 +260,17 @@ function init() {
       });
 
 
-      var playActive = playInactive.clone({image: images[1], visible: false});
+      var playActive = playInactive.clone({
+        image: images[1], 
+        visible: false
+      });
+
       var stopActive = stopInactive.clone({image: images[3], visible: false});
       var recordActive = recordInactive.clone({image: images[5], visible: false});
       var tempoUpActive = tempoUp.clone({image: images[9], visible: false});
       var tempoDownActive = tempoDown.clone({image: images[10], visible: false});
 
-      ctrlLayer.add(playInactive);
+      //ctrlLayer.add(playInactive);
       ctrlLayer.add(playActive);
       ctrlLayer.add(stopInactive);
       ctrlLayer.add(stopActive);
@@ -204,7 +292,6 @@ function init() {
       ctrlLayer.add(loBase);
       ctrlLayer.add(loDial);
       ctrlLayer.add(loZero);
-      ctrlLayer.draw();
 
       stage.add(vuLayer);
       stage.add(gainLayer);
@@ -982,6 +1069,8 @@ function init() {
   centerLayer.draw();
   drawBackground(graphLayer, 11, 11, 10, "#ccc", adsrStage.getHeight() * (8 / 9) - 10);
 
+  ctrlLayer.draw();
+  window.ctrlLayer = ctrlLayer;
 }
 
 function drawGainContainer(gainLayer) {
