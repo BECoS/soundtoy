@@ -12,7 +12,7 @@ module.exports = function(grunt) {
     
     jshint: {
       files: {
-        src: [ 'src/*' ]
+        src: [ 'src/*.js' ]
       },
       options: {
         esnext: true,
