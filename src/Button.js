@@ -8,23 +8,33 @@ Button.prototype = Object.create(Widget.prototype);
 
 function Button(args) {
 
-  this.$element = args.$element;
+  this.$element = $('<div>') 
+    .attr('id', args.id)
+    .css({
+      width: '25px',
+      height: '25px',
+      float: 'left'
+    });
 
-  this.holdOn = args.holdOn || false;
+  this.$container = args.$container;
+
+  this.$element.appendTo( this.$container );
+
+  this.toggle = args.toggle || true;
 
   this.layer = new Kinetic.Layer();
 
   this.stage = new Kinetic.Stage({
     container: this.$element.attr('id'),
-    width: this.$element.width() * 0.9,
-    height: this.$element.height() * 0.9, 
+    width: this.$element.width(),
+    height: this.$element.height()
   });
 
   this.offImage = new Kinetic.Image({
     x: 0,
     y: 0,
-    height: args.$element.height() * 0.7,
-    width: args.$element.height() * 0.7,
+    height: this.$element.height(),
+    width: this.$element.height(),
     image: this.imageFetch(args.offImage, function () { this.layer.draw(); }),
     stroke: 'black',
     shadowColor: 'black',
@@ -35,34 +45,34 @@ function Button(args) {
 
   this.offFunc = args.offFunc;
 
-  this.offImage.on( 'mousedown', _.bind( function (event) {
-    this.onImage.setVisible(true); 
-    this.offImage.setVisible(false);
-    this.offFunc();
-    this.layer.draw();
-  }, this));
-
   this.onImage = this.offImage.clone({
     image: this.imageFetch(args.onImage, function() { this.layer.draw(); }),
     visible: false
   });
+
+  this.offImage.on( 'mousedown', _.bind( function (event) {
+    this.offImage.setVisible(false);
+    this.onImage.setVisible(true); 
+    this.$element.attr('handle', this.offFunc());
+    this.layer.draw();
+  }, this));
 
   this.onFunc = args.onFunc;
 
   this.onImage.on( 'mousedown', _.bind( function (event) {
     this.onImage.setVisible(false);
     this.offImage.setVisible(true); 
-    var handle = this.onFunc();
-    this.offFunc = function () { this.offFunc( handle ); };
+    this.onFunc(this.$element.attr('handle'));
     this.layer.draw();
   }, this));
 
-  this.layer.add(this.offImage);
   this.layer.add(this.onImage);
+  this.layer.add(this.offImage);
 
   this.stage.add(this.layer);
 
   Widget.call(this);
+  window.play = this;
 }
 
 Button.prototype.imageFetch = function (src, cb) {

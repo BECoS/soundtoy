@@ -108,12 +108,23 @@ function playButton(images) {
 }
 
 function init() {
+
   var playButton = new Button({
+    id: 'play',
     offImage: 'img/playButtonOff.svg',
     offFunc: smodel.start,
     onImage: 'img/playButtonOn.svg',
     onFunc: smodel.stop,
-    $element: $('#bar'),
+    $container: $('#bar'),
+  });
+
+  var stopButton = new Button({
+    id: 'stop',
+    offImage: 'img/stopOff.svg',
+    onImage: 'img/stopOn.svg',
+    onFunc: smodel.stop,
+    toggle: false,
+    $container: $('#bar'),
   });
 
   //getImage('img/playButtonOff.svg', function (off) {
@@ -279,7 +290,7 @@ function _init() {
       var tempoUpActive = tempoUp.clone({image: images[9], visible: false});
       var tempoDownActive = tempoDown.clone({image: images[10], visible: false});
 
-      //ctrlLayer.add(playInactive);
+      ctrlLayer.add(playInactive);
       ctrlLayer.add(playActive);
       ctrlLayer.add(stopInactive);
       ctrlLayer.add(stopActive);
@@ -316,15 +327,17 @@ function _init() {
         smodel.start();
         mySpectrum = setInterval( function() {drawSpectrum(vuLayer); }, 30);
         ctrlLayer.draw();
+        console.log('fired off');
       });
 
       playActive.on('mousedown', function(event) {
-        playActive.setVisible(false);
         playInactive.setVisible(true);
+        playActive.setVisible(false);
         smodel.stop();
         clearInterval(mySpectrum);
         ctrlLayer.draw();
         clearSpectrum(vuLayer);
+        console.log('fired on');
       });   
 
       stopInactive.on('mousedown', function(event) {

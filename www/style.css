@@ -44,7 +44,6 @@ h1.instrument {
 }
 
 #bar > div {
-  position: absolute !important;
   padding: 5px 0 0 0;
 }
 
