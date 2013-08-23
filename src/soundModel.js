@@ -1,6 +1,3 @@
-//var context = new webkitAudioContext();
-//
-
 var Tune = require('./Tuner.js'),
     AdditiveSynth = require('./AdditiveSynth.js'),
     Track = require('./Track.js');
@@ -8,28 +5,27 @@ var Tune = require('./Tuner.js'),
 var beat = 0;
 var timePerBeat = 0.5 / 4;
 var startTime = 0;
-var totalBeats, track, context;
+var totalBeats, track;
 
 function init() {
-  context = Util.context;
-  exports.gainNode = context.createGainNode();
-  exports.gainNode.gain.value = 0.2;
+  exports.gainNode = audioContext.createGainNode();
+  exports.gainNode.gain.value = 0.1;
 
-  exports.audioAnalyser = context.createAnalyser();
-  exports.compressor = context.createDynamicsCompressor();
+  exports.audioAnalyser = audioContext.createAnalyser();
+  exports.compressor = audioContext.createDynamicsCompressor();
 
-  exports.hiShelf = context.createBiquadFilter();
+  exports.hiShelf = audioContext.createBiquadFilter();
   exports.hiShelf.type = 4;
   exports.hiShelf.frequency = 880;
   exports.hiShelf.gain.value = 0;
 
-  exports.midShelf = context.createBiquadFilter();
+  exports.midShelf = audioContext.createBiquadFilter();
   exports.midShelf.type = 5;
   exports.midShelf.frequency = 440;
   exports.midShelf.gain.value = 0;
   exports.midShelf.Q.Value = 10;
 
-  exports.loShelf = context.createBiquadFilter();
+  exports.loShelf = audioContext.createBiquadFilter();
   exports.loShelf.type = 3;
   exports.loShelf.frequency = 220;
   exports.loShelf.gain.value = 0;
@@ -39,7 +35,7 @@ function init() {
   exports.midShelf.connect(exports.hiShelf);
   exports.hiShelf.connect(exports.gainNode);
   exports.gainNode.connect(exports.audioAnalyser);
-  exports.audioAnalyser.connect(context.destination);
+  exports.audioAnalyser.connect(audioContext.destination);
 
   track = new Track(16, 32);
 }
@@ -108,7 +104,7 @@ function beatMarkTimeout(selector) {
 
 function start() {
   return setInterval(function () {
-    var time = context.currentTime;
+    var time = audioContext.currentTime;
     var delta = time - startTime;
     if (delta >= timePerBeat) { 
       startTime = time;
@@ -149,18 +145,15 @@ function getState(note, voice) {
 
 function stop(handle) {
   clearInterval(handle);
-  for (var i = 0; i < track.length; i++) {
+  for (var i = 0; i < track.width; i++) {
     track.synths[i].keyUp();
+    $('[col="' + beat + '"][row="' + i +'"]').addClass('playing');
   }
 }
 
 function updateState(note, voice, state) {
   track.sequence[voice][note] = state;
   return track.sequence[voice][note];
-}
-
-function getTime() {
-  return context.currentTime;
 }
 
 function numVoices() {
@@ -182,7 +175,7 @@ exports.updateState = updateState;
 exports.getActiveColumn = getActiveColumn;
 exports.getState = getState;
 exports.isPlaying = isPlaying;
-exports.getTime = getTime;
+exports.setBeat = function (newBeat) { beat = newBeat; };
 exports.getNoteFromInstr = getNoteFromInstr;
 exports.numVoices = numVoices;
 exports.numNotes = numNotes;

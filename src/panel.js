@@ -1,6 +1,7 @@
 var smodel = require('./soundModel.js'),
     grid = require('./grid.js'),
-    Button = require('./Button.js');
+    Button = require('./Button.js'),
+    Meter = require('./Meter.js');
 
 var imgpreload = 
 require('../node_modules/imgpreload/imgpreload.js').imgpreload;
@@ -115,6 +116,7 @@ function init() {
     offFunc: smodel.start,
     onImage: 'img/playButtonOn.svg',
     onFunc: smodel.stop,
+    toggle: true,
     $container: $('#bar'),
   });
 
@@ -122,19 +124,20 @@ function init() {
     id: 'stop',
     offImage: 'img/stopOff.svg',
     onImage: 'img/stopOn.svg',
-    onFunc: smodel.stop,
+    onFunc: function () { 
+      playButton.triggerOff();
+      smodel.stop($('#play').attr('handle'));
+      smodel.setBeat(0);
+      $('.playing').removeClass('playing');
+    },
     toggle: false,
     $container: $('#bar'),
   });
-
-  //getImage('img/playButtonOff.svg', function (off) {
-  //  var images = [off];
-  //  getImage('img/playButtonOn.svg', function (on) { 
-  //    images.push(on);
-  //    playButton(images); 
-  //  });
+  
+  //var masterVU = new Meter({
+  //  $container: $('#bar'),
+  //  id: 'vu-meter'
   //});
-
 }
 
 function _init() {

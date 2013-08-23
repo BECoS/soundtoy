@@ -3,40 +3,39 @@ AdditiveSynth.SQUARE = 1;
 AdditiveSynth.SAW = 2;
 AdditiveSynth.TRIANGLE = 3;
 
-function AdditiveSynth (wavetype, context, tuner, note) {
+function AdditiveSynth (wavetype, tuner, note) {
   var smodel = require('./soundModel.js');
-  if (typeof note !== "undefined" && note !== null) {
-    this.lastNote = note;  
-  } else {
-    this.lastNote = "A4";
-  }
+  this.lastNote = note || "A4";
   this.tuner = tuner;
   this.buildPartials(440, wavetype, 8);
   this.oscs = [];
-  this.gain = context.createGainNode();
-  this.gain.connect(smodel.compressor);
+  this.gain = audioContext.createGainNode();
+  this.gain.connect(smodel.gainNode);
   this.gain.gain.value = 0;
-  this.context = context;
   this.envelope = new Float32Array();
   this.envelopeOn = true;
   this.attack = 0;
   this.decay = 0.05;
   this.sustain = 1;
   this.release = 0.1;
+
   for (var i = 0; i < this.partials.length; i++) {
-    var osc = context.createOscillator();
+    var osc = audioContext.createOscillator();
     osc.type = this.partials[i].type;
     osc.frequency.value = this.partials[i].freq;
-    osc.gain = context.createGain();
+    osc.gain = audioContext.createGain();
     osc.gain.gain.value = this.partials[i].gain;
     osc.connect(osc.gain); osc.gain.connect(this.gain);
     osc.noteOn(0);
     this.oscs.push(osc);
   }
+
   var freq = this.tuner.classic2Freq(this.lastNote);
+
   this.oscs.forEach(function(e, i) {
     e.frequency.value = freq * (i + 1);
   });
+
   return this;
 }
 
@@ -62,7 +61,7 @@ AdditiveSynth.prototype.keyUp = function (time) {
   if (!existy(time)) {
     time = 0;
   }
-  var currentTime = this.context.currentTime;
+  var currentTime = audioContext.currentTime;
   if (this.envelopeOn) {
     this.gain.gain.linearRampToValueAtTime(0, time + currentTime + this.release);
     return this;
@@ -84,7 +83,7 @@ AdditiveSynth.prototype.keyDown = function (time, note) {
   this.gain.gain.cancelScheduledValues(0);
   this.gain.gain.value = 0;
   var freq = this.tuner.classic2Freq(note);
-  var currentTime = this.context.currentTime;
+  var currentTime = audioContext.currentTime;
   if (shouldChangeFreq) {
     this.oscs.forEach(function(e, i) {
       e.frequency.value = freq * (i + 1);

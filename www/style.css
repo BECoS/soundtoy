@@ -44,7 +44,7 @@ h1.instrument {
 }
 
 #bar > div {
-  padding: 5px 0 0 0;
+  padding: 7px 0 0 0;
 }
 
 #grid {
@@ -67,7 +67,8 @@ h1.instrument {
 }
 
 .playing {
-  background-color: #00f;
+  -webkit-transition: 50ms;
+  background-color: #27275E;
 }
 
 .playing.active {
@@ -157,13 +158,11 @@ rect:hover {
   margin: 0; 
   padding: 0; 
   height: 100%; 
-  background:#ccc;
   width: 100px;
 }
 
 #panel {
   overflow-x: hidden;
-  background-color: #00f5f0;
   width: 225px; 
   text-shadow: 1px 1px 1px #000; 
   right: 0;
@@ -200,10 +199,10 @@ rect:hover {
     inset hsla(0,0%,100%,.7) 0  2px 1px 7px,  /* top HL */
     hsla(0,0%, 0%,.15) 0 -5px 6px 4px;  /* outer SD */
     /*hsla(0,0%,100%,.5) 0  5px 6px 4px #7a7a7a;  /* outer HL */  
-
+  
   border-radius: .01em;
 
-  background-image:  
+  /*background-image:  
     -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, 
       hsla(0, 0%, 60%, 0) 6%, 
       hsla(0, 0%, 80%, .1) 7.5%),          
@@ -216,7 +215,7 @@ rect:hover {
     -webkit-linear-gradient(-90deg, hsl(0,0%,78%)  80%, 
       hsl(0, 0%, 78%) 47%, 
       hsl(0, 0%, 78%) 53%,
-      hsl(0, 0%, 0%) 100%);   
+      hsl(0, 0%, 0%) 100%);*/
 }
 
 .woodgrain {

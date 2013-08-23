@@ -20,7 +20,8 @@ function Button(args) {
 
   this.$element.appendTo( this.$container );
 
-  this.toggle = args.toggle || true;
+  this.toggle = existy(args.toggle) ? 
+    args.toggle : true;
 
   this.layer = new Kinetic.Layer();
 
@@ -43,7 +44,8 @@ function Button(args) {
     shadowOpacity: 0.8
   });
 
-  this.offFunc = args.offFunc;
+  this.offFunc = args.offFunc || _.identity;
+  this.onFunc = args.onFunc || _identity;
 
   this.onImage = this.offImage.clone({
     image: this.imageFetch(args.onImage, function() { this.layer.draw(); }),
@@ -55,16 +57,21 @@ function Button(args) {
     this.onImage.setVisible(true); 
     this.$element.attr('handle', this.offFunc());
     this.layer.draw();
+
+    if (!this.toggle) {
+      setTimeout( this.triggerOff, 100 );
+    }
+
   }, this));
 
-  this.onFunc = args.onFunc;
-
-  this.onImage.on( 'mousedown', _.bind( function (event) {
+  this.triggerOff = _.bind( function (event) {
     this.onImage.setVisible(false);
     this.offImage.setVisible(true); 
     this.onFunc(this.$element.attr('handle'));
     this.layer.draw();
-  }, this));
+  }, this);
+
+  this.onImage.on( 'mousedown', this.triggerOff);
 
   this.layer.add(this.onImage);
   this.layer.add(this.offImage);
@@ -72,7 +79,6 @@ function Button(args) {
   this.stage.add(this.layer);
 
   Widget.call(this);
-  window.play = this;
 }
 
 Button.prototype.imageFetch = function (src, cb) {
