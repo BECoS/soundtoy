@@ -107,7 +107,7 @@ function playButton(images) {
   stage.add(ctrlLayer);
 }
 
-function init() {
+function _init() {
   var playButton = new Button({
     offImage: 'img/playButtonOff.svg',
     offFunc: smodel.start,
@@ -126,7 +126,7 @@ function init() {
 
 }
 
-function _init() {
+function init() {
   smodel.audioAnalyser.smoothingTimeconstant = 0.85;
 
   addCurrentTray();
@@ -1008,6 +1008,69 @@ function _init() {
       smodel.attack( ( 100 - atkDragger.getY() ) / 100);
     });
   }));
+
+  /*atkDragger.tween = new Kinetic.Tween({
+    node:  atkDragger,
+    radius: 12,
+    easing: Kinetic.Easings.EaseInOut,
+    duration: 1
+  });*/
+
+    atkDragger.tween = new Kinetic.Tween({
+      node: atkDragger,
+      radius: 8,
+      easing: Kinetic.Easings.EaseInOut,
+      duration: 0.2
+    });
+    
+    dcyDragger.tween = new Kinetic.Tween({
+      node: dcyDragger,
+      radius: 8,
+      easing: Kinetic.Easings.EaseInOut,
+      duration: 0.2
+    });
+    
+    stnDragger.tween = new Kinetic.Tween({
+      node: stnDragger,
+      radius: 8,
+      easing: Kinetic.Easings.EaseInOut,
+      duration: 0.2
+    });
+    
+    rlsDragger.tween = new Kinetic.Tween({
+      node: rlsDragger,
+      radius: 8,
+      easing: Kinetic.Easings.EaseInOut,
+      duration: 0.2
+    });  
+    
+    atkLimit.tween = new Kinetic.Tween({
+      node: atkLimit
+    });
+    
+    dcyLimit.tween = new Kinetic.Tween({
+      node: dcyLimit
+    });
+    
+    stnLimit.tween = new Kinetic.Tween({
+      node: stnLimit
+    });              
+
+  /*atkDragger.on('mouseover touchstart', function(event) {
+    tween.play();
+  });
+
+  atkDragger.on('mouseout touchend', function(event) {
+    tween.reverse();
+  });*/
+
+  centerLayer.on('mouseover touchstart', function(event) {
+    event.targetNode.tween.play();
+  });
+
+  centerLayer.on('mouseout touchend', function(event) {
+    event.targetNode.tween.reverse();
+  });
 
   dcyDragger.on('dragstart', (function () {
     dcyDragger.getLayer().on('draw', function () {
