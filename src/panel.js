@@ -1,6 +1,7 @@
 var smodel = require('./soundModel.js'),
     grid = require('./grid.js'),
-    Button = require('./Button.js');
+    Button = require('./Button.js'),
+    Meter = require('./Meter.js');
 
 var imgpreload = 
 require('../node_modules/imgpreload/imgpreload.js').imgpreload;
@@ -107,26 +108,39 @@ function playButton(images) {
   stage.add(ctrlLayer);
 }
 
-function _init() {
+function init() {
+
   var playButton = new Button({
+    id: 'play',
     offImage: 'img/playButtonOff.svg',
     offFunc: smodel.start,
     onImage: 'img/playButtonOn.svg',
     onFunc: smodel.stop,
-    $element: $('#bar'),
+    toggle: true,
+    $container: $('#bar'),
   });
 
-  //getImage('img/playButtonOff.svg', function (off) {
-  //  var images = [off];
-  //  getImage('img/playButtonOn.svg', function (on) { 
-  //    images.push(on);
-  //    playButton(images); 
-  //  });
+  var stopButton = new Button({
+    id: 'stop',
+    offImage: 'img/stopOff.svg',
+    onImage: 'img/stopOn.svg',
+    onFunc: function () { 
+      playButton.triggerOff();
+      smodel.stop($('#play').attr('handle'));
+      smodel.setBeat(0);
+      $('.playing').removeClass('playing');
+    },
+    toggle: false,
+    $container: $('#bar'),
+  });
+  
+  //var masterVU = new Meter({
+  //  $container: $('#bar'),
+  //  id: 'vu-meter'
   //});
-
 }
 
-function init() {
+function _init() {
   smodel.audioAnalyser.smoothingTimeconstant = 0.85;
 
   addCurrentTray();
@@ -279,7 +293,7 @@ function init() {
       var tempoUpActive = tempoUp.clone({image: images[9], visible: false});
       var tempoDownActive = tempoDown.clone({image: images[10], visible: false});
 
-      //ctrlLayer.add(playInactive);
+      ctrlLayer.add(playInactive);
       ctrlLayer.add(playActive);
       ctrlLayer.add(stopInactive);
       ctrlLayer.add(stopActive);
@@ -316,15 +330,17 @@ function init() {
         smodel.start();
         mySpectrum = setInterval( function() {drawSpectrum(vuLayer); }, 30);
         ctrlLayer.draw();
+        console.log('fired off');
       });
 
       playActive.on('mousedown', function(event) {
-        playActive.setVisible(false);
         playInactive.setVisible(true);
+        playActive.setVisible(false);
         smodel.stop();
         clearInterval(mySpectrum);
         ctrlLayer.draw();
         clearSpectrum(vuLayer);
+        console.log('fired on');
       });   
 
       stopInactive.on('mousedown', function(event) {

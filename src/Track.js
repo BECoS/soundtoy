@@ -2,7 +2,7 @@ var AdditiveSynth = require('./AdditiveSynth.js'),
     Tuner = require('./Tuner.js'),
     ScalePicker = require('./ScalePicker.js');
 
-function Track (width, height, context) {
+function Track (width, height) {
   this.timeSig = 4;
   this.tuner = new Tuner(); 
   
@@ -20,7 +20,7 @@ function Track (width, height, context) {
   })();
 
   for (var i = height - 1; i >= 0; i--) { 
-    this.synths[i] = new AdditiveSynth(2, Util.context, this.tuner, tuning());
+    this.synths[i] = new AdditiveSynth(2, this.tuner, tuning());
     this.sequence[i] = row.slice(0);
   }
 
@@ -38,7 +38,7 @@ Track.prototype.extend = function (direction) {
   switch (direction) {
     case 'bottom': 
       this.sequence.push( this.sequence.slice(-1) );
-      this.synths.push( new AdditiveSynth(2, Util.context, this.tuner, "D5") );
+      this.synths.push( new AdditiveSynth(2, this.tuner, "D5") );
     break;
     case 'right': 
       var self = this;

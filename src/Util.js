@@ -69,8 +69,9 @@ window.Util = {
   figure : function (x, y) {
     return $('rect[col="' + x + '"][row="' + y + '"]');  
   },
-  context : new webkitAudioContext(),
 };
+
+window.audioContext = new webkitAudioContext();
 
 window.existy = exports.existy = function (thing) { 
   return thing != null; 
