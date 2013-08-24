@@ -1,6 +1,7 @@
 var smodel = require('./soundModel.js'),
     grid = require('./grid.js'),
     Button = require('./Button.js'),
+    ADSR = require('./ADSR.js'),
     Meter = require('./Meter.js');
 
 var imgpreload = 
@@ -132,6 +133,11 @@ function init() {
     },
     toggle: false,
     $container: $('#bar'),
+  });
+
+  var adsr = new ADSR({
+    id: 'ADSR',
+    $container: $('#panel')
   });
   
   //var masterVU = new Meter({
